@@ -1,0 +1,7 @@
+{
+  "name": "reiseführer",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
