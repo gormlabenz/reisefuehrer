@@ -1,14 +1,27 @@
 import { reactive, computed } from "vue";
 import { Plugins } from "@capacitor/core";
 const { Geolocation } = Plugins;
-import WikiJS from "wikijs";
+/* const WikiJS = require("wikipedia"); */
+const wtf = require("wtf_wikipedia");
 
 const state = reactive({
   position: "",
   pages: [],
+  loading: false,
 });
 
 export default function Store() {
+  /* Loading */
+  function intervalFetching() {
+    toggleLoading();
+    setInterval(setPages(), 1000);
+    toggleLoading();
+  }
+
+  function toggleLoading() {
+    state.loading = !state.loading;
+  }
+
   /* Position */
 
   async function fetchPosition() {
@@ -25,19 +38,26 @@ export default function Store() {
 
   const pushPage = (page) => {
     state.pages.push(page);
-    console.log("push page");
   };
 
-  async function fetchPage(title) {
+  /* async function fetchPage(title) {
     console.log("title", title);
-    let page = await WikiJS().page(title);
+    const page = await WikiJS.page(title).catch((error) => {
+      console.log("WikiJS page error", error);
+    });
 
     const summary = page.summary();
     const mainImage = page.mainImage();
     const info = page.fullInfo();
     const url = page.url();
 
-    const values = await Promise.all([summary, mainImage, info, url]);
+    const values = await Promise.all([summary, mainImage, info, url]).catch(
+      (error) => {
+        console.log("Promise.all error", error);
+      }
+    ); 
+
+
 
     const result = {
       summary: values[0],
@@ -47,6 +67,27 @@ export default function Store() {
     };
 
     console.log("fetched page");
+    return result;
+  }*/
+  async function fetchPage(title) {
+    let doc = await wtf.fetch(title).catch((error) => {
+      console.log("WTF page error", error);
+    });
+
+    const summary = doc.text();
+    const mainImage = doc.images(0).json();
+    //const info = page.fullInfo();
+    //const url = page.url();
+
+    const values = await Promise.all([summary, mainImage]).catch((error) => {
+      console.log("Promise.all error", error);
+    });
+
+    const result = {
+      summary: values[0],
+      mainImage: values[1].thumb,
+    };
+
     return result;
   }
 
@@ -70,16 +111,12 @@ export default function Store() {
     const response = await fetch(url);
     const values = await response.json();
 
-    console.log("values", values.query.geosearch);
-
     return values.query.geosearch;
   }
 
   async function setPages() {
     await fetchPosition();
-    console.log("position", state.position);
     const pages = await fetchPages(state.position);
-    console.log("pages", pages);
     for (let page of pages) {
       const pag = await fetchPage(page.title);
       pag["title"] = page.title;
@@ -91,8 +128,10 @@ export default function Store() {
   return {
     position: computed(() => state.position),
     pages: computed(() => state.pages),
+    loading: computed(() => state.loading),
     fetchPosition,
     fetchPages,
     setPages,
+    intervalFetching,
   };
 }

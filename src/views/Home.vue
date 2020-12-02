@@ -6,7 +6,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content :fullscreen="true">
+    <ion-content :fullscreen="true" v-if="pages">
       <ion-header class="ion-no-border" collapse="condense">
         <ion-toolbar>
           <ion-title size="large">Nearby</ion-title>
@@ -14,49 +14,52 @@
       </ion-header>
 
       <div style="margin: 16px">
-        <ion-grid v-if="coordinates">
+        <ion-grid v-if="position">
           <ion-row>
             <ion-col>
               <ion-card-subtitle>Latitude</ion-card-subtitle>
               <ion-card-title>{{
-                coordinates.latitude.toFixed(3)
+                position.latitude.toFixed(3)
               }}</ion-card-title>
             </ion-col>
             <ion-col>
               <ion-card-subtitle>Longitude</ion-card-subtitle>
               <ion-card-title>{{
-                coordinates.longitude.toFixed(3)
+                position.longitude.toFixed(3)
               }}</ion-card-title>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <ion-button @click="print" color="medium">Nearby</ion-button>
-        <ion-button @click="fetchPosition" color="medium"
-          >fetchPosition</ion-button
-        >
-        <ion-button @click="setPages" color="medium">setPages</ion-button>
+        <ion-text color="primary">
+          <h4>Debugging</h4>
+        </ion-text>
         <ion-button @click="printPages" color="medium">Print Pages</ion-button>
       </div>
 
       <div id="container">
         <ion-card
-          v-for="(page, index) in wikiPages"
+          v-for="(page, index) in store.pages.value"
           :key="index"
           style="text-align: left"
         >
+          <div style="width: 100%; display: block">
+            <ion-button
+              style="margin: 16px; position:absolute"
+              @click="speak(page.summary)"
+              color="secondary"
+              >Play</ion-button
+            >
+            <img style="width: 100%" :src="page.mainImage" alt="" />
+          </div>
           <ion-card-header>
             <ion-card-subtitle>{{ page.dist }} M</ion-card-subtitle>
             <ion-card-title>{{ page.title }}</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
-            Keep close to Nature's heart... and break clear away, once in
-            awhile, and climb a mountain or spend a week in the woods. Wash your
-            spirit clean.
+            {{ page.summary }}
           </ion-card-content>
         </ion-card>
-        <strong>{{ coordinates.latitude }}</strong>
-        <strong>{{ coordinates.longitude }}</strong>
       </div>
     </ion-content>
   </ion-page>
@@ -75,41 +78,58 @@ import {
   IonTitle,
   IonToolbar,
   IonButton,
+  IonIcon,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonText,
 } from "@ionic/vue";
 import { defineComponent } from "vue";
-import { Plugins } from "@capacitor/core";
-const { Geolocation } = Plugins;
 import Store from "../store";
+import { Plugins } from "@capacitor/core";
+const { TextToSpeech } = Plugins;
 
 export default defineComponent({
   name: "Home",
   data() {
-    return {
-      wikiResults: [],
-      wikiTitles: [],
-      wikiPages: "",
-      geolocation: Geolocation,
-      coordinates: "",
-      watchCoordinates: "",
-    };
+    return {};
   },
-  mounted() {},
-  computed: {},
+  mounted() {
+    this.store.setPages();
+    console.log("Plugins", Plugins);
+    console.log("TextToSpeech", TextToSpeech);
+    document.addEventListener("deviceready", () => {
+      console.log("Navigator", navigator);
+      console.log("Navigator", navigator);
+    });
+  },
+  computed: {
+    store() {
+      return Store();
+    },
+    pages() {
+      return Store().pages.value;
+    },
+    position() {
+      return Store().position.value;
+    },
+  },
   methods: {
-    print() {
-      console.log(Store().position.value);
+    speak(text) {
+      TextToSpeech.speak(text)
+        .then(() => console.log("Success Speach"))
+        .catch((reason) => console.log(reason));
     },
-    fetchPosition() {
-      Store().fetchPosition();
-    },
-    fetchPages() {
-      Store().fetchPages("Batman");
-    },
-    setPages() {
-      Store().setPages();
+    printComputedPages() {
+      console.log(this.store.pages.value);
     },
     printPages() {
-      console.log(Store().pages.value);
+      console.log(window.cordova, window.cordova.plugins);
+    },
+    fetchPages() {
+      this.store.fetchPages().catch((error) => {
+        console.log(error);
+      });
     },
   },
   components: {
@@ -124,6 +144,11 @@ export default defineComponent({
     IonCardHeader,
     IonCardContent,
     IonCardSubtitle,
+    IonIcon,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonText,
   },
 });
 </script>
