@@ -12,19 +12,18 @@
     "open-ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios"
   },
   "dependencies": {
-    "@angular/core": "^11.0.2",
     "@capacitor/core": "2.4.3",
     "@capacitor/ios": "^2.4.3",
-    "@ionic-native/core": "^4.20.0",
+    "@ionic-native/core": "^5.30.0",
     "@ionic-native/geolocation": "^5.30.0",
     "@ionic-native/text-to-speech": "^5.30.0",
     "@ionic/pwa-elements": "^3.0.1",
     "@ionic/vue": "^5.4.0",
     "@ionic/vue-router": "^5.4.0",
+    "axios": "^0.21.0",
     "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-tts": "^0.2.3",
     "core-js": "^3.6.5",
-    "rxjs-compat": "^6.6.3",
     "vue": "^3.0.0-0",
     "vue-router": "^4.0.0-0",
     "wtf_wikipedia": "^8.5.1"

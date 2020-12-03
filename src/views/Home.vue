@@ -30,11 +30,29 @@
             </ion-col>
           </ion-row>
         </ion-grid>
+
         <ion-text color="primary">
           <h4>Debugging</h4>
         </ion-text>
-        <ion-button @click="printPages" color="medium">Print Pages</ion-button>
       </div>
+
+      <ion-item>
+        <ion-text color="primary">
+          <h4>Reading Speed</h4>
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-range
+          v-model="readingSpeed"
+          @click="print"
+          min="100"
+          max="200"
+          color="secondary"
+        >
+          <ion-label slot="start">0</ion-label>
+          <ion-label slot="end">1</ion-label>
+        </ion-range>
+      </ion-item>
 
       <div id="container">
         <ion-card
@@ -43,13 +61,19 @@
           style="text-align: left"
         >
           <div style="width: 100%; display: block">
-            <ion-button
-              style="margin: 16px; position:absolute"
-              @click="speak(page.summary)"
-              color="secondary"
-              >Play</ion-button
-            >
+            <div style="margin: 16px; position:absolute">
+              <ion-button @click="store.getData(page)" color="medium"
+                >Request</ion-button
+              >
+              <ion-button @click="speak(page.summary)" color="secondary"
+                >Play</ion-button
+              >
+            </div>
             <img style="width: 100%" :src="page.mainImage" alt="" />
+            <ion-progress-bar
+              v-if="page.loading"
+              type="indeterminate"
+            ></ion-progress-bar>
           </div>
           <ion-card-header>
             <ion-card-subtitle>{{ page.dist }} M</ion-card-subtitle>
@@ -83,25 +107,25 @@ import {
   IonRow,
   IonCol,
   IonText,
+  IonItem,
+  IonRange,
+  IonLabel,
+  IonProgressBar,
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 import Store from "../store";
-import { Plugins } from "@capacitor/core";
-const { TextToSpeech } = Plugins;
+
+import { TextToSpeech } from "@ionic-native/text-to-speech";
 
 export default defineComponent({
   name: "Home",
   data() {
-    return {};
+    return {
+      readingSpeed: "",
+    };
   },
   mounted() {
     this.store.setPages();
-    console.log("Plugins", Plugins);
-    console.log("TextToSpeech", TextToSpeech);
-    document.addEventListener("deviceready", () => {
-      console.log("Navigator", navigator);
-      console.log("Navigator", navigator);
-    });
   },
   computed: {
     store() {
@@ -116,20 +140,16 @@ export default defineComponent({
   },
   methods: {
     speak(text) {
-      TextToSpeech.speak(text)
+      TextToSpeech.speak({
+        text: text,
+        locale: "en-GB",
+        rate: this.readingSpeed / 100,
+      })
         .then(() => console.log("Success Speach"))
         .catch((reason) => console.log(reason));
     },
-    printComputedPages() {
-      console.log(this.store.pages.value);
-    },
-    printPages() {
-      console.log(window.cordova, window.cordova.plugins);
-    },
-    fetchPages() {
-      this.store.fetchPages().catch((error) => {
-        console.log(error);
-      });
+    print() {
+      console.log(this.readingSpeed / 100);
     },
   },
   components: {
@@ -149,6 +169,10 @@ export default defineComponent({
     IonRow,
     IonCol,
     IonText,
+    IonItem,
+    IonRange,
+    IonLabel,
+    IonProgressBar,
   },
 });
 </script>

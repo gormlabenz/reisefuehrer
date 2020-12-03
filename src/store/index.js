@@ -1,12 +1,13 @@
 import { reactive, computed } from "vue";
 import { Plugins } from "@capacitor/core";
+import axios from "axios";
 const { Geolocation } = Plugins;
 /* const WikiJS = require("wikipedia"); */
 const wtf = require("wtf_wikipedia");
 
 const state = reactive({
   position: "",
-  pages: [],
+  pages: {},
   loading: false,
 });
 
@@ -23,7 +24,6 @@ export default function Store() {
   }
 
   /* Position */
-
   async function fetchPosition() {
     const coordinates = await Geolocation.getCurrentPosition();
     const data = await coordinates;
@@ -35,55 +35,33 @@ export default function Store() {
   };
 
   /* Pages */
-
-  const pushPage = (page) => {
-    state.pages.push(page);
+  const pushPage = (key, value) => {
+    state.pages[key] = value;
   };
 
-  /* async function fetchPage(title) {
-    console.log("title", title);
-    const page = await WikiJS.page(title).catch((error) => {
-      console.log("WikiJS page error", error);
-    });
+  function togglePageLoading(pageID) {
+    state.pages[pageID].loading = !state.pages[pageID].loading;
+    console.log("loading ", state.pages[pageID].loading);
+  }
 
-    const summary = page.summary();
-    const mainImage = page.mainImage();
-    const info = page.fullInfo();
-    const url = page.url();
-
-    const values = await Promise.all([summary, mainImage, info, url]).catch(
-      (error) => {
-        console.log("Promise.all error", error);
-      }
-    ); 
-
-
-
-    const result = {
-      summary: values[0],
-      mainImage: values[1],
-      info: values[2],
-      url: values[3],
-    };
-
-    console.log("fetched page");
-    return result;
-  }*/
   async function fetchPage(title) {
     let doc = await wtf.fetch(title).catch((error) => {
       console.log("WTF page error", error);
     });
-
-    const summary = doc.text();
+    const data = doc.json();
+    const pageID = data.pageID;
+    const summary = doc.section(0).text();
     const mainImage = doc.images(0).json();
-    //const info = page.fullInfo();
-    //const url = page.url();
+    let loading = false;
 
     const values = await Promise.all([summary, mainImage]).catch((error) => {
       console.log("Promise.all error", error);
     });
 
     const result = {
+      title,
+      pageID,
+      loading,
       summary: values[0],
       mainImage: values[1].thumb,
     };
@@ -121,17 +99,39 @@ export default function Store() {
       const pag = await fetchPage(page.title);
       pag["title"] = page.title;
       pag["dist"] = page.dist;
-      pushPage(pag);
+      pushPage(pag["pageID"], pag);
     }
+  }
+
+  /* Server */
+  async function getData(object) {
+    togglePageLoading(object.pageID);
+    const data = JSON.stringify(object);
+    console.log("Data", data);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:8000",
+      data: { data: data },
+    }).then(
+      (response) => {
+        console.log(response);
+        togglePageLoading(object.pageID);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   return {
     position: computed(() => state.position),
     pages: computed(() => state.pages),
+    pagesInfo: computed(() => typeof state.pages),
     loading: computed(() => state.loading),
     fetchPosition,
     fetchPages,
     setPages,
     intervalFetching,
+    getData,
   };
 }
