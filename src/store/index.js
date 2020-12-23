@@ -2,7 +2,6 @@ import { reactive, computed } from "vue";
 import { Plugins } from "@capacitor/core";
 import axios from "axios";
 const { Geolocation } = Plugins;
-/* const WikiJS = require("wikipedia"); */
 const wtf = require("wtf_wikipedia");
 
 const state = reactive({
@@ -31,11 +30,11 @@ export default function Store() {
   }
   const setPosition = (position) => {
     state.position = position;
-    console.log("set position");
   };
 
   /* Pages */
   const pushPage = (key, value) => {
+    // console.log("key", key, "value", value);
     state.pages[key] = value;
   };
 
@@ -44,29 +43,62 @@ export default function Store() {
     console.log("loading ", state.pages[pageID].loading);
   }
 
+  function setPageLink(pageID, link) {
+    state.pages[pageID].link = link;
+    console.log("set link ", link);
+  }
+
   async function fetchPage(title) {
-    let doc = await wtf.fetch(title).catch((error) => {
-      console.log("WTF page error", error);
+    return new Promise(function(resolve, reject) {
+      wtf
+        .fetch(title)
+        .then((response) => {
+          try {
+            const data = response.json();
+            const pageID = data.pageID;
+            const summary = response.section(0).text();
+            const mainImage = response.images(0).json();
+            let loading = false;
+
+            const result = {
+              
+              title,
+              pageID,
+              loading,
+              summary,
+              mainImage,
+            };
+
+            resolve(result);
+          } catch (error) {
+            reject(new Error(error));
+          }
+        })
+        .catch((error) => {
+          console.log("WTF page error", error);
+          reject(new Error(error));
+        });
     });
-    const data = doc.json();
-    const pageID = data.pageID;
-    const summary = doc.section(0).text();
-    const mainImage = doc.images(0).json();
-    let loading = false;
+  }
 
-    const values = await Promise.all([summary, mainImage]).catch((error) => {
-      console.log("Promise.all error", error);
+  async function fetchPageviews(title) {
+    let pageviews;
+    const currentYear = new Date().getFullYear();
+    const response = await fetch(
+      "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/" +
+        title +
+        "/monthly/" +
+        (currentYear - 1) +
+        "010100/" +
+        (currentYear - 1) +
+        "123100"
+    );
+    const json = await response.json();
+    json.items.forEach((item) => {
+      pageviews = +item.views;
     });
 
-    const result = {
-      title,
-      pageID,
-      loading,
-      summary: values[0],
-      mainImage: values[1].thumb,
-    };
-
-    return result;
+    return pageviews;
   }
 
   async function fetchPages(position) {
@@ -95,18 +127,42 @@ export default function Store() {
   async function setPages() {
     await fetchPosition();
     const pages = await fetchPages(state.position);
+    console.log(pages);
     for (let page of pages) {
-      const pag = await fetchPage(page.title);
-      pag["title"] = page.title;
-      pag["dist"] = page.dist;
-      pushPage(pag["pageID"], pag);
+      fetchPage(page.title)
+        .then((response) => {
+          response["title"] = page.title;
+          response["dist"] = page.dist;
+          fetchPageviews(page.title)
+            .then((pageviews) => {
+              response["pageviews"] = pageviews;
+            })
+            .catch((error) => {
+              console.log("pageview error", error);
+              response["pageviews"] = undefined;
+            });
+
+          /* const link = "http://localhost:8000/storys/" + page.pageid + ".wav";
+          fetch(link)
+            .then((response["link"] = link))
+            .catch(() => {
+              response["link"] = "";
+              console.log("Audio not generated yet", response["title"]);
+            }); */
+
+          pushPage(response["pageID"], response);
+        })
+        .catch((error) => {
+          console.warn(error);
+        });
     }
   }
 
   /* Server */
-  async function getData(object) {
-    togglePageLoading(object.pageID);
-    const data = JSON.stringify(object);
+  async function getData(page) {
+    const pageID = page.pageID;
+    togglePageLoading(pageID);
+    const data = JSON.stringify(page);
     console.log("Data", data);
     axios({
       method: "post",
@@ -115,7 +171,9 @@ export default function Store() {
     }).then(
       (response) => {
         console.log(response);
-        togglePageLoading(object.pageID);
+        const link = "http://localhost:8000/storys/" + page.pageID + ".wav";
+        setPageLink(pageID, link);
+        togglePageLoading(pageID);
       },
       (error) => {
         console.log(error);
@@ -126,12 +184,13 @@ export default function Store() {
   return {
     position: computed(() => state.position),
     pages: computed(() => state.pages),
-    pagesInfo: computed(() => typeof state.pages),
+    pagesInfo: computed(() => state.pages),
     loading: computed(() => state.loading),
     fetchPosition,
     fetchPages,
     setPages,
     intervalFetching,
     getData,
+    setPageLink,
   };
 }

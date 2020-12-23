@@ -34,6 +34,7 @@
         <ion-text color="primary">
           <h4>Debugging</h4>
         </ion-text>
+        <ion-button @click="print" color="secondary">Print</ion-button>
       </div>
 
       <ion-item>
@@ -56,7 +57,7 @@
 
       <div id="container">
         <ion-card
-          v-for="(page, index) in store.pages.value"
+          v-for="(page, index) in pages"
           :key="index"
           style="text-align: left"
         >
@@ -69,11 +70,18 @@
                 >Play</ion-button
               >
             </div>
-            <img style="width: 100%" :src="page.mainImage" alt="" />
+            <img style="width: 100%" :src="page.mainImage.thumb" alt="" />
             <ion-progress-bar
               v-if="page.loading"
               type="indeterminate"
             ></ion-progress-bar>
+            <!-- <audio controls>
+              <source
+                :src="'http://localhost:8000/storys/' + page.pageID + '.wav'"
+                type="audio/wav"
+              />
+              Your browser does not support the audio element.
+            </audio> -->
           </div>
           <ion-card-header>
             <ion-card-subtitle>{{ page.dist }} M</ion-card-subtitle>
@@ -133,6 +141,18 @@ export default defineComponent({
     },
     pages() {
       return Store().pages.value;
+      /*       let items = Object.keys(dict).map(function(key) {
+        return [key, dict[key]];
+      });
+      items.sort(function(first, second) {
+        return second[1].dist - first[1].dist;
+      });
+
+      const sorted_dict = {};
+
+      items.forEach((item) => (sorted_dict[item[0]] = item[1]));
+
+      return sorted_dict; */
     },
     position() {
       return Store().position.value;
@@ -149,7 +169,7 @@ export default defineComponent({
         .catch((reason) => console.log(reason));
     },
     print() {
-      console.log(this.readingSpeed / 100);
+      console.log(Store().pages.value);
     },
   },
   components: {
