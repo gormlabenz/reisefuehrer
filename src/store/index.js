@@ -58,15 +58,16 @@ export default function Store() {
             const pageID = data.pageID;
             const summary = response.section(0).text();
             const mainImage = response.images(0).json();
+            const categories = data.categories;
             let loading = false;
 
             const result = {
-              
               title,
               pageID,
               loading,
               summary,
               mainImage,
+              categories,
             };
 
             resolve(result);
@@ -133,6 +134,7 @@ export default function Store() {
         .then((response) => {
           response["title"] = page.title;
           response["dist"] = page.dist;
+
           fetchPageviews(page.title)
             .then((pageviews) => {
               response["pageviews"] = pageviews;

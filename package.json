@@ -13,6 +13,7 @@
     "open-ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios"
   },
   "dependencies": {
+    "@capacitor/android": "^2.4.3",
     "@capacitor/core": "2.4.3",
     "@capacitor/ios": "^2.4.3",
     "@ionic-native/core": "^5.30.0",
@@ -21,9 +22,11 @@
     "@ionic/vue": "^5.4.0",
     "@ionic/vue-router": "^5.4.0",
     "axios": "^0.21.0",
+    "clamp-js-main": "^0.11.6",
     "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-tts": "^0.2.3",
     "core-js": "^3.6.5",
+    "lottie-web": "^5.7.5",
     "pageviews": "^1.4.3",
     "vue": "^3.0.0-0",
     "vue-router": "^4.0.0-0",
@@ -38,7 +41,6 @@
     "@vue/cli-plugin-unit-jest": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0-0",
-    "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^2.0.0-0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",

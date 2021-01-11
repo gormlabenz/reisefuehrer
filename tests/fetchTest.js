@@ -2,7 +2,7 @@ const wtf = require("wtf_wikipedia");
 const axios = require("axios");
 
 async function fetchPage(title) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function(resolve, reject) {
     wtf
       .fetch(title)
       .then((response) => {
@@ -11,10 +11,10 @@ async function fetchPage(title) {
           const pageID = data.pageID;
           const summary = response.section(0).text();
           const mainImage = response.images(0).json();
-          const second_section = '';
+          const second_section = "";
           if (response.section(2)) {
             const second_section = response.section(2).text();
-          };
+          }
           let loading = false;
 
           const result = {
@@ -44,12 +44,12 @@ async function getData(page) {
   console.log("Data", data);
   axios({
     method: "post",
-    url: "http://127.0.0.1:8000",
-    data: { data },
+    url: "http://127.0.0.1:5000",
+    data,
   }).then(
     (response) => {
       console.log(response);
-      const link = "http://localhost:8000/storys/" + page.pageID + ".wav";
+      const link = "http://localhost:5000/storys/" + page.pageID + ".wav";
     },
     (error) => {
       console.log(error);
@@ -58,7 +58,7 @@ async function getData(page) {
 }
 
 async function main() {
-  page = await fetchPage("Rotterdam");
+  page = await fetchPage("Switzerland");
   getData(page);
 }
 

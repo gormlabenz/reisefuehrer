@@ -1,0 +1,42 @@
+ion-card {
+  box-shadow: 0 0 0 0;
+  background-color: transparent;
+}
+
+ion-img {
+  border-radius: 20px !important;
+  overflow: hidden;
+  object-fit: cover;
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+}
+
+.img-big {
+  width: 250;
+  height: 225;
+}
+
+.img-small {
+  width: 125;
+  height: 100;
+}
+
+.block {
+  width: auto;
+  height: 5px;
+  background-color: var(--ion-color-primary);
+}
+
+.small-icon {
+  --ionicon-stroke-width: 28px;
+}
+
+.large-icon {
+  --ionicon-stroke-width: 14px;
+  zoom: 2;
+}
