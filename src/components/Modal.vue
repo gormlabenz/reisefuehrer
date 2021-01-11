@@ -3,9 +3,7 @@
     <ion-toolbar>
       <ion-title>{{ title }}</ion-title>
       <ion-buttons slot="end">
-        <ion-button @click="$emit('dismissed-model')"
-          ><ion-icon :icon="arrowBackOutline"></ion-icon
-        ></ion-button>
+        <ion-button @click="$emit('dismissed-model')">Close</ion-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
@@ -15,7 +13,19 @@
     ></ion-img>
 
     <div class="ion-text-center ion-margin-top">
-      <ion-button shape="round" size="large" fill="clear">
+      <ion-progress-bar color="dark" value=".4"></ion-progress-bar>
+      <ion-grid>
+        <ion-row class="ion-justify-content-between">
+          <ion-card-subtitle>0.40</ion-card-subtitle>
+          <ion-card-subtitle class="light-text">1.40</ion-card-subtitle>
+        </ion-row>
+      </ion-grid>
+      <ion-button
+        class="ion-margin-top"
+        shape="round"
+        size="large"
+        fill="clear"
+      >
         <ion-icon
           class="small-icon"
           size="large"
@@ -42,7 +52,7 @@
       </ion-button>
     </div>
 
-    <ion-text class="ion-margin-start">
+    <div>
       <h1>Places Nearby</h1>
       <p>
         If you mean the size they actually appear on screen the icons are really
@@ -51,8 +61,8 @@
         grab another package of icons grouped as a font like @aluknot suggested.
         The glyphicon set that comes with bootstrap is another popular choice
         http://getbootstrap.com/components/ 1.8k
-      </p></ion-text
-    >
+      </p>
+    </div>
   </ion-content>
 </template>
 
@@ -65,6 +75,10 @@ import {
   IonButton,
   IonIcon,
   IonImg,
+  IonProgressBar,
+  IonCardSubtitle,
+  IonGrid,
+  IonRow,
 } from "@ionic/vue";
 
 import {
@@ -98,6 +112,10 @@ export default defineComponent({
     IonButton,
     IonImg,
     IonIcon,
+    IonProgressBar,
+    IonCardSubtitle,
+    IonGrid,
+    IonRow,
   },
 });
 </script>
@@ -114,5 +132,10 @@ ion-icon {
 .large-icon {
   --ionicon-stroke-width: 18px;
   zoom: 2;
+}
+
+.text-light {
+  color: red;
+  background-color: turquoise;
 }
 </style>

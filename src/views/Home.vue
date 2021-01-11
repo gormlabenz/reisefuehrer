@@ -14,23 +14,21 @@
     >
       <ion-header class="ion-no-border" collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">Play Now</ion-title>
+          <ion-title size="large">Listen Now</ion-title>
         </ion-toolbar>
       </ion-header>
 
-      <ion-grid>
+      <ion-grid class="ion-padding">
         <ion-row class="ion-justify-content-between ion-align-items-start">
-          <ion-col size="8" class="ion-margin-start">
-            <ion-text>
-              <h1>Autoplay</h1>
-              <p>
-                Whenever you come across a point of interest, an interisting
-                audio clip is playing.
-              </p>
-            </ion-text>
+          <ion-col size="8">
+            <h1>Autoplay</h1>
+            <p>
+              Whenever you come across a point of interest, an interisting audio
+              clip is playing.
+            </p>
           </ion-col>
 
-          <ion-col size="3" class="ion-margin-top ion-text-end">
+          <ion-col size="4" class="ion-text-end">
             <div style="width: 100%"></div>
             <ion-button shape="round" size="large" fill="clear">
               <ion-icon
@@ -197,27 +195,21 @@
     </ion-modal>
 
     <ion-footer @click="modal = true">
-      <ion-toolbar>
-        <ion-buttons class="small-icon " slot="end">
-          <ion-button shape="round" size="large" fill="clear">
+      <ion-toolbar class="footer">
+        <ion-buttons class="small-icon" slot="end">
+          <ion-button shape="round" fill="clear">
             <ion-icon
               class="small-icon"
-              size="large"
               slot="icon-only"
               :icon="icons.playSkipBackOutline"
             ></ion-icon>
           </ion-button>
 
-          <ion-button shape="round" size="large" fill="clear">
-            <ion-icon
-              size="large"
-              slot="icon-only"
-              :icon="icons.playOutline"
-            ></ion-icon>
+          <ion-button shape="round" fill="clear">
+            <ion-icon slot="icon-only" :icon="icons.playOutline"></ion-icon>
           </ion-button>
-          <ion-button shape="round" size="large" fill="clear">
+          <ion-button shape="round" fill="clear">
             <ion-icon
-              size="large"
               slot="icon-only"
               :icon="icons.playSkipForwardOutline"
             ></ion-icon>
@@ -230,7 +222,7 @@
             src="https://wikipedia.org/wiki/Special:Redirect/file/U-Bahnhof_Gro%C3%9Fhansdorf_4.jpg?width=300"
           ></ion-img
         ></ion-buttons>
-        <ion-title>Tempelhof</ion-title>
+        <ion-title slot="start">Tempelhof</ion-title>
       </ion-toolbar>
     </ion-footer>
   </ion-page>
@@ -351,7 +343,13 @@ export default defineComponent({
       console.log(this.scrollY);
     },
     stopAndPlay(scrollPos) {
-      this.landschaft.goToAndStop(scrollPos * 50);
+      if (scrollPos < 0) {
+        scrollPos = 0;
+      }
+      if (scrollPos > 200) {
+        scrollPos = 200;
+      }
+      this.landschaft.goToAndStop(scrollPos * 25);
     },
   },
   components: {
@@ -407,5 +405,9 @@ ion-icon {
 .large-icon {
   --ionicon-stroke-width: 14px;
   zoom: 2;
+}
+
+.footer {
+  --min-height: 64px;
 }
 </style>

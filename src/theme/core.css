@@ -11,6 +11,10 @@ ion-img {
   filter: grayscale(100%);
 }
 
+ion-grid {
+  --ion-grid-padding: 0px;
+}
+
 ::-webkit-scrollbar,
 *::-webkit-scrollbar {
   display: none;
