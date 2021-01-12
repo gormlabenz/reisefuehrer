@@ -346,8 +346,8 @@ export default defineComponent({
       if (scrollPos < 0) {
         scrollPos = 0;
       }
-      if (scrollPos > 200) {
-        scrollPos = 200;
+      if (scrollPos > 160) {
+        scrollPos = 160;
       }
       this.landschaft.goToAndStop(scrollPos * 25);
     },
