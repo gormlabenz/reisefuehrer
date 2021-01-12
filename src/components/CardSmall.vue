@@ -9,9 +9,10 @@
         <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>
         <div class="block"></div>
       </div>
-      <ion-card-title class="ion-text-wrap"
+      <ion-card-title class="ion-text-nowrap" style="text-overflow: ellipsis;"
         ><slot name="title"></slot
       ></ion-card-title>
+      <slot name="content"></slot>
     </div>
   </ion-card>
 </template>
@@ -28,9 +29,15 @@ import {
   IonRow,
   IonCol,
 } from "@ionic/vue";
+import { TextStore } from "../store/text.js";
 
 export default {
   props: { img: String },
+  computed: {
+    TextStore() {
+      return TextStore();
+    },
+  },
   components: {
     IonCard,
     IonImg,

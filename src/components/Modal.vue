@@ -37,7 +37,8 @@
           </ion-button>
 
           <ion-button
-            @click="trackStore.play()"
+            v-if="!audioPlaying"
+            @click="play"
             shape="round"
             size="large"
             fill="clear"
@@ -49,8 +50,22 @@
               :icon="playCircleOutline"
             ></ion-icon>
           </ion-button>
+          <ion-button
+            v-else
+            @click="pause"
+            shape="round"
+            size="large"
+            fill="clear"
+          >
+            <ion-icon
+              class="icon-large"
+              size="large"
+              slot="icon-only"
+              :icon="pauseCircleOutline"
+            ></ion-icon>
+          </ion-button>
 
-          <ion-button shape="round" size="small" fill="clear">
+          <ion-button @click="skip" shape="round" size="small" fill="clear">
             <ion-icon
               class="icon-small"
               size="small"
@@ -95,6 +110,7 @@ import {
 
 import {
   playCircleOutline,
+  pauseCircleOutline,
   playSkipBackOutline,
   playSkipForwardOutline,
   arrowBackOutline,
@@ -112,9 +128,13 @@ export default defineComponent({
       playSkipBackOutline,
       playSkipForwardOutline,
       arrowBackOutline,
+      pauseCircleOutline,
     };
   },
   computed: {
+    audioPlaying() {
+      return TrackStore().audioPlaying.value;
+    },
     TrackStore() {
       return TrackStore();
     },
@@ -127,11 +147,23 @@ export default defineComponent({
     serverUrl() {
       return TrackStore().serverUrl.value;
     },
+    audio() {
+      return TrackStore().audio.value;
+    },
   },
   methods: {
     play() {
-      const audio = document.getElementById("audio");
-      this.TrackStore.play(audio);
+      /* const audio = document.getElementById("audio");
+      this.TrackStore.play(audio); */
+      this.TrackStore.play(document);
+    },
+    pause() {
+      this.TrackStore.pause();
+    },
+    skip() {
+      console.log("duration", this.audio.duration);
+      console.log("paused", this.audio.paused);
+      console.log("audioPlaying", this.audioPlaying);
     },
   },
   components: {

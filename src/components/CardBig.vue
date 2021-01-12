@@ -8,7 +8,9 @@
           <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>
           <div class="block"></div>
         </div>
-        <ion-card-title><slot name="title"></slot></ion-card-title>
+        <ion-card-title class="ion-text-nowrap" style="text-overflow: ellipsis;"
+          ><slot name="title"></slot
+        ></ion-card-title>
       </div>
 
       <slot name="content"></slot>

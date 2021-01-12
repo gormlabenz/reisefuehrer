@@ -84,7 +84,9 @@
               <template v-slot:title>{{
                 page.title.replace(/\(.*?\)/, "")
               }}</template>
-              <template v-slot:content>{{ page.summary }}</template>
+              <template v-slot:content>{{
+                truncate(page.summary, 36, true)
+              }}</template>
             </card-small>
             <card-small
               :img="page.mainImage.thumb"
@@ -95,7 +97,9 @@
               <template v-slot:title>{{
                 page.title.replace(/\(.*?\)/, "")
               }}</template>
-              <template v-slot:content>{{ page.summary }}</template>
+              <template v-slot:content>{{
+                truncate(page.summary, 36, true)
+              }}</template>
             </card-small>
             <card-small
               :img="page.mainImage.thumb"
@@ -106,7 +110,9 @@
               <template v-slot:title>{{
                 page.title.replace(/\(.*?\)/, "")
               }}</template>
-              <template v-slot:content>{{ page.summary }}</template>
+              <template v-slot:content>{{
+                truncate(page.summary, 36, true)
+              }}</template>
             </card-small>
           </ion-col>
         </ion-row>
@@ -134,9 +140,18 @@
             ></ion-icon>
           </ion-button>
 
-          <ion-button shape="round" fill="clear" @click="play">
+          <ion-button
+            v-if="!audioPlaying"
+            shape="round"
+            fill="clear"
+            @click="play"
+          >
             <ion-icon slot="icon-only" :icon="icons.playOutline"></ion-icon>
           </ion-button>
+          <ion-button v-else shape="round" fill="clear" @click="play">
+            <ion-icon slot="icon-only" :icon="icons.pauseOutline"></ion-icon>
+          </ion-button>
+
           <ion-button shape="round" fill="clear">
             <ion-icon
               slot="icon-only"
@@ -205,6 +220,7 @@ import landschaft from "../assets/landschaft.json";
 import {
   playCircleOutline,
   playOutline,
+  pauseOutline,
   playSkipBackOutline,
   playSkipForwardOutline,
   arrowBackOutline,
@@ -223,6 +239,7 @@ export default defineComponent({
         playCircleOutline,
         playSkipBackOutline,
         playOutline,
+        pauseOutline,
         playSkipForwardOutline,
         arrowBackOutline,
       },
@@ -250,6 +267,9 @@ export default defineComponent({
     },
     track() {
       return TrackStore().track.value;
+    },
+    audioPlaying() {
+      return TrackStore().audioPlaying.value;
     },
     serverUrl() {
       return TrackStore().serverUrl.value;
@@ -305,14 +325,10 @@ export default defineComponent({
       this.trackStore.setTrack(pageID);
     },
     play() {
-      var myAudio = document.createElement("audio");
-      console.log(this.serverUrl + "/storys/" + this.track.pageID + ".wav");
-      myAudio.setAttribute(
-        "src",
-        this.serverUrl + "/storys/" + this.track.pageID + ".wav"
-      );
-
-      this.trackStore.play(myAudio);
+      this.trackStore.play(document);
+    },
+    pause() {
+      this.trackStore.pause();
     },
   },
   components: {

@@ -5,7 +5,8 @@ import axios from "axios";
 const state = reactive({
   settedTrack: null,
   trackLoading: false,
-  serverUrl: "http://127.0.0.1:5000",
+  audio: null,
+  serverUrl: "http://192.168.1.5:5000",
 });
 
 export default function TrackStore() {
@@ -14,6 +15,22 @@ export default function TrackStore() {
     state.settedTrack = Store().pages.value[pageID];
     console.log("track", Store().pages.value[pageID]);
   }
+
+  async function setAudio(audio) {
+    state.audio = audio;
+  }
+
+  const audioPlaying = computed(() => {
+    if (state.audio) {
+      if (!state.audio.paused) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  });
 
   const track = computed(() => {
     if (!state.settedTrack) {
@@ -53,18 +70,33 @@ export default function TrackStore() {
 
   /* Audio Controlls */
 
-  async function play(audio) {
+  async function play(document) {
+    if (!state.audio) {
+      var audio = document.createElement("audio");
+      setAudio(audio);
+    }
+    state.audio.setAttribute(
+      "src",
+      state.serverUrl + "/storys/" + track.value.pageID + ".wav"
+    );
     fetchTrack().then(() => {
-      audio.play();
+      state.audio.play().then;
     });
+  }
+
+  async function pause() {
+    state.audio.pause();
   }
 
   return {
     track,
     setTrack,
     play,
+    pause,
     fetchTrack,
+    audioPlaying,
     trackLoading: computed(() => state.trackLoading),
+    audio: computed(() => state.audio),
     serverUrl: computed(() => state.serverUrl),
   };
 }
