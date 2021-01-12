@@ -1,17 +1,18 @@
 <template>
-  <ion-card>
-    <ion-img :src="img"></ion-img>
+  <ion-card style="margin-right: 0px">
+    <ion-img @click="$emit('click-image')" :src="img"></ion-img>
 
-    <ion-card-header>
-      <div style="display:inline-block">
-        <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>
-        <div class="block"></div>
+    <div class="ion-padding" @click="$emit('click-text')">
+      <div>
+        <div style="display:inline-block">
+          <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>
+          <div class="block"></div>
+        </div>
+        <ion-card-title><slot name="title"></slot></ion-card-title>
       </div>
-      <ion-card-title><slot name="title"></slot></ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
+
       <slot name="content"></slot>
-    </ion-card-content>
+    </div>
   </ion-card>
 </template>
 

@@ -1,18 +1,17 @@
 <template>
-  <ion-card class="container">
-    <ion-img :src="img"></ion-img>
+  <ion-card class="container ion-margin-bottom">
+    <div @click="$emit('click-image')">
+      <ion-img :src="img"></ion-img>
+    </div>
 
-    <div>
-      <ion-card-header>
-        <div style="display:inline-block">
-          <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>
-          <div class="block"></div>
-        </div>
-        <ion-card-title><slot name="title"></slot></ion-card-title>
-      </ion-card-header>
-      <!-- <ion-card-content>
-        <slot name="content"></slot>
-      </ion-card-content> -->
+    <div @click="$emit('click-text')" class="ion-margin-horizontal">
+      <div style="display:inline-block">
+        <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>
+        <div class="block"></div>
+      </div>
+      <ion-card-title class="ion-text-wrap"
+        ><slot name="title"></slot
+      ></ion-card-title>
     </div>
   </ion-card>
 </template>
@@ -54,6 +53,7 @@ ion-img {
 }
 
 .container {
+  width: 350px;
   display: flex;
   flex-direction: row;
   align-items: flex-end;

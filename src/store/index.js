@@ -125,36 +125,6 @@ export default function Store() {
     return values.query.geosearch;
   }
 
-  const sortedPages = computed(() => {
-    const dist = [];
-
-    const pages = state.pages;
-
-    for (let page in pages) {
-      dist.push(pages[page].dist);
-    }
-
-    dist.sort(function(a, b) {
-      return a - b;
-    });
-
-    const sortedPages = [];
-
-    for (let dis in dist) {
-      for (let page in pages) {
-        console.log("page", pages[page]);
-        console.log("page dist", pages[page].dist);
-        console.log("dist", dis);
-        if (dist[dis] == pages[page].dist) {
-          sortedPages.push(pages[page]);
-        }
-      }
-    }
-    console.log("dist", dist);
-    console.log(sortedPages);
-    return sortedPages;
-  });
-
   async function setPages() {
     await fetchPosition();
     const pages = await fetchPages(state.position);
@@ -213,9 +183,39 @@ export default function Store() {
     );
   }
 
+  /* Sorted Pages */
+
+  const sortedPages = computed(() => {
+    const dist = [];
+
+    const pages = state.pages;
+
+    for (let page in pages) {
+      dist.push(pages[page].dist);
+    }
+
+    dist.sort(function(a, b) {
+      return a - b;
+    });
+
+    const sortedPages = [];
+
+    for (let dis in dist) {
+      for (let page in pages) {
+        if (dist[dis] == pages[page].dist) {
+          sortedPages.push(pages[page]);
+        }
+      }
+    }
+
+    return sortedPages;
+  });
+
   return {
     position: computed(() => state.position),
-    pages: sortedPages,
+    pages: computed(() => state.pages),
+    sortedPages,
+    nearestPage: computed(() => sortedPages.value[0]),
     pagesInfo: computed(() => state.pages),
     loading: computed(() => state.loading),
     fetchPosition,

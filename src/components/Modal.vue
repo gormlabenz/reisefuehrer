@@ -1,7 +1,7 @@
 <template>
   <ion-header>
     <ion-toolbar>
-      <ion-title>{{ title }}</ion-title>
+      <ion-title>{{ track.title.replace(/\(.*?\)/, "") }}</ion-title>
       <ion-buttons slot="end">
         <ion-button @click="$emit('dismissed-model')">Close</ion-button>
       </ion-buttons>
@@ -10,16 +10,15 @@
   <ion-content class="ion-padding">
     <div class="ion-text-center ion-margin-top">
       <ion-grid>
-        <img
-          src="https://wikipedia.org/wiki/Special:Redirect/file/U-Bahnhof_Gro%C3%9Fhansdorf_4.jpg?width=300"
-        />
+        <img :src="track.mainImage.url" />
 
-        <ion-row>
+        <ion-row class="ion-margin-top">
           <ion-progress-bar
-            class="ion-margin-top"
+            v-if="trackLoading"
             color="dark"
-            value=".4"
+            type="indeterminate"
           ></ion-progress-bar>
+          <ion-progress-bar v-else color="dark" value=".4"></ion-progress-bar>
         </ion-row>
 
         <ion-row class="ion-justify-content-between">
@@ -59,26 +58,23 @@
     </div>
 
     <div>
-      <h1>Places Nearby</h1>
+      <h1>{{ track.title }}</h1>
       <p>
-        If you mean the size they actually appear on screen the icons are really
-        just a font. Increase the font size on your icon and it will get bigger.
-        If you want new and different icons, you can use any svg format icon or
-        grab another package of icons grouped as a font like @aluknot suggested.
-        The glyphicon set that comes with bootstrap is another popular choice
-        http://getbootstrap.com/components/ 1.8k
+        {{ track.summary }}
       </p>
     </div>
   </ion-content>
 </template>
 
 <script>
+import TrackStore from "../store/track.js";
 import {
   IonContent,
   IonHeader,
   IonTitle,
   IonToolbar,
   IonButton,
+  IonButtons,
   IonIcon,
   IonImg,
   IonProgressBar,
@@ -98,9 +94,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Modal",
-  props: {
-    title: { type: String, default: "Super Modal" },
-  },
+  props: {},
   data() {
     return {
       content: "Content",
@@ -110,12 +104,21 @@ export default defineComponent({
       arrowBackOutline,
     };
   },
+  computed: {
+    trackLoading() {
+      return TrackStore().trackLoading.value;
+    },
+    track() {
+      return TrackStore().track.value;
+    },
+  },
   components: {
     IonContent,
     IonHeader,
     IonTitle,
     IonToolbar,
     IonButton,
+    IonButtons,
     IonImg,
     IonIcon,
     IonProgressBar,

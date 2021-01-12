@@ -24,17 +24,16 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-toolbar class="ion-margin">
+      <ion-toolbar>
         <ion-text>
-          <h1>Autoplay</h1>
-          <p style="width: 66%">
+          <h1 class="ion-margin-start">Autoplay</h1>
+          <p class="ion-margin-start" style="width: 66%">
             Whenever you come across a point of interest, an interisting audio
             clip is playing.
           </p>
         </ion-text>
+        <div id="landschaft"></div>
       </ion-toolbar>
-
-      <div style="margin-top: -25px;" id="landschaft"></div>
 
       <ion-toolbar class="bottom-divider">
         <ion-text>
@@ -44,17 +43,21 @@
 
       <ion-grid>
         <ion-row
-          class="ion-nowrap ion-align-items-start"
+          class="ion-nowrap ion-align-items-start ion-padding-end"
           style="overflow-x: scroll;"
         >
           <ion-col v-for="(page, index) in pages" :key="index">
-            <card-big :img="page.mainImage.thumb">
+            <card-big
+              :img="page.mainImage.thumb"
+              @click-text="setAndOpenModal(page.pageID)"
+              @click-image="setAndPlayTrack(page.pageID)"
+            >
               <template v-slot:subtitle>{{ page.dist + "M" }}</template>
               <template v-slot:title>{{
                 page.title.replace(/\(.*?\)/, "")
               }}</template>
               <template v-slot:content>{{
-                truncate(page.summary, 64, true)
+                truncate(page.summary, 54, true)
               }}</template>
             </card-big>
           </ion-col>
@@ -72,21 +75,33 @@
           style="overflow-x: scroll;"
         >
           <ion-col v-for="(page, index) in pages" :key="index">
-            <card-small :img="page.mainImage.thumb">
+            <card-small
+              :img="page.mainImage.thumb"
+              @click-text="setAndOpenModal(page.pageID)"
+              @click-image="setAndPlayTrack(page.pageID)"
+            >
               <template v-slot:subtitle>{{ page.dist + "M" }}</template>
               <template v-slot:title>{{
                 page.title.replace(/\(.*?\)/, "")
               }}</template>
               <template v-slot:content>{{ page.summary }}</template>
             </card-small>
-            <card-small :img="page.mainImage.thumb">
+            <card-small
+              :img="page.mainImage.thumb"
+              @click-text="setAndOpenModal(page.pageID)"
+              @click-image="setAndPlayTrack(page.pageID)"
+            >
               <template v-slot:subtitle>{{ page.dist + "M" }}</template>
               <template v-slot:title>{{
                 page.title.replace(/\(.*?\)/, "")
               }}</template>
               <template v-slot:content>{{ page.summary }}</template>
             </card-small>
-            <card-small :img="page.mainImage.thumb">
+            <card-small
+              :img="page.mainImage.thumb"
+              @click-text="setAndOpenModal(page.pageID)"
+              @click-image="setAndPlayTrack(page.pageID)"
+            >
               <template v-slot:subtitle>{{ page.dist + "M" }}</template>
               <template v-slot:title>{{
                 page.title.replace(/\(.*?\)/, "")
@@ -183,10 +198,17 @@
     </ion-content>
 
     <ion-modal :is-open="modal" css-class="my-custom-class">
-      <Modal :swipe-to-close="true" @dismissed-model="modal = false"></Modal>
+      <Modal :swipe-to-close="true" @dismissed-model="modal = false"> </Modal>
     </ion-modal>
 
-    <ion-footer @click="modal = true">
+    <ion-footer v-if="track" @click="modal = true">
+      <ion-progress-bar
+        v-if="trackLoading"
+        color="dark"
+        type="indeterminate"
+      ></ion-progress-bar>
+      <ion-progress-bar v-else color="dark" value=".4"></ion-progress-bar>
+
       <ion-toolbar class="footer">
         <ion-buttons class="icon-small" slot="end">
           <ion-button shape="round" fill="clear">
@@ -210,10 +232,12 @@
           <ion-img
             class="ion-margin-start"
             style="width:36px; height:36px"
-            src="https://wikipedia.org/wiki/Special:Redirect/file/U-Bahnhof_Gro%C3%9Fhansdorf_4.jpg?width=300"
+            :src="track.mainImage.thumb"
           ></ion-img
         ></ion-buttons>
-        <ion-title slot="start">Tempelhof</ion-title>
+        <ion-title slot="start">{{
+          track.title.replace(/\(.*?\)/, "")
+        }}</ion-title>
       </ion-toolbar>
     </ion-footer>
   </ion-page>
@@ -257,6 +281,7 @@ import Modal from "../components/Modal.vue";
 
 import { defineComponent } from "vue";
 import Store from "../store";
+import TrackStore from "../store/track.js";
 
 import lottie from "lottie-web";
 import landschaft from "../assets/landschaft.json";
@@ -276,8 +301,8 @@ export default defineComponent({
   data() {
     return {
       readingSpeed: "",
-      modal: false,
       landschaft: null,
+      modal: false,
       icons: {
         playCircleOutline,
         playSkipBackOutline,
@@ -301,8 +326,17 @@ export default defineComponent({
     store() {
       return Store();
     },
+    trackStore() {
+      return TrackStore();
+    },
+    trackLoading() {
+      return TrackStore().trackLoading.value;
+    },
+    track() {
+      return TrackStore().track.value;
+    },
     pages() {
-      return Store().pages.value;
+      return Store().sortedPages.value;
     },
     position() {
       return Store().position.value;
@@ -343,6 +377,13 @@ export default defineComponent({
         scrollPos = 160;
       }
       this.landschaft.goToAndStop(scrollPos * 25);
+    },
+    setAndOpenModal(pageID) {
+      this.trackStore.setTrack(pageID);
+      this.modal = true;
+    },
+    setAndPlayTrack(pageID) {
+      this.trackStore.setTrack(pageID);
     },
   },
   components: {
@@ -398,5 +439,6 @@ ion-icon {
 
 .footer {
   --min-height: 64px;
+  --border-style: none;
 }
 </style>
