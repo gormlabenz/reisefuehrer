@@ -5,6 +5,7 @@ import axios from "axios";
 const state = reactive({
   settedTrack: null,
   trackLoading: false,
+  serverUrl: "http://127.0.0.1:5000",
 });
 
 export default function TrackStore() {
@@ -33,7 +34,7 @@ export default function TrackStore() {
     console.log("Data", data);
     axios({
       method: "post",
-      url: "http://127.0.0.1:5000",
+      url: state.serverUrl,
       data,
     })
       .then(
@@ -50,10 +51,20 @@ export default function TrackStore() {
       });
   }
 
+  /* Audio Controlls */
+
+  async function play(audio) {
+    fetchTrack().then(() => {
+      audio.play();
+    });
+  }
+
   return {
     track,
     setTrack,
+    play,
     fetchTrack,
     trackLoading: computed(() => state.trackLoading),
+    serverUrl: computed(() => state.serverUrl),
   };
 }

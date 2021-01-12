@@ -111,90 +111,6 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-      <!-- 
-      <div>
-        <div class="ion-margin">
-          <ion-grid v-if="position">
-            <ion-row>
-              <ion-col>
-                <ion-card-subtitle>Latitude</ion-card-subtitle>
-                <ion-card-title>{{
-                  position.latitude.toFixed(3)
-                }}</ion-card-title>
-              </ion-col>
-              <ion-col>
-                <ion-card-subtitle>Longitude</ion-card-subtitle>
-                <ion-card-title>{{
-                  position.longitude.toFixed(3)
-                }}</ion-card-title>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-  
-          <ion-text color="primary">
-            <h4>Debugging</h4>
-          </ion-text>
-          <ion-button @click="print" color="secondary">Print</ion-button>
-        </div>
-  
-        <ion-item>
-          <ion-text color="primary">
-            <h4>Reading Speed</h4>
-          </ion-text>
-        </ion-item>
-        <ion-item>
-          <ion-range
-            v-model="readingSpeed"
-            @click="print"
-            min="100"
-            max="200"
-            color="secondary"
-          >
-            <ion-label slot="start">0</ion-label>
-            <ion-label slot="end">1</ion-label>
-          </ion-range>
-        </ion-item>
-  
-        <div id="container">
-          <ion-card
-            v-for="(page, index) in pages"
-            :key="index"
-            style="text-align: left"
-          >
-            <div style="width: 100%; display: block">
-              <div style="margin: 16px; position:absolute">
-                <ion-button @click="store.getData(page)" color="medium"
-                  >Request</ion-button
-                >
-                <ion-button @click="speak(page.summary)" color="secondary"
-                  >Play</ion-button
-                >
-              </div>
-              <img style="width: 100%" :src="page.mainImage.thumb" alt="" />
-              <ion-progress-bar
-                v-if="page.loading"
-                type="indeterminate"
-              ></ion-progress-bar>
-              <audio controls>
-                <source
-                  :src="'http://localhost:8000/storys/' + page.pageID + '.wav'"
-                  type="audio/wav"
-                />
-                Your browser does not support the audio element.
-              </audio> 
-            </div>
-            <ion-card-header>
-              <ion-card-subtitle>{{ page.dist }} M</ion-card-subtitle>
-              <ion-card-title>{{ page.title }}</ion-card-title>
-            </ion-card-header>
-  
-            <ion-card-content>
-              {{ page.summary }}
-            </ion-card-content>
-          </ion-card>
-        </div>
-      </div>
-       -->
     </ion-content>
 
     <ion-modal :is-open="modal" css-class="my-custom-class">
@@ -218,7 +134,7 @@
             ></ion-icon>
           </ion-button>
 
-          <ion-button shape="round" fill="clear">
+          <ion-button shape="round" fill="clear" @click="play">
             <ion-icon slot="icon-only" :icon="icons.playOutline"></ion-icon>
           </ion-button>
           <ion-button shape="round" fill="clear">
@@ -335,6 +251,9 @@ export default defineComponent({
     track() {
       return TrackStore().track.value;
     },
+    serverUrl() {
+      return TrackStore().serverUrl.value;
+    },
     pages() {
       return Store().sortedPages.value;
     },
@@ -384,6 +303,16 @@ export default defineComponent({
     },
     setAndPlayTrack(pageID) {
       this.trackStore.setTrack(pageID);
+    },
+    play() {
+      var myAudio = document.createElement("audio");
+      console.log(this.serverUrl + "/storys/" + this.track.pageID + ".wav");
+      myAudio.setAttribute(
+        "src",
+        this.serverUrl + "/storys/" + this.track.pageID + ".wav"
+      );
+
+      this.trackStore.play(myAudio);
     },
   },
   components: {

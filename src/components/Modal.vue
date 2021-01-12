@@ -36,7 +36,12 @@
             ></ion-icon>
           </ion-button>
 
-          <ion-button shape="round" size="large" fill="clear">
+          <ion-button
+            @click="trackStore.play()"
+            shape="round"
+            size="large"
+            fill="clear"
+          >
             <ion-icon
               class="icon-large"
               size="large"
@@ -63,6 +68,11 @@
         {{ track.summary }}
       </p>
     </div>
+    <audio
+      id="audio"
+      class="ion-hide"
+      :src="serverUrl + track.pageID + '.wav'"
+    ></audio>
   </ion-content>
 </template>
 
@@ -105,11 +115,23 @@ export default defineComponent({
     };
   },
   computed: {
+    TrackStore() {
+      return TrackStore();
+    },
     trackLoading() {
       return TrackStore().trackLoading.value;
     },
     track() {
       return TrackStore().track.value;
+    },
+    serverUrl() {
+      return TrackStore().serverUrl.value;
+    },
+  },
+  methods: {
+    play() {
+      const audio = document.getElementById("audio");
+      this.TrackStore.play(audio);
     },
   },
   components: {
