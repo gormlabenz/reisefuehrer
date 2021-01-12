@@ -8,48 +8,54 @@
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">
-    <ion-img
-      src="https://wikipedia.org/wiki/Special:Redirect/file/U-Bahnhof_Gro%C3%9Fhansdorf_4.jpg?width=300"
-    ></ion-img>
-
     <div class="ion-text-center ion-margin-top">
-      <ion-progress-bar color="dark" value=".4"></ion-progress-bar>
       <ion-grid>
+        <img
+          src="https://wikipedia.org/wiki/Special:Redirect/file/U-Bahnhof_Gro%C3%9Fhansdorf_4.jpg?width=300"
+        />
+
+        <ion-row>
+          <ion-progress-bar
+            class="ion-margin-top"
+            color="dark"
+            value=".4"
+          ></ion-progress-bar>
+        </ion-row>
+
         <ion-row class="ion-justify-content-between">
           <ion-card-subtitle>0.40</ion-card-subtitle>
           <ion-card-subtitle class="light-text">1.40</ion-card-subtitle>
         </ion-row>
-      </ion-grid>
-      <ion-button
-        class="ion-margin-top"
-        shape="round"
-        size="large"
-        fill="clear"
-      >
-        <ion-icon
-          class="small-icon"
-          size="large"
-          slot="icon-only"
-          :icon="playSkipBackOutline"
-        ></ion-icon>
-      </ion-button>
 
-      <ion-button shape="round" size="large" fill="clear">
-        <ion-icon
-          class="large-icon"
-          size="large"
-          slot="icon-only"
-          :icon="playCircleOutline"
-        ></ion-icon>
-      </ion-button>
-      <ion-button shape="round" size="large" fill="clear">
-        <ion-icon
-          class="small-icon"
-          size="large"
-          slot="icon-only"
-          :icon="playSkipForwardOutline"
-        ></ion-icon>
-      </ion-button>
+        <ion-row class="ion-justify-content-center ion-align-items-center">
+          <ion-button shape="round" size="small" fill="clear">
+            <ion-icon
+              class="icon-small"
+              size="small"
+              slot="icon-only"
+              :icon="playSkipBackOutline"
+            ></ion-icon>
+          </ion-button>
+
+          <ion-button shape="round" size="large" fill="clear">
+            <ion-icon
+              class="icon-large"
+              size="large"
+              slot="icon-only"
+              :icon="playCircleOutline"
+            ></ion-icon>
+          </ion-button>
+
+          <ion-button shape="round" size="small" fill="clear">
+            <ion-icon
+              class="icon-small"
+              size="small"
+              slot="icon-only"
+              :icon="playSkipForwardOutline"
+            ></ion-icon>
+          </ion-button>
+        </ion-row>
+      </ion-grid>
     </div>
 
     <div>
@@ -125,13 +131,13 @@ ion-icon {
   color: var(--ion-color-primary);
 }
 
-.small-icon {
-  --ionicon-stroke-width: 36px;
+.icon-small {
+  --ionicon-stroke-width: 48px;
 }
 
-.large-icon {
-  --ionicon-stroke-width: 18px;
-  zoom: 2;
+.icon-large {
+  zoom: 1.5;
+  --ionicon-stroke-width: 36px;
 }
 
 .text-light {

@@ -3,7 +3,8 @@ ion-card {
   background-color: transparent;
 }
 
-ion-img {
+ion-img,
+img {
   border-radius: 20px !important;
   overflow: hidden;
   object-fit: cover;

@@ -18,31 +18,23 @@
         </ion-toolbar>
       </ion-header>
 
-      <ion-grid class="ion-padding">
-        <ion-row class="ion-justify-content-between ion-align-items-start">
-          <ion-col size="8">
-            <h1>Autoplay</h1>
-            <p>
-              Whenever you come across a point of interest, an interisting audio
-              clip is playing.
-            </p>
-          </ion-col>
+      <ion-fab vertical="top" horizontal="end" slot="fixed">
+        <ion-fab-button>
+          <ion-icon color="light" :icon="icons.playOutline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
 
-          <ion-col size="4" class="ion-text-end">
-            <div style="width: 100%"></div>
-            <ion-button shape="round" size="large" fill="clear">
-              <ion-icon
-                class="large-icon"
-                size="large"
-                slot="icon-only"
-                :icon="icons.playCircleOutline"
-              ></ion-icon>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ion-toolbar class="ion-margin">
+        <ion-text>
+          <h1>Autoplay</h1>
+          <p style="width: 66%">
+            Whenever you come across a point of interest, an interisting audio
+            clip is playing.
+          </p>
+        </ion-text>
+      </ion-toolbar>
 
-      <div style="margin-top: -55px;" id="landschaft"></div>
+      <div style="margin-top: -25px;" id="landschaft"></div>
 
       <ion-toolbar class="bottom-divider">
         <ion-text>
@@ -196,10 +188,9 @@
 
     <ion-footer @click="modal = true">
       <ion-toolbar class="footer">
-        <ion-buttons class="small-icon" slot="end">
+        <ion-buttons class="icon-small" slot="end">
           <ion-button shape="round" fill="clear">
             <ion-icon
-              class="small-icon"
               slot="icon-only"
               :icon="icons.playSkipBackOutline"
             ></ion-icon>
@@ -243,6 +234,8 @@ import {
   IonToolbar,
   IonButton,
   IonButtons,
+  IonFab,
+  IonFabButton,
   IonImg,
   IonIcon,
   IonGrid,
@@ -356,6 +349,8 @@ export default defineComponent({
     IonContent,
     IonButton,
     IonButtons,
+    IonFab,
+    IonFabButton,
     IonHeader,
     IonFooter,
     IonPage,
@@ -389,7 +384,6 @@ export default defineComponent({
 <style scoped>
 ion-icon {
   color: var(--ion-color-primary);
-  font-size: 64px;
 }
 
 .bottom-divider {
@@ -398,13 +392,8 @@ ion-icon {
   border-color: var(--ion-color-light-shade);
 }
 
-.small-icon {
-  --ionicon-stroke-width: 36px;
-}
-
-.large-icon {
-  --ionicon-stroke-width: 14px;
-  zoom: 2;
+ion-icon {
+  --ionicon-stroke-width: 48px;
 }
 
 .footer {
