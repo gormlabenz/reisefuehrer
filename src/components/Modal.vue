@@ -86,7 +86,7 @@
     <audio
       id="audio"
       class="ion-hide"
-      :src="serverUrl + track.pageID + '.wav'"
+      :src="serverUrl + track.pageID + '.mp3'"
     ></audio>
   </ion-content>
 </template>
@@ -117,6 +117,14 @@ import {
 } from "ionicons/icons";
 
 import { defineComponent } from "vue";
+const { Media } = require("@ionic-native/media");
+
+console.log(typeof Media);
+
+/* import { Plugins } from "@capacitor/core";
+const { Media } = Plugins; 
+
+const Media = require("@ionic-native/media"); */
 
 export default defineComponent({
   name: "Modal",
@@ -124,6 +132,7 @@ export default defineComponent({
   data() {
     return {
       content: "Content",
+      media: null,
       playCircleOutline,
       playSkipBackOutline,
       playSkipForwardOutline,
@@ -150,15 +159,31 @@ export default defineComponent({
     audio() {
       return TrackStore().audio.value;
     },
+    url() {
+      return this.serverUrl + "/storys/" + this.track.pageID + ".mp3";
+    },
+  },
+  mounted() {
+    this.media = Media.create(
+      this.url,
+      // success callback
+      function() {
+        console.log("playAudio():Audio Success");
+      },
+      // error callback
+      function(err) {
+        console.log("playAudio():Audio Error: " + err);
+      }
+    );
+    console.log(this.media);
   },
   methods: {
     play() {
-      /* const audio = document.getElementById("audio");
-      this.TrackStore.play(audio); */
-      this.TrackStore.play(document);
+      console.log("playing");
+      this.media.play();
     },
     pause() {
-      this.TrackStore.pause();
+      this.media.pause();
     },
     skip() {
       console.log("duration", this.audio.duration);

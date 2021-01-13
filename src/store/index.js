@@ -1,6 +1,6 @@
 import { reactive, computed } from "vue";
-import { Plugins } from "@capacitor/core";
 import axios from "axios";
+import { Plugins } from "@capacitor/core";
 const { Geolocation } = Plugins;
 const wtf = require("wtf_wikipedia");
 

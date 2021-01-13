@@ -57,7 +57,7 @@ export default function TrackStore() {
       .then(
         (response) => {
           console.log(response);
-          //const link = "http://localhost:5000/storys/" + track.pageID + ".wav";
+          //const link = "http://localhost:5000/storys/" + track.pageID + ".mp3";
         },
         (error) => {
           console.log(error);
@@ -77,7 +77,7 @@ export default function TrackStore() {
     }
     state.audio.setAttribute(
       "src",
-      state.serverUrl + "/storys/" + track.value.pageID + ".wav"
+      state.serverUrl + "/storys/" + track.value.pageID + ".mp3"
     );
     fetchTrack().then(() => {
       state.audio.play().then;

@@ -29,7 +29,7 @@ import {
   IonRow,
   IonCol,
 } from "@ionic/vue";
-import { TextStore } from "../store/text.js";
+import TextStore from "../store/text.js";
 
 export default {
   props: { img: String },
