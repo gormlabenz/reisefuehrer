@@ -10,7 +10,8 @@
     "test:fetch": "node ./tests/fetchTest.js",
     "lint": "vue-cli-service lint",
     "ios": "rm -rf ios && ionic build %% ionic capacitor add ios && ionic capacitor open ios",
-    "open-ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios"
+    "open-ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios",
+    "sync": "rm -f ./ios/App/._App.xcworkspace && npx cap sync"
   },
   "dependencies": {
     "@capacitor/android": "^2.4.3",
@@ -29,7 +30,6 @@
     "cordova-plugin-media": "^5.0.3",
     "cordova-plugin-tts": "^0.2.3",
     "core-js": "^3.6.5",
-    "howler": "^2.2.1",
     "lottie-web": "^5.7.5",
     "pageviews": "^1.4.3",
     "vue": "^3.0.0-0",

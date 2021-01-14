@@ -259,7 +259,7 @@ export default defineComponent({
     store() {
       return Store();
     },
-    trackStore() {
+    TrackStore() {
       return TrackStore();
     },
     trackLoading() {
@@ -269,10 +269,7 @@ export default defineComponent({
       return TrackStore().track.value;
     },
     audioPlaying() {
-      return TrackStore().audioPlaying.value;
-    },
-    serverUrl() {
-      return TrackStore().serverUrl.value;
+      return false;
     },
     pages() {
       return Store().sortedPages.value;
@@ -318,17 +315,17 @@ export default defineComponent({
       this.landschaft.goToAndStop(scrollPos * 25);
     },
     setAndOpenModal(pageID) {
-      this.trackStore.setTrack(pageID);
+      this.TrackStore.setTrack(pageID);
       this.modal = true;
     },
     setAndPlayTrack(pageID) {
-      this.trackStore.setTrack(pageID);
+      this.TrackStore.setTrack(pageID);
     },
     play() {
-      this.trackStore.play(document);
+      this.TrackStore.play();
     },
     pause() {
-      this.trackStore.pause();
+      this.TrackStore.pause();
     },
   },
   components: {
