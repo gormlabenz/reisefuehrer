@@ -28,8 +28,8 @@
         <ion-text>
           <h1 class="ion-margin-start">Autoplay</h1>
           <p class="ion-margin-start" style="width: 66%">
-            Whenever you come across a point of interest, an interisting audio
-            clip is playing.
+            If you pass a place of interest,<br />
+            a trek is played.
           </p>
         </ion-text>
         <div id="landschaft"></div>
@@ -64,7 +64,7 @@
         </ion-row>
       </ion-grid>
 
-      <ion-toolbar class="bottom-divider">
+      <!-- <ion-toolbar class="bottom-divider">
         <ion-text>
           <h1 class="ion-margin-start">Recently played</h1>
         </ion-text>
@@ -116,7 +116,7 @@
             </card-small>
           </ion-col>
         </ion-row>
-      </ion-grid>
+      </ion-grid> -->
     </ion-content>
 
     <ion-modal :is-open="modal" css-class="my-custom-class">
@@ -132,33 +132,9 @@
       <ion-progress-bar v-else color="dark" value=".4"></ion-progress-bar>
 
       <ion-toolbar class="footer">
-        <ion-buttons class="icon-small" slot="end">
-          <ion-button shape="round" fill="clear">
-            <ion-icon
-              slot="icon-only"
-              :icon="icons.playSkipBackOutline"
-            ></ion-icon>
-          </ion-button>
-
-          <ion-button
-            v-if="!audioPlaying"
-            shape="round"
-            fill="clear"
-            @click="play"
-          >
-            <ion-icon slot="icon-only" :icon="icons.playOutline"></ion-icon>
-          </ion-button>
-          <ion-button v-else shape="round" fill="clear" @click="play">
-            <ion-icon slot="icon-only" :icon="icons.pauseOutline"></ion-icon>
-          </ion-button>
-
-          <ion-button shape="round" fill="clear">
-            <ion-icon
-              slot="icon-only"
-              :icon="icons.playSkipForwardOutline"
-            ></ion-icon>
-          </ion-button>
-        </ion-buttons>
+        <!-- <ion-buttons class="icon-small" slot="end">
+          <Player :big="false"></Player>
+        </ion-buttons> -->
         <ion-buttons slot="start">
           <ion-img
             class="ion-margin-start"
@@ -209,6 +185,7 @@ import {
 import CardBig from "../components/CardBig.vue";
 import CardSmall from "../components/CardSmall.vue";
 import Modal from "../components/Modal.vue";
+import Player from "../components/Player.vue";
 
 import { defineComponent } from "vue";
 import Store from "../store";
@@ -360,6 +337,7 @@ export default defineComponent({
     CardBig,
     CardSmall,
     Modal,
+    Player,
   },
 });
 </script>
@@ -367,16 +345,13 @@ export default defineComponent({
 <style scoped>
 ion-icon {
   color: var(--ion-color-primary);
+  --ionicon-stroke-width: 48px;
 }
 
 .bottom-divider {
   border-bottom-width: 2px;
   border-bottom-style: solid;
   border-color: var(--ion-color-light-shade);
-}
-
-ion-icon {
-  --ionicon-stroke-width: 48px;
 }
 
 .footer {

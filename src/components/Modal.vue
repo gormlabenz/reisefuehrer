@@ -11,7 +11,9 @@
     <div class="ion-text-center ion-margin-top">
       <ion-grid>
         <img :src="track.mainImage.url" />
-        <player></player>
+        <ion-row class="ion-justify-content-center ion-align-items-center">
+          <Player :big="true"></Player>
+        </ion-row>
         <ion-row class="ion-margin-top">
           <ion-progress-bar
             v-if="trackLoading"
@@ -97,14 +99,13 @@ export default defineComponent({
 <style>
 ion-icon {
   color: var(--ion-color-primary);
-}
-.icon-small {
   --ionicon-stroke-width: 48px;
 }
+
 .icon-large {
   zoom: 1.5;
-  --ionicon-stroke-width: 36px;
 }
+
 .text-light {
   color: red;
   background-color: turquoise;

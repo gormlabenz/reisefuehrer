@@ -1,26 +1,21 @@
 <template>
-  <ion-row class="ion-justify-content-center ion-align-items-center">
+  <div class="ion-justify-content-center ion-align-items-center">
     <ion-button shape="round" size="small" fill="clear">
-      <ion-icon
-        class="icon-small"
-        size="small"
-        slot="icon-only"
-        :icon="playSkipBackOutline"
-      ></ion-icon>
+      <ion-icon slot="icon-only" :icon="playSkipBackOutline"></ion-icon>
     </ion-button>
 
     <ion-button
-      v-if="!audioPlaying"
+      v-if="!isPlaying"
       @click="play"
       shape="round"
       size="large"
       fill="clear"
     >
       <ion-icon
-        class="icon-large"
+        v-bind:class="{ 'icon-large': big }"
         size="large"
         slot="icon-only"
-        :icon="playCircleOutline"
+        :icon="playIcon"
       ></ion-icon>
     </ion-button>
     <ion-button v-else @click="pause" shape="round" size="large" fill="clear">
@@ -33,23 +28,19 @@
     </ion-button>
 
     <ion-button @click="skip" shape="round" size="small" fill="clear">
-      <ion-icon
-        class="icon-small"
-        size="small"
-        slot="icon-only"
-        :icon="playSkipForwardOutline"
-      ></ion-icon>
+      <ion-icon slot="icon-only" :icon="playSkipForwardOutline"></ion-icon>
     </ion-button>
-  </ion-row>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import TrackStore from "../store/track.js";
-import { IonButton, IonButtons, IonIcon, IonRow } from "@ionic/vue";
+import { IonButton, IonButtons, IonIcon } from "@ionic/vue";
 
 import {
   playCircleOutline,
+  playOutline,
   pauseCircleOutline,
   playSkipBackOutline,
   playSkipForwardOutline,
@@ -58,11 +49,13 @@ import {
 
 const { Media } = require("@ionic-native/media");
 export default defineComponent({
+  props: { big: { type: Boolean, default: false } },
   data() {
     return {
-      audioPlaying: false,
       media: null,
+      isPlaying: false,
       playCircleOutline,
+      playOutline,
       playSkipBackOutline,
       playSkipForwardOutline,
       arrowBackOutline,
@@ -70,20 +63,16 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.media = Media.create(
-      this.url,
-      // success callback
-      function() {
-        console.log("playAudio():Audio Success");
-      },
-      // error callback
-      function(err) {
-        console.log("playAudio():Audio Error: " + err);
-      }
-    );
-    console.log(this.media);
+    this.preloadMedia();
   },
   computed: {
+    playIcon() {
+      if (this.big) {
+        return this.playCircleOutline;
+      } else {
+        return this.playOutline;
+      }
+    },
     track() {
       return TrackStore().track.value;
     },
@@ -93,10 +82,32 @@ export default defineComponent({
     url() {
       return this.serverUrl + "/storys/" + this.track.pageID + ".mp3";
     },
+    TrackStore() {
+      return TrackStore();
+    },
   },
   methods: {
+    preloadMedia() {
+      this.TrackStore.fetchTrack();
+      this.media = Media.create(this.url);
+      this.media.onStatusUpdate.subscribe((status) => {
+        switch (status) {
+          case 1:
+            break;
+          case 2: // 2: playing
+            this.isPlaying = true;
+            break;
+          case 3: // 3: pause
+            this.isPlaying = false;
+            break;
+          case 4: // 4: stop
+          default:
+            this.isPlaying = false;
+            break;
+        }
+      });
+    },
     play() {
-      console.log("playing");
       this.media.play();
     },
     pause() {
@@ -107,7 +118,6 @@ export default defineComponent({
     IonButton,
     IonButtons,
     IonIcon,
-    IonRow,
   },
 });
 </script>
@@ -115,13 +125,10 @@ export default defineComponent({
 <style>
 ion-icon {
   color: var(--ion-color-primary);
-}
-.icon-small {
   --ionicon-stroke-width: 48px;
 }
 .icon-large {
-  zoom: 1.5;
-  --ionicon-stroke-width: 36px;
+  --ionicon-stroke-width: 24px;
 }
 .text-light {
   color: red;
