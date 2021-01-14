@@ -23,7 +23,9 @@
 
         <ion-row class="ion-justify-content-between">
           <ion-card-subtitle>0.40</ion-card-subtitle>
-          <ion-card-subtitle class="light-text">1.40</ion-card-subtitle>
+          <ion-card-subtitle class="light-text">{{
+            duration
+          }}</ion-card-subtitle>
         </ion-row>
 
         <ion-row class="ion-justify-content-center ion-align-items-center">
@@ -117,14 +119,6 @@ import {
 } from "ionicons/icons";
 
 import { defineComponent } from "vue";
-const { Media } = require("@ionic-native/media");
-
-console.log(typeof Media);
-
-/* import { Plugins } from "@capacitor/core";
-const { Media } = Plugins; 
-
-const Media = require("@ionic-native/media"); */
 
 export default defineComponent({
   name: "Modal",
@@ -132,7 +126,6 @@ export default defineComponent({
   data() {
     return {
       content: "Content",
-      media: null,
       playCircleOutline,
       playSkipBackOutline,
       playSkipForwardOutline,
@@ -141,8 +134,14 @@ export default defineComponent({
     };
   },
   computed: {
+    duration() {
+      return TrackStore().duration.value;
+    },
     audioPlaying() {
       return TrackStore().audioPlaying.value;
+    },
+    audioDuration() {
+      return TrackStore().audioDuration.value;
     },
     TrackStore() {
       return TrackStore();
@@ -163,30 +162,15 @@ export default defineComponent({
       return this.serverUrl + "/storys/" + this.track.pageID + ".mp3";
     },
   },
-  mounted() {
-    this.media = Media.create(
-      this.url,
-      // success callback
-      function() {
-        console.log("playAudio():Audio Success");
-      },
-      // error callback
-      function(err) {
-        console.log("playAudio():Audio Error: " + err);
-      }
-    );
-    console.log(this.media);
-  },
   methods: {
     play() {
-      console.log("playing");
-      this.media.play();
+      this.TrackStore.play();
     },
     pause() {
-      this.media.pause();
+      this.TrackStore.pause();
     },
     skip() {
-      console.log("duration", this.audio.duration);
+      console.log("duration", this.audio.duration());
       console.log("paused", this.audio.paused);
       console.log("audioPlaying", this.audioPlaying);
     },
