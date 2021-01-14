@@ -19,8 +19,8 @@
       </ion-header>
 
       <ion-fab vertical="top" horizontal="end" slot="fixed">
-        <ion-fab-button>
-          <ion-icon color="light" :icon="icons.playOutline"></ion-icon>
+        <ion-fab-button @click="TrackStore.toggleAutoplay()">
+          <ion-icon color="light" :icon="autoplayIcon"></ion-icon>
         </ion-fab-button>
       </ion-fab>
 
@@ -118,7 +118,7 @@
         </ion-row>
       </ion-grid> -->
     </ion-content>
-
+    <ion-spinner v-else class="ion-margin" name="crescent"></ion-spinner>
     <ion-modal :is-open="modal" css-class="my-custom-class">
       <Modal :swipe-to-close="true" @dismissed-model="modal = false"> </Modal>
     </ion-modal>
@@ -224,6 +224,10 @@ export default defineComponent({
   },
   mounted() {
     this.store.setPages();
+    /* setInterval(() => {
+      if (!this.TrackStore.isPlaying.value) {
+      }
+    }, 1000); */
     this.landschaft = lottie.loadAnimation({
       container: document.getElementById("landschaft"), // the dom element that will contain the animation
       renderer: "svg",
@@ -239,11 +243,18 @@ export default defineComponent({
     TrackStore() {
       return TrackStore();
     },
-    trackLoading() {
-      return TrackStore().trackLoading.value;
-    },
     track() {
       return TrackStore().track.value;
+    },
+    autoplay() {
+      return TrackStore().autoplay.value;
+    },
+    autoplayIcon() {
+      if (this.autoplay) {
+        return this.icons.pauseOutline;
+      } else {
+        return this.icons.playOutline;
+      }
     },
     audioPlaying() {
       return false;
@@ -294,9 +305,11 @@ export default defineComponent({
     setAndOpenModal(pageID) {
       this.TrackStore.setTrack(pageID);
       this.modal = true;
+      console.log("page Id", pageID);
     },
     setAndPlayTrack(pageID) {
       this.TrackStore.setTrack(pageID);
+      console.log("page Id", pageID);
     },
     play() {
       this.TrackStore.play();

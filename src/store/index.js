@@ -1,5 +1,4 @@
 import { reactive, computed } from "vue";
-import axios from "axios";
 import { Plugins } from "@capacitor/core";
 const { Geolocation } = Plugins;
 const wtf = require("wtf_wikipedia");
@@ -7,21 +6,9 @@ const wtf = require("wtf_wikipedia");
 const state = reactive({
   position: "",
   pages: {},
-  loading: false,
 });
 
 export default function Store() {
-  /* Loading */
-  function intervalFetching() {
-    toggleLoading();
-    setInterval(setPages(), 1000);
-    toggleLoading();
-  }
-
-  function toggleLoading() {
-    state.loading = !state.loading;
-  }
-
   /* Position */
   async function fetchPosition() {
     const coordinates = await Geolocation.getCurrentPosition();
@@ -37,11 +24,6 @@ export default function Store() {
     // console.log("key", key, "value", value);
     state.pages[key] = value;
   };
-
-  function togglePageLoading(pageID) {
-    state.pages[pageID].loading = !state.pages[pageID].loading;
-    console.log("loading ", state.pages[pageID].loading);
-  }
 
   function setPageLink(pageID, link) {
     state.pages[pageID].link = link;
@@ -59,12 +41,10 @@ export default function Store() {
             const summary = response.section(0).text();
             const mainImage = response.images(0).json();
             const categories = data.categories;
-            let loading = false;
 
             const result = {
               title,
               pageID,
-              loading,
               summary,
               mainImage,
               categories,
@@ -128,7 +108,6 @@ export default function Store() {
   async function setPages() {
     await fetchPosition();
     const pages = await fetchPages(state.position);
-    console.log(pages);
     for (let page of pages) {
       fetchPage(page.title)
         .then((response) => {
@@ -144,43 +123,12 @@ export default function Store() {
               response["pageviews"] = undefined;
             });
 
-          /* const link = "http://localhost:8000/storys/" + page.pageid + ".wav";
-          fetch(link)
-            .then((response["link"] = link))
-            .catch(() => {
-              response["link"] = "";
-              console.log("Audio not generated yet", response["title"]);
-            }); */
-
           pushPage(response["pageID"], response);
         })
         .catch((error) => {
           console.warn(error);
         });
     }
-  }
-
-  /* Server */
-  async function getData(page) {
-    const pageID = page.pageID;
-    togglePageLoading(pageID);
-    const data = JSON.stringify(page);
-    console.log("Data", data);
-    axios({
-      method: "post",
-      url: "http://127.0.0.1:8000",
-      data: { data: data },
-    }).then(
-      (response) => {
-        console.log(response);
-        const link = "http://localhost:8000/storys/" + page.pageID + ".wav";
-        setPageLink(pageID, link);
-        togglePageLoading(pageID);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
   }
 
   /* Sorted Pages */
@@ -212,17 +160,10 @@ export default function Store() {
   });
 
   return {
-    position: computed(() => state.position),
-    pages: computed(() => state.pages),
     sortedPages,
+    pages: computed(() => state.pages),
     nearestPage: computed(() => sortedPages.value[0]),
-    pagesInfo: computed(() => state.pages),
-    loading: computed(() => state.loading),
-    fetchPosition,
-    fetchPages,
     setPages,
-    intervalFetching,
-    getData,
     setPageLink,
   };
 }

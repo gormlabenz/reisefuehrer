@@ -1,33 +1,30 @@
 import Store from ".";
 import { computed, reactive } from "vue";
 import axios from "axios";
-import { Media } from "@ionic-native/media";
+//import { Media } from "@ionic-native/media";
 
 const state = reactive({
   settedTrack: null,
   trackLoading: false,
-  audio: null,
-
+  autoplay: false,
+  isPlaying: false,
   serverUrl: "http://192.168.1.5:5000",
 });
 
 export default function TrackStore() {
   /* Data */
   async function setTrack(pageID) {
-    state.settedTrack = Store().pages.value[pageID];
     console.log("track", Store().pages.value[pageID]);
+    state.settedTrack = Store().pages.value[pageID];
   }
 
-  async function setAudio(audio) {
-    state.audio = audio;
+  async function toggleAutoplay() {
+    state.autoplay = !state.autoplay;
   }
-  /* async function setDuration(duration) {
-    state.duration = duration;
-  } */
 
-  const audioPlaying = computed(() => {});
-
-  const audioDuration = computed(() => {});
+  async function setIsPlaying(bool) {
+    state.isPlaying = bool;
+  }
 
   const track = computed(() => {
     if (!state.settedTrack) {
@@ -40,19 +37,30 @@ export default function TrackStore() {
     }
   });
 
+  /* Player Data */
+
+  function toHHMMSS(secs) {
+    var sec_num = parseInt(secs, 10);
+    var minutes = Math.floor(sec_num / 60) % 60;
+    var seconds = sec_num % 60;
+
+    return [minutes, seconds]
+      .map((v) => (v < 10 ? "0" + v : v))
+      .filter((v, i) => v !== "00" || i >= 0)
+      .join(":");
+  }
+
   /* Fetch Track */
 
   async function fetchTrack() {
     const data = JSON.stringify(track.value);
     state.trackLoading = true;
-    console.log("Data", data);
     axios({
       method: "post",
       url: state.serverUrl,
       data,
     })
       .then((response) => {
-        console.log("response", response.data);
         return response;
       })
       .catch((error) => {
@@ -65,41 +73,17 @@ export default function TrackStore() {
 
   /* Audio Controlls */
 
-  async function play() {
-    fetchTrack().then((response) => {
-      console.log(response.data);
-      const audio = Media.create(
-        state.serverUrl + "/storys/" + track.value.pageID + ".mp3",
-        // succes callback
-        function() {
-          console.log("playAudio():Audio Success");
-        },
-        // error callback
-        function(err) {
-          console.log("playAudio():Audio Error: " + err);
-        }
-      );
-      console.log(audio);
-      setAudio(audio);
-      audio.play();
-      console.log("set audio");
-    });
-  }
-
-  async function pause() {}
-
   return {
     track,
     setTrack,
-    play,
-    pause,
+    toggleAutoplay,
     fetchTrack,
-    audioPlaying,
-    audioDuration,
-    //audioPos,
+    toHHMMSS,
+    setIsPlaying,
     trackLoading: computed(() => state.trackLoading),
-    audio: computed(() => state.audio),
     duration: computed(() => state.duration),
     serverUrl: computed(() => state.serverUrl),
+    autoplay: computed(() => state.autoplay),
+    isPlaying: computed(() => state.isPlaying),
   };
 }

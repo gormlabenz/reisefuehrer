@@ -54,6 +54,9 @@ export default defineComponent({
     return {
       media: null,
       isPlaying: false,
+      position: null,
+      display_position: "00:00",
+      duration: -1,
       playCircleOutline,
       playOutline,
       playSkipBackOutline,
@@ -105,6 +108,7 @@ export default defineComponent({
             this.isPlaying = false;
             break;
         }
+        this.TrackStore.setIsPlaying(this.isPlaying);
       });
     },
     play() {
