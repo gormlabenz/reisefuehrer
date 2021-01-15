@@ -66,7 +66,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.preloadMedia();
+    this.TrackStore.preloadMedia();
   },
   computed: {
     playIcon() {
@@ -112,10 +112,10 @@ export default defineComponent({
       });
     },
     play() {
-      this.media.play();
+      this.TrackStore.play();
     },
     pause() {
-      this.media.pause();
+      this.TrackStore.pause();
     },
   },
   components: {

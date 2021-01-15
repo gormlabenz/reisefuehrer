@@ -1,7 +1,7 @@
 import Store from ".";
 import { computed, reactive } from "vue";
 import axios from "axios";
-//import { Media } from "@ionic-native/media";
+import { Media } from "@ionic-native/media";
 
 const state = reactive({
   settedTrack: null,
@@ -73,6 +73,35 @@ export default function TrackStore() {
 
   /* Audio Controlls */
 
+  function preloadMedia() {
+    fetchTrack();
+    state.media = Media.create(
+      state.serverUrl + "/storys/" + track.value.pageID + ".mp3"
+    );
+    state.media.onStatusUpdate.subscribe((status) => {
+      switch (status) {
+        case 1:
+          break;
+        case 2: // 2: playing
+          state.isPlaying = true;
+          break;
+        case 3: // 3: pause
+          state.isPlaying = false;
+          break;
+        case 4: // 4: stop
+        default:
+          state.isPlaying = false;
+          break;
+      }
+    });
+  }
+  function play() {
+    state.media.play();
+  }
+  function pause() {
+    state.media.pause();
+  }
+
   return {
     track,
     setTrack,
@@ -80,6 +109,9 @@ export default function TrackStore() {
     fetchTrack,
     toHHMMSS,
     setIsPlaying,
+    preloadMedia,
+    play,
+    pause,
     trackLoading: computed(() => state.trackLoading),
     duration: computed(() => state.duration),
     serverUrl: computed(() => state.serverUrl),
