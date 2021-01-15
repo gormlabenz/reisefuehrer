@@ -1,5 +1,5 @@
 <template>
-  <ion-page>
+  <ion-page v-if="!modal">
     <ion-header :translucent="true">
       <ion-toolbar>
         <ion-title>Listen Now</ion-title>
@@ -119,9 +119,6 @@
       </ion-grid> -->
     </ion-content>
     <ion-spinner v-else class="ion-margin" name="crescent"></ion-spinner>
-    <ion-modal :is-open="modal" css-class="my-custom-class">
-      <Modal :swipe-to-close="true" @dismissed-model="modal = false"> </Modal>
-    </ion-modal>
 
     <ion-footer v-if="track" @click="modal = true">
       <ion-progress-bar
@@ -148,6 +145,7 @@
       </ion-toolbar>
     </ion-footer>
   </ion-page>
+  <Modal v-else @dismissed-model="modal = false"> </Modal>
 </template>
 
 <script>

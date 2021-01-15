@@ -119,10 +119,12 @@ export default function TrackStore() {
     state.media.pause();
   }
   function skip() {
+    state.media.release();
     addCurrentPageIndex();
     console.log("skip", state.currentPageIndex);
   }
   function skipBack() {
+    state.media.release();
     subtractCurrentPageIndex();
   }
 
