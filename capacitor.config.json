@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.reisefuehrer",
-  "appName": "reiseführer",
+  "appName": "trek",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",

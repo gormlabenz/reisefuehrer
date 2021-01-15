@@ -1,5 +1,5 @@
 {
-  "name": "reisefuhrer",
+  "name": "trek",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -9,7 +9,8 @@
     "test:e2e": "vue-cli-service test:e2e",
     "test:fetch": "node ./tests/fetchTest.js",
     "lint": "vue-cli-service lint",
-    "ios": "rm -rf ios && ionic build %% ionic capacitor add ios && ionic capacitor open ios",
+    "ios": "rm -rf ios && ionic build %% ionic capacitor add ios &&  ionic capacitor open ios",
+    "icons": "cordova-res ios --skip-config --copy ",
     "open-ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios",
     "sync": "rm -f ./ios/App/._App.xcworkspace && npx cap sync"
   },
@@ -29,6 +30,7 @@
     "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-media": "^5.0.3",
     "cordova-plugin-tts": "^0.2.3",
+    "cordova-res": "^0.15.2",
     "core-js": "^3.6.5",
     "lottie-web": "^5.7.5",
     "pageviews": "^1.4.3",
