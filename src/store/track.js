@@ -8,7 +8,7 @@ const state = reactive({
   autoplay: false,
   isPlaying: false,
   serverUrl: "http://192.168.1.5:5000",
-  media: null,
+  medias: {},
   currentPageIndex: 0,
 });
 
@@ -90,10 +90,10 @@ export default function TrackStore() {
   function preloadMedia() {
     //fetch(state.serverUrl + "/storys/" + track.value.pageID + ".mp3").catch(() => fetchTrack())
     fetchTrack();
-    state.media = Media.create(
+    state.medias[track.value.pageID] = Media.create(
       state.serverUrl + "/storys/" + track.value.pageID + ".mp3"
     );
-    state.media.onStatusUpdate.subscribe((status) => {
+    state.medias[track.value.pageID].onStatusUpdate.subscribe((status) => {
       switch (status) {
         case 1:
           break;
@@ -112,11 +112,11 @@ export default function TrackStore() {
   }
   /* Audio Controlls */
   function play() {
-    state.media.play();
+    state.medias[track.value.pageID].play();
   }
 
   function pause() {
-    state.media.pause();
+    state.medias[track.value.pageID].pause();
   }
   function skip() {
     addCurrentPageIndex();
