@@ -47,16 +47,10 @@ import {
   arrowBackOutline,
 } from "ionicons/icons";
 
-const { Media } = require("@ionic-native/media");
 export default defineComponent({
   props: { big: { type: Boolean, default: false } },
   data() {
     return {
-      media: null,
-      isPlaying: false,
-      position: null,
-      display_position: "00:00",
-      duration: -1,
       playCircleOutline,
       playOutline,
       playSkipBackOutline,
@@ -88,29 +82,11 @@ export default defineComponent({
     TrackStore() {
       return TrackStore();
     },
+    isPlaying() {
+      return TrackStore().isPlaying.value;
+    },
   },
   methods: {
-    preloadMedia() {
-      this.TrackStore.fetchTrack();
-      this.media = Media.create(this.url);
-      this.media.onStatusUpdate.subscribe((status) => {
-        switch (status) {
-          case 1:
-            break;
-          case 2: // 2: playing
-            this.isPlaying = true;
-            break;
-          case 3: // 3: pause
-            this.isPlaying = false;
-            break;
-          case 4: // 4: stop
-          default:
-            this.isPlaying = false;
-            break;
-        }
-        this.TrackStore.setIsPlaying(this.isPlaying);
-      });
-    },
     play() {
       this.TrackStore.play();
     },
