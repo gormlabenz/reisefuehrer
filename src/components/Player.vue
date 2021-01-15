@@ -1,12 +1,17 @@
 <template>
   <div class="ion-justify-content-center ion-align-items-center">
-    <ion-button shape="round" size="small" fill="clear">
+    <ion-button
+      @click="TrackStore.skipBack()"
+      shape="round"
+      size="small"
+      fill="clear"
+    >
       <ion-icon slot="icon-only" :icon="playSkipBackOutline"></ion-icon>
     </ion-button>
 
     <ion-button
       v-if="!isPlaying"
-      @click="play"
+      @click="TrackStore.play()"
       shape="round"
       size="large"
       fill="clear"
@@ -18,7 +23,13 @@
         :icon="playIcon"
       ></ion-icon>
     </ion-button>
-    <ion-button v-else @click="pause" shape="round" size="large" fill="clear">
+    <ion-button
+      v-else
+      @click="TrackStore.pause()"
+      shape="round"
+      size="large"
+      fill="clear"
+    >
       <ion-icon
         class="icon-large"
         size="large"
@@ -27,7 +38,12 @@
       ></ion-icon>
     </ion-button>
 
-    <ion-button @click="skip" shape="round" size="small" fill="clear">
+    <ion-button
+      @click="TrackStore.skip()"
+      shape="round"
+      size="small"
+      fill="clear"
+    >
       <ion-icon slot="icon-only" :icon="playSkipForwardOutline"></ion-icon>
     </ion-button>
   </div>
@@ -84,14 +100,6 @@ export default defineComponent({
     },
     isPlaying() {
       return TrackStore().isPlaying.value;
-    },
-  },
-  methods: {
-    play() {
-      this.TrackStore.play();
-    },
-    pause() {
-      this.TrackStore.pause();
     },
   },
   components: {

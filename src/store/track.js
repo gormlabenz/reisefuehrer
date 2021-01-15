@@ -1,21 +1,22 @@
 import Store from ".";
 import { computed, reactive } from "vue";
 import axios from "axios";
-import { Media } from "@ionic-native/media";
+const { Media } = require("@ionic-native/media");
 
 const state = reactive({
-  settedTrack: null,
   trackLoading: false,
   autoplay: false,
   isPlaying: false,
   serverUrl: "http://192.168.1.5:5000",
+  media: null,
+  currentPageIndex: 0,
 });
 
 export default function TrackStore() {
   /* Data */
-  async function setTrack(pageID) {
-    console.log("track", Store().pages.value[pageID]);
-    state.settedTrack = Store().pages.value[pageID];
+  async function setCurrentPageIndex(index) {
+    console.log("index", index);
+    state.currentPageIndex = index;
   }
 
   async function toggleAutoplay() {
@@ -27,15 +28,28 @@ export default function TrackStore() {
   }
 
   const track = computed(() => {
-    if (!state.settedTrack) {
-      if (!Store().nearestPage.value) {
-        return null;
-      }
-      return Store().nearestPage.value;
+    if (!Store().sortedPages.value[state.currentPageIndex]) {
+      return null;
     } else {
-      return state.settedTrack;
+      return Store().sortedPages.value[state.currentPageIndex];
     }
   });
+
+  function addCurrentPageIndex() {
+    if (state.currentPageIndex > Store().sortedPages.value.length) {
+      state.currentPageIndex = Store().sortedPages.value.length;
+    } else {
+      state.currentPageIndex = state.currentPageIndex + 1;
+    }
+  }
+
+  function subtractCurrentPageIndex() {
+    if (state.currentPageIndex < 1) {
+      state.currentPageIndex = 0;
+    } else {
+      state.currentPageIndex = state.currentPageIndex - 1;
+    }
+  }
 
   /* Player Data */
 
@@ -52,7 +66,7 @@ export default function TrackStore() {
 
   /* Fetch Track */
 
-  async function fetchTrack() {
+  function fetchTrack() {
     const data = JSON.stringify(track.value);
     state.trackLoading = true;
     axios({
@@ -71,9 +85,10 @@ export default function TrackStore() {
       });
   }
 
-  /* Audio Controlls */
+  /* Preload */
 
   function preloadMedia() {
+    //fetch(state.serverUrl + "/storys/" + track.value.pageID + ".mp3").catch(() => fetchTrack())
     fetchTrack();
     state.media = Media.create(
       state.serverUrl + "/storys/" + track.value.pageID + ".mp3"
@@ -95,23 +110,34 @@ export default function TrackStore() {
       }
     });
   }
+  /* Audio Controlls */
   function play() {
     state.media.play();
   }
+
   function pause() {
     state.media.pause();
+  }
+  function skip() {
+    addCurrentPageIndex();
+    console.log("skip", state.currentPageIndex);
+  }
+  function skipBack() {
+    subtractCurrentPageIndex();
   }
 
   return {
     track,
-    setTrack,
+    preloadMedia,
+    setCurrentPageIndex,
     toggleAutoplay,
     fetchTrack,
     toHHMMSS,
     setIsPlaying,
-    preloadMedia,
     play,
     pause,
+    skip,
+    skipBack,
     trackLoading: computed(() => state.trackLoading),
     duration: computed(() => state.duration),
     serverUrl: computed(() => state.serverUrl),

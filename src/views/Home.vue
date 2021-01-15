@@ -49,8 +49,8 @@
           <ion-col v-for="(page, index) in pages" :key="index">
             <card-big
               :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(page.pageID)"
-              @click-image="setAndPlayTrack(page.pageID)"
+              @click-text="setAndOpenModal(index)"
+              @click-image="setAndPlayTrack(index)"
             >
               <template v-slot:subtitle>{{ page.dist + "M" }}</template>
               <template v-slot:title>{{
@@ -302,14 +302,14 @@ export default defineComponent({
       }
       this.landschaft.goToAndStop(scrollPos * 25);
     },
-    setAndOpenModal(pageID) {
-      this.TrackStore.setTrack(pageID);
+    setAndOpenModal(index) {
+      this.TrackStore.setCurrentPageIndex(index);
       this.modal = true;
-      console.log("page Id", pageID);
+      console.log("page index", index);
     },
-    setAndPlayTrack(pageID) {
-      this.TrackStore.setTrack(pageID);
-      console.log("page Id", pageID);
+    setAndPlayTrack(index) {
+      this.TrackStore.setCurrentPageIndex(index);
+      console.log("page index", index);
     },
     play() {
       this.TrackStore.play();
