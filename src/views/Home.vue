@@ -194,6 +194,9 @@ import Modal from "../components/Modal.vue";
 import Player from "../components/Player.vue";
 
 import { defineComponent } from "vue";
+import { Plugins } from "@capacitor/core";
+const { SplashScreen } = Plugins;
+
 import Store from "../store";
 import TrackStore from "../store/track.js";
 
@@ -230,6 +233,7 @@ export default defineComponent({
   },
   mounted() {
     this.store.setPages();
+    SplashScreen.hide();
     /* setInterval(() => {
       if (!this.TrackStore.isPlaying.value) {
       }
