@@ -52,12 +52,13 @@
           <ion-col v-for="(page, index) in pages" :key="index">
             <card-big
               :img="page.mainImage.thumb"
+              @click="setAndOpenModal(index)"
               @click-text="setAndOpenModal(index)"
               @click-image="setAndPlayTrack(index)"
             >
               <template v-slot:subtitle>{{ page.dist + "M" }}</template>
               <template v-slot:title>{{
-                page.title.replace(/\(.*?\)/, "")
+                truncateAndClamps(page.title, 18, false)
               }}</template>
               <template v-slot:content>{{
                 truncate(page.summary, 54, true)
@@ -271,8 +272,7 @@ export default defineComponent({
       return Store().position.value;
     },
     trackTitle() {
-      let title = this.track.title.replace(/\(.*?\)/, "");
-      return this.truncate(title, 14, false);
+      return this.truncateAndClamps(this.track.title, 14, false);
     },
   },
   methods: {
@@ -298,6 +298,10 @@ export default defineComponent({
           ? subString.substr(0, subString.lastIndexOf(" "))
           : subString) + "…"
       );
+    },
+    truncateAndClamps(str, n, useWordBoundary) {
+      let string = str.replace(/\(.*?\)/, "");
+      return this.truncate(string, n, useWordBoundary);
     },
     print() {
       console.log(this.scrollY);
