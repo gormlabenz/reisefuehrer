@@ -3,22 +3,26 @@
     <ion-button
       @click="TrackStore.skipBack()"
       shape="round"
-      size="small"
+      :size="smallIconSize"
       fill="clear"
     >
-      <ion-icon slot="icon-only" :icon="playSkipBackOutline"></ion-icon>
+      <ion-icon
+        slot="icon-only"
+        :size="smallIconSize"
+        :icon="playSkipBackOutline"
+      ></ion-icon>
     </ion-button>
 
     <ion-button
       v-if="!isPlaying"
       @click="TrackStore.play()"
       shape="round"
-      size="large"
+      :size="bigIconSize"
       fill="clear"
     >
       <ion-icon
         v-bind:class="{ 'icon-large': big }"
-        size="large"
+        :size="bigIconSize"
         slot="icon-only"
         :icon="playIcon"
       ></ion-icon>
@@ -27,24 +31,28 @@
       v-else
       @click="TrackStore.pause()"
       shape="round"
-      size="large"
+      :size="bigIconSize"
       fill="clear"
     >
       <ion-icon
-        class="icon-large"
-        size="large"
+        v-bind:class="{ 'icon-large': big }"
+        :size="bigIconSize"
         slot="icon-only"
-        :icon="pauseCircleOutline"
+        :icon="pauseIcon"
       ></ion-icon>
     </ion-button>
 
     <ion-button
       @click="TrackStore.skip()"
       shape="round"
-      size="small"
+      :size="smallIconSize"
       fill="clear"
     >
-      <ion-icon slot="icon-only" :icon="playSkipForwardOutline"></ion-icon>
+      <ion-icon
+        slot="icon-only"
+        :size="smallIconSize"
+        :icon="playSkipForwardOutline"
+      ></ion-icon>
     </ion-button>
   </div>
 </template>
@@ -57,6 +65,7 @@ import { IonButton, IonButtons, IonIcon } from "@ionic/vue";
 import {
   playCircleOutline,
   playOutline,
+  pauseOutline,
   pauseCircleOutline,
   playSkipBackOutline,
   playSkipForwardOutline,
@@ -69,6 +78,7 @@ export default defineComponent({
     return {
       playCircleOutline,
       playOutline,
+      pauseOutline,
       playSkipBackOutline,
       playSkipForwardOutline,
       arrowBackOutline,
@@ -84,6 +94,27 @@ export default defineComponent({
         return this.playCircleOutline;
       } else {
         return this.playOutline;
+      }
+    },
+    pauseIcon() {
+      if (this.big) {
+        return this.pauseCircleOutline;
+      } else {
+        return this.pauseOutline;
+      }
+    },
+    bigIconSize() {
+      if (this.big) {
+        return "large";
+      } else {
+        return "default";
+      }
+    },
+    smallIconSize() {
+      if (this.big) {
+        return "default";
+      } else {
+        return "default";
       }
     },
     track() {

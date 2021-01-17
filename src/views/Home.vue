@@ -32,8 +32,11 @@
             a trek is played.
           </p>
         </ion-text>
-        <div id="landschaft"></div>
       </ion-toolbar>
+      <div
+        style="background-color: var(--ion-toolbar-background, var(--ion-background-color, #fff));"
+        id="landschaft"
+      ></div>
 
       <ion-toolbar class="bottom-divider">
         <ion-text>
@@ -120,28 +123,32 @@
     </ion-content>
     <ion-spinner v-else class="ion-margin" name="crescent"></ion-spinner>
 
-    <ion-footer v-if="track" @click="modal = true">
+    <ion-footer v-if="track">
       <ion-progress-bar
         v-if="trackLoading"
         color="dark"
         type="indeterminate"
       ></ion-progress-bar>
-      <ion-progress-bar v-else color="dark" value=".4"></ion-progress-bar>
 
       <ion-toolbar class="footer">
-        <!-- <ion-buttons class="icon-small" slot="end">
+        <ion-buttons class="icon-small" slot="end">
           <Player :big="false"></Player>
-        </ion-buttons> -->
+        </ion-buttons>
         <ion-buttons slot="start">
           <ion-img
+            @click.self="modal = true"
             class="ion-margin-start"
             style="width:36px; height:36px"
             :src="track.mainImage.thumb"
           ></ion-img
         ></ion-buttons>
-        <ion-title slot="start">{{
-          track.title.replace(/\(.*?\)/, "")
-        }}</ion-title>
+        <h4
+          @click.self="modal = true"
+          class="ion-margin-start"
+          style="margin: 0 0 0 16px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);"
+        >
+          {{ trackTitle }}
+        </h4>
       </ion-toolbar>
     </ion-footer>
   </ion-page>
@@ -263,6 +270,10 @@ export default defineComponent({
     position() {
       return Store().position.value;
     },
+    trackTitle() {
+      let title = this.track.title.replace(/\(.*?\)/, "");
+      return this.truncate(title, 14, false);
+    },
   },
   methods: {
     test(str) {
@@ -367,6 +378,5 @@ ion-icon {
 
 .footer {
   --min-height: 64px;
-  --border-style: none;
 }
 </style>

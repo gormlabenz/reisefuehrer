@@ -6,6 +6,11 @@
         <ion-buttons slot="end">
           <ion-button @click="$emit('dismissed-model')">Close</ion-button>
         </ion-buttons>
+        <ion-progress-bar
+          v-if="trackLoading"
+          color="dark"
+          type="indeterminate"
+        ></ion-progress-bar>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
@@ -14,19 +19,6 @@
           <img :src="track.mainImage.url" />
           <ion-row class="ion-justify-content-center ion-align-items-center">
             <Player :big="true"></Player>
-          </ion-row>
-          <ion-row class="ion-margin-top">
-            <ion-progress-bar
-              v-if="trackLoading"
-              color="dark"
-              type="indeterminate"
-            ></ion-progress-bar>
-            <ion-progress-bar v-else color="dark" value=".4"></ion-progress-bar>
-          </ion-row>
-
-          <ion-row class="ion-justify-content-between">
-            <ion-card-subtitle>0.40</ion-card-subtitle>
-            <ion-card-subtitle class="light-text">1.40</ion-card-subtitle>
           </ion-row>
         </ion-grid>
       </div>

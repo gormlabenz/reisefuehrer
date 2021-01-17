@@ -1,5 +1,5 @@
 import Store from ".";
-import { computed, reactive, watchEffect } from "vue";
+import { computed, reactive } from "vue";
 import axios from "axios";
 const { Media } = require("@ionic-native/media");
 
