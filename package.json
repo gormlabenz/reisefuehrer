@@ -12,7 +12,7 @@
     "ios": "rm -rf ios && ionic build %% ionic capacitor add ios &&  ionic capacitor open ios",
     "icons": "cordova-res ios --skip-config --copy ",
     "open-ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios",
-    "sync": "rm -f ./ios/App/._App.xcworkspace && npx cap sync"
+    "sync": "ionic build && npx cap sync"
   },
   "dependencies": {
     "@capacitor/android": "^2.4.3",

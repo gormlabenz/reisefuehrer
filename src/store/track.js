@@ -1,5 +1,5 @@
 import Store from ".";
-import { computed, reactive } from "vue";
+import { computed, reactive, watchEffect } from "vue";
 import axios from "axios";
 const { Media } = require("@ionic-native/media");
 
@@ -88,7 +88,6 @@ export default function TrackStore() {
   /* Load */
 
   function preloadMedia() {
-    //fetch(state.serverUrl + "/storys/" + track.value.pageID + ".mp3").catch(() => fetchTrack())
     fetchTrack();
     state.media = Media.create(
       state.serverUrl + "/storys/" + track.value.pageID + ".mp3"
