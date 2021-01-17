@@ -85,7 +85,7 @@ export default function TrackStore() {
       });
   }
 
-  /* Preload */
+  /* Load */
 
   function preloadMedia() {
     //fetch(state.serverUrl + "/storys/" + track.value.pageID + ".mp3").catch(() => fetchTrack())
@@ -110,6 +110,13 @@ export default function TrackStore() {
       }
     });
   }
+
+  function clearMedia() {
+    if (state.media) {
+      state.media.stop();
+      state.media.release();
+    }
+  }
   /* Audio Controlls */
   function play() {
     state.media.play();
@@ -119,19 +126,21 @@ export default function TrackStore() {
     state.media.pause();
   }
   function skip() {
-    state.media.release();
+    clearMedia();
     addCurrentPageIndex();
-    console.log("skip", state.currentPageIndex);
+    preloadMedia();
   }
   function skipBack() {
-    state.media.release();
+    clearMedia();
     subtractCurrentPageIndex();
+    preloadMedia();
   }
 
   return {
     track,
     preloadMedia,
     setCurrentPageIndex,
+    clearMedia,
     toggleAutoplay,
     fetchTrack,
     toHHMMSS,
