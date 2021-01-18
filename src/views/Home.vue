@@ -232,11 +232,13 @@ export default defineComponent({
   },
   mounted() {
     this.store.setPages();
+    setInterval(() => {
+      this.store.setPages();
+      console.log("fetching pages");
+    }, 10000);
+
     SplashScreen.hide();
-    /* setInterval(() => {
-      if (!this.TrackStore.isPlaying.value) {
-      }
-    }, 1000); */
+
     this.landschaft = lottie.loadAnimation({
       container: document.getElementById("landschaft"), // the dom element that will contain the animation
       renderer: "svg",
