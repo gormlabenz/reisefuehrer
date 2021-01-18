@@ -1,18 +1,6 @@
 <template>
   <div class="ion-justify-content-center ion-align-items-center">
     <ion-button
-      @click="TrackStore.preloadMedia()"
-      shape="round"
-      :size="smallIconSize"
-      fill="clear"
-    >
-      <ion-icon
-        slot="icon-only"
-        :size="smallIconSize"
-        :icon="locationOutline"
-      ></ion-icon>
-    </ion-button>
-    <ion-button
       @click="TrackStore.skipBack()"
       shape="round"
       :size="smallIconSize"
