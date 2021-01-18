@@ -10,6 +10,7 @@ const state = reactive({
   serverUrl: "http://192.168.1.5:5000",
   media: null,
   currentPageIndex: 0,
+  playDistance: 2000,
 });
 
 export default function TrackStore() {
@@ -21,6 +22,10 @@ export default function TrackStore() {
 
   async function toggleAutoplay() {
     state.autoplay = !state.autoplay;
+  }
+
+  async function setPlayDistance(int) {
+    state.playDistance = int;
   }
 
   async function setIsPlaying(bool) {
@@ -149,10 +154,12 @@ export default function TrackStore() {
     pause,
     skip,
     skipBack,
+    setPlayDistance,
     trackLoading: computed(() => state.trackLoading),
     duration: computed(() => state.duration),
     serverUrl: computed(() => state.serverUrl),
     autoplay: computed(() => state.autoplay),
+    playDistance: computed(() => state.playDistance),
     isPlaying: computed(() => state.isPlaying),
   };
 }

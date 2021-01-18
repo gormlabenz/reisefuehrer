@@ -34,9 +34,28 @@
         </ion-text>
       </ion-toolbar>
       <div
+        v-if="!autoplay"
         style="background-color: var(--ion-toolbar-background, var(--ion-background-color, #fff));"
         id="landschaft"
       ></div>
+      <div class="ion-margin" v-else>
+        <ion-range
+          v-model="playDistance"
+          @ionChange="setPlayDistance"
+          min="50"
+          max="2000"
+          step="40"
+          snaps="true"
+          ticks="false"
+          color="dark"
+          :pin="true"
+        ></ion-range>
+        <p
+          style="color: var(--ion-card-color, var(--ion-item-color, var(--ion-color-step-550, #737373))); font-size: 14px"
+        >
+          At how many meters distance should the trek be played.
+        </p>
+      </div>
 
       <ion-toolbar class="bottom-divider">
         <ion-text>
@@ -220,6 +239,7 @@ export default defineComponent({
       readingSpeed: "",
       landschaft: null,
       modal: false,
+      playDistance: 2000,
       icons: {
         playCircleOutline,
         playSkipBackOutline,
@@ -235,6 +255,7 @@ export default defineComponent({
     setInterval(() => {
       this.store.setPages();
       console.log("fetching pages");
+      console.log("playDistance", this.playDistance);
     }, 10000);
 
     SplashScreen.hide();
@@ -332,6 +353,10 @@ export default defineComponent({
     },
     pause() {
       this.TrackStore.pause();
+    },
+    setPlayDistance() {
+      console.log(this.playDistance);
+      this.TrackStore.setPlayDistance(this.playDistance);
     },
   },
   components: {
