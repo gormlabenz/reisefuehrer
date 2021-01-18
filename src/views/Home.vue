@@ -52,7 +52,6 @@
           <ion-col v-for="(page, index) in pages" :key="index">
             <card-big
               :img="page.mainImage.thumb"
-              @click="setAndOpenModal(index)"
               @click-text="setAndOpenModal(index)"
               @click-image="setAndPlayTrack(index)"
             >
@@ -307,9 +306,6 @@ export default defineComponent({
       let string = str.replace(/\(.*?\)/, "");
       return this.truncate(string, n, useWordBoundary);
     },
-    print() {
-      console.log(this.scrollY);
-    },
     stopAndPlay(scrollPos) {
       if (scrollPos < 0) {
         scrollPos = 0;
@@ -326,6 +322,7 @@ export default defineComponent({
     },
     setAndPlayTrack(index) {
       this.TrackStore.setCurrentPageIndex(index);
+      this.TrackStore.play();
       console.log("page index", index);
     },
     play() {
