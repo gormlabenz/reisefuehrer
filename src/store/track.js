@@ -118,6 +118,7 @@ export default function TrackStore() {
   }
   /* Audio Controlls */
   function play() {
+    state.media.setVolume(1.0);
     state.media.play();
   }
 

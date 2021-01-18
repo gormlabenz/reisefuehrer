@@ -1,6 +1,18 @@
 <template>
   <div class="ion-justify-content-center ion-align-items-center">
     <ion-button
+      @click="TrackStore.preloadMedia()"
+      shape="round"
+      :size="smallIconSize"
+      fill="clear"
+    >
+      <ion-icon
+        slot="icon-only"
+        :size="smallIconSize"
+        :icon="locationOutline"
+      ></ion-icon>
+    </ion-button>
+    <ion-button
       @click="TrackStore.skipBack()"
       shape="round"
       :size="smallIconSize"
@@ -70,6 +82,7 @@ import {
   playSkipBackOutline,
   playSkipForwardOutline,
   arrowBackOutline,
+  locationOutline,
 } from "ionicons/icons";
 
 export default defineComponent({
@@ -83,10 +96,11 @@ export default defineComponent({
       playSkipForwardOutline,
       arrowBackOutline,
       pauseCircleOutline,
+      locationOutline,
     };
   },
   mounted() {
-    this.TrackStore.preloadMedia();
+    //this.TrackStore.preloadMedia();
   },
   computed: {
     playIcon() {

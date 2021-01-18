@@ -58,7 +58,7 @@
             >
               <template v-slot:subtitle>{{ page.dist + "M" }}</template>
               <template v-slot:title>{{
-                truncateAndClamps(page.title, 18, false)
+                truncateAndClamps(page.title, 15, false)
               }}</template>
               <template v-slot:content>{{
                 truncate(page.summary, 54, true)
