@@ -133,12 +133,10 @@ export default function TrackStore() {
   function skip() {
     clearMedia();
     addCurrentPageIndex();
-    preloadMedia();
   }
   function skipBack() {
     clearMedia();
     subtractCurrentPageIndex();
-    preloadMedia();
   }
 
   return {
