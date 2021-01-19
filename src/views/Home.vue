@@ -33,30 +33,33 @@
           </p>
         </ion-text>
       </ion-toolbar>
+
+      <transition name="fade">
+        <div class="ion-margin-horizontal" v-if="autoplay">
+          <ion-range
+            style="padding-inline: 0;"
+            v-model="playDistance"
+            @ionChange="setPlayDistance"
+            min="50"
+            max="2000"
+            step="40"
+            snaps="true"
+            ticks="false"
+            color="dark"
+            :pin="true"
+            ><ion-label slot="start">50M</ion-label
+            ><ion-label slot="end">2000M</ion-label></ion-range
+          >
+          <ion-note>
+            At how many meters distance should the trek be played.
+          </ion-note>
+        </div>
+      </transition>
+
       <div
-        v-if="!autoplay"
         style="background-color: var(--ion-toolbar-background, var(--ion-background-color, #fff));"
         id="landschaft"
       ></div>
-      <div class="ion-margin" v-else>
-        <ion-range
-          v-model="playDistance"
-          @ionChange="setPlayDistance"
-          min="50"
-          max="2000"
-          step="40"
-          snaps="true"
-          ticks="false"
-          color="dark"
-          :pin="true"
-        ></ion-range>
-        <p
-          style="color: var(--ion-card-color, var(--ion-item-color, var(--ion-color-step-550, #737373))); font-size: 14px"
-        >
-          At how many meters distance should the trek be played.
-        </p>
-      </div>
-
       <ion-toolbar class="bottom-divider">
         <ion-text>
           <h1 class="ion-margin-start">Places Nearby</h1>
@@ -144,7 +147,7 @@
 
     <ion-footer v-if="track">
       <ion-progress-bar
-        v-if="trackLoading"
+        v-if="TrackStore.trackLoading.value"
         color="dark"
         type="indeterminate"
       ></ion-progress-bar>
@@ -171,7 +174,9 @@
       </ion-toolbar>
     </ion-footer>
   </ion-page>
-  <Modal v-else @dismissed-model="modal = false"> </Modal>
+  <transition name="fade">
+    <Modal v-if="modal" @dismissed-model="modal = false"> </Modal>
+  </transition>
 </template>
 
 <script>
@@ -204,6 +209,7 @@ import {
   IonListHeader,
   IonList,
   IonModal,
+  IonSpinner,
 } from "@ionic/vue";
 
 import CardBig from "../components/CardBig.vue";
@@ -392,6 +398,7 @@ export default defineComponent({
     CardSmall,
     Modal,
     Player,
+    IonSpinner,
   },
 });
 </script>
@@ -410,5 +417,15 @@ ion-icon {
 
 .footer {
   --min-height: 64px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease-out;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
