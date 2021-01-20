@@ -1,5 +1,5 @@
 <template>
-  <ion-card style="margin-right: 0px">
+  <ion-card style="margin-right: 0px; scroll-snap-align: start;">
     <ion-img @click="$emit('click-image')" :src="img"></ion-img>
 
     <div class="ion-padding" @click="$emit('click-text')">

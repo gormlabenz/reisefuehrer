@@ -30,6 +30,17 @@ const app = createApp(App)
   .use(IonicVue)
   .use(router);
 
+app.directive("scroll", {
+  inserted: function(el, binding) {
+    let f = function(evt) {
+      if (binding.value(evt, el)) {
+        window.removeEventListener("scroll", f);
+      }
+    };
+    window.addEventListener("scroll", f);
+  },
+});
+
 router.isReady().then(() => {
   app.mount("#app");
 });

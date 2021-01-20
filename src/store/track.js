@@ -7,7 +7,7 @@ const state = reactive({
   trackLoading: false,
   autoplay: false,
   isPlaying: false,
-  serverUrl: "http://77.1.173.134",
+  serverUrl: "http://192.168.1.14:5000",
   media: null,
   currentPageIndex: 0,
   playDistance: 2000,

@@ -40,9 +40,15 @@ export default function Store() {
             const data = response.json();
             const pageID = data.pageID;
             const summary = response.section(0).text();
-            const mainImage = response.images(0).json();
+            var mainImage = {
+              file: "trek",
+              thumb: "https://i.ibb.co/6WHH7rQ/trek-gray.png",
+              url: "https://i.ibb.co/6WHH7rQ/trek-gray.png",
+            };
+            if (typeof response.images(0) !== "undefined") {
+              mainImage = response.images(0).json();
+            }
             const categories = data.categories;
-
             const result = {
               title,
               pageID,

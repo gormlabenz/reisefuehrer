@@ -31,8 +31,8 @@
       v-else
       @click="TrackStore.pause()"
       shape="round"
-      :size="bigIconSize"
       fill="clear"
+      :size="bigIconSize"
     >
       <ion-icon
         v-bind:class="{ 'icon-large': big }"

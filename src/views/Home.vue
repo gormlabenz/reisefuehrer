@@ -1,149 +1,184 @@
 <template>
   <ion-page v-if="!modal">
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-title>Listen Now</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
     <ion-content
-      :scroll-events="true"
-      @ionScroll="stopAndPlay($event.detail.scrollTop)"
+      style="--ion-background-color: none"
       :fullscreen="true"
       v-if="pages"
+      :scroll-events="true"
+      @ionScroll="animateLists"
     >
-      <ion-header class="ion-no-border" collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Listen Now</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-      <ion-fab vertical="top" horizontal="end" slot="fixed">
+      <ion-fab
+        vertical="top"
+        horizontal="end"
+        slot="fixed"
+        class="ion-margin-top"
+      >
         <ion-fab-button @click="TrackStore.toggleAutoplay()">
           <ion-icon color="light" :icon="autoplayIcon"></ion-icon>
         </ion-fab-button>
       </ion-fab>
 
-      <ion-toolbar>
-        <ion-text>
-          <h1 class="ion-margin-start">Autoplay</h1>
-          <p class="ion-margin-start" style="width: 66%">
-            If you pass a place of interest,<br />
-            a trek is played.
-          </p>
-        </ion-text>
-      </ion-toolbar>
-
-      <transition name="fade">
-        <div class="ion-margin-horizontal" v-if="autoplay">
-          <ion-range
-            style="padding-inline: 0;"
-            v-model="playDistance"
-            @ionChange="setPlayDistance"
-            min="50"
-            max="2000"
-            step="40"
-            snaps="true"
-            ticks="false"
-            color="dark"
-            :pin="true"
-            ><ion-label slot="start">50M</ion-label
-            ><ion-label slot="end">2000M</ion-label></ion-range
+      <div
+        id="header"
+        slot="fixed"
+        style="background-color: var(--ion-color-secondary); width:100%; z-index:-10"
+      >
+        <ion-toolbar color="secondary" style="z-index: 0; margin-top: 32px">
+          <ion-title
+            color="tertiary"
+            style="color: var(--ion-color-tertiary);  position: static;"
+            size="large"
+            >Welcome <br />
+            on Board!</ion-title
           >
-          <ion-note>
-            At how many meters distance should the trek be played.
-          </ion-note>
-        </div>
-      </transition>
+          <ion-text color="teritary">
+            <p
+              class="ion-margin-start"
+              style="width: 66%; color: var(--ion-color-tertiary)"
+            >
+              Turn on Autoplay, and whenever you come across a point of
+              interest, an audio track is played.
+            </p>
+          </ion-text>
+        </ion-toolbar>
+
+        <transition name="fade">
+          <div
+            class="ion-padding-horizontal"
+            style="background-color: var(--ion-color-secondary); margin-top: -24px; padding-bottom: 24px"
+            v-if="autoplay"
+          >
+            <ion-range
+              style="padding-inline: 0;"
+              v-model="playDistance"
+              @ionChange="setPlayDistance"
+              min="50"
+              max="2000"
+              step="40"
+              snaps="true"
+              ticks="false"
+              color="dark"
+              :pin="true"
+              ><ion-label slot="start">50M</ion-label
+              ><ion-label slot="end">2000M</ion-label></ion-range
+            >
+            <ion-note>
+              At how many meters distance should the trek be played.
+            </ion-note>
+          </div>
+        </transition>
+
+        <div
+          style="width: 80%; max-width: 380px; margin-left: auto;  overflow: visible; margin-top: -64px;"
+          id="landschaft"
+        ></div>
+      </div>
 
       <div
-        style="background-color: var(--ion-toolbar-background, var(--ion-background-color, #fff));"
-        id="landschaft"
-      ></div>
-      <ion-toolbar class="bottom-divider">
-        <ion-text>
-          <h1 class="ion-margin-start">Places Nearby</h1>
-        </ion-text>
-      </ion-toolbar>
-
-      <ion-grid>
-        <ion-row
-          class="ion-nowrap ion-align-items-start ion-padding-end"
-          style="overflow-x: scroll;"
+        id="lists"
+        style="margin-top: 324.9px; z-index:10; background-color: white; border-radius: 35px 35px 0 0; width: 100%"
+        v-scroll="animateLists"
+        @scroll="animateLists"
+      >
+        <ion-button
+          style="width: 100%"
+          shape="round"
+          fill="clear"
+          v-on:click="animateLists"
         >
-          <ion-col v-for="(page, index) in pages" :key="index">
-            <card-big
-              :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(index)"
-              @click-image="setAndPlayTrack(index)"
-            >
-              <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-              <template v-slot:title>{{
-                truncateAndClamps(page.title, 15, false)
-              }}</template>
-              <template v-slot:content>{{
-                truncate(page.summary, 54, true)
-              }}</template>
-            </card-big>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+          <ion-icon
+            style="width: 100%"
+            slot="icon-only"
+            :icon="listsIcon"
+          ></ion-icon>
+        </ion-button>
 
-      <!-- <ion-toolbar class="bottom-divider">
-        <ion-text>
-          <h1 class="ion-margin-start">Recently played</h1>
-        </ion-text>
-      </ion-toolbar>
-      <ion-grid>
-        <ion-row
-          class="ion-nowrap ion-align-items-start"
-          style="overflow-x: scroll;"
-        >
-          <ion-col v-for="(page, index) in pages" :key="index">
-            <card-small
-              :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(page.pageID)"
-              @click-image="setAndPlayTrack(page.pageID)"
+        <ion-toolbar style="border-radius: 35px">
+          <ion-text>
+            <h1 class="ion-margin-start" style="margin-top: 0">
+              Places Nearby
+            </h1>
+          </ion-text>
+        </ion-toolbar>
+
+        <ion-grid>
+          <ion-row
+            class="ion-nowrap ion-align-items-start ion-padding-end"
+            style="overflow-x: scroll; scroll-snap-type: x mandatory; scroll-padding-left: 16px;"
+          >
+            <ion-col v-for="(page, index) in pages" :key="index">
+              <card-big
+                :img="page.mainImage.thumb"
+                @click-text="setAndOpenModal(index)"
+                @click-image="setAndPlayTrack(index)"
+              >
+                <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+                <template v-slot:title>{{
+                  truncateAndClamps(page.title, 15, false)
+                }}</template>
+                <template v-slot:content>{{
+                  truncate(page.summary, 54, true)
+                }}</template>
+              </card-big>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <!-- <ion-toolbar class="bottom-divider">
+            <ion-text>
+              <h1 class="ion-margin-start">Recently played</h1>
+            </ion-text>
+          </ion-toolbar>
+          <ion-grid>
+            <ion-row
+              class="ion-nowrap ion-align-items-start"
+              style="overflow-x: scroll;"
             >
-              <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-              <template v-slot:title>{{
-                page.title.replace(/\(.*?\)/, "")
-              }}</template>
-              <template v-slot:content>{{
-                truncate(page.summary, 36, true)
-              }}</template>
-            </card-small>
-            <card-small
-              :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(page.pageID)"
-              @click-image="setAndPlayTrack(page.pageID)"
-            >
-              <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-              <template v-slot:title>{{
-                page.title.replace(/\(.*?\)/, "")
-              }}</template>
-              <template v-slot:content>{{
-                truncate(page.summary, 36, true)
-              }}</template>
-            </card-small>
-            <card-small
-              :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(page.pageID)"
-              @click-image="setAndPlayTrack(page.pageID)"
-            >
-              <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-              <template v-slot:title>{{
-                page.title.replace(/\(.*?\)/, "")
-              }}</template>
-              <template v-slot:content>{{
-                truncate(page.summary, 36, true)
-              }}</template>
-            </card-small>
-          </ion-col>
-        </ion-row>
-      </ion-grid> -->
+              <ion-col v-for="(page, index) in pages" :key="index">
+                <card-small
+                  :img="page.mainImage.thumb"
+                  @click-text="setAndOpenModal(page.pageID)"
+                  @click-image="setAndPlayTrack(page.pageID)"
+                >
+                  <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+                  <template v-slot:title>{{
+                    page.title.replace(/\(.*?\)/, "")
+                  }}</template>
+                  <template v-slot:content>{{
+                    truncate(page.summary, 36, true)
+                  }}</template>
+                </card-small>
+                <card-small
+                  :img="page.mainImage.thumb"
+                  @click-text="setAndOpenModal(page.pageID)"
+                  @click-image="setAndPlayTrack(page.pageID)"
+                >
+                  <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+                  <template v-slot:title>{{
+                    page.title.replace(/\(.*?\)/, "")
+                  }}</template>
+                  <template v-slot:content>{{
+                    truncate(page.summary, 36, true)
+                  }}</template>
+                </card-small>
+                <card-small
+                  :img="page.mainImage.thumb"
+                  @click-text="setAndOpenModal(page.pageID)"
+                  @click-image="setAndPlayTrack(page.pageID)"
+                >
+                  <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+                  <template v-slot:title>{{
+                    page.title.replace(/\(.*?\)/, "")
+                  }}</template>
+                  <template v-slot:content>{{
+                    truncate(page.summary, 36, true)
+                  }}</template>
+                </card-small>
+              </ion-col>
+            </ion-row>
+          </ion-grid> -->
+      </div>
     </ion-content>
-    <ion-spinner v-else class="ion-margin" name="crescent"></ion-spinner>
 
     <ion-footer v-if="track">
       <ion-progress-bar
@@ -167,7 +202,7 @@
         <h4
           @click.self="modal = true"
           class="ion-margin-start"
-          style="margin: 0 0 0 16px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);"
+          style="margin: 0 0 0 16px;"
         >
           {{ trackTitle }}
         </h4>
@@ -210,6 +245,7 @@ import {
   IonList,
   IonModal,
   IonSpinner,
+  IonNote,
 } from "@ionic/vue";
 
 import CardBig from "../components/CardBig.vue";
@@ -224,6 +260,7 @@ const { SplashScreen } = Plugins;
 import Store from "../store";
 import TrackStore from "../store/track.js";
 
+import gsap from "gsap";
 import lottie from "lottie-web";
 import landschaft from "../assets/landschaft.json";
 
@@ -234,6 +271,8 @@ import {
   playSkipBackOutline,
   playSkipForwardOutline,
   arrowBackOutline,
+  chevronUpOutline,
+  chevronDownOutline,
 } from "ionicons/icons";
 
 import { TextToSpeech } from "@ionic-native/text-to-speech";
@@ -245,6 +284,7 @@ export default defineComponent({
       readingSpeed: "",
       landschaft: null,
       modal: false,
+      lists: 32,
       playDistance: 2000,
       icons: {
         playCircleOutline,
@@ -270,11 +310,15 @@ export default defineComponent({
       container: document.getElementById("landschaft"), // the dom element that will contain the animation
       renderer: "svg",
       loop: true,
-      autoplay: false,
+      autoplay: true,
       animationData: landschaft, // the path to the animation json
     });
   },
   computed: {
+    headerHeight() {
+      let header = document.getElementById("header");
+      return header.offsetHeight;
+    },
     store() {
       return Store();
     },
@@ -294,6 +338,13 @@ export default defineComponent({
         return this.icons.playOutline;
       }
     },
+    listsIcon() {
+      if (this.lists < 50) {
+        return chevronUpOutline;
+      } else {
+        return chevronDownOutline;
+      }
+    },
     audioPlaying() {
       return false;
     },
@@ -308,6 +359,16 @@ export default defineComponent({
     },
   },
   methods: {
+    animateLists() {
+      gsap.to("#lists", {
+        "margin-top": this.lists,
+        duration: 0.6,
+        ease: "Power3.easeInOut",
+      });
+      this.lists =
+        this.lists == 54 ? this.headerHeight - this.headerHeight * 0.1 : 54;
+      console.log("lists", this.lists);
+    },
     test(str) {
       return str;
     },
@@ -342,7 +403,7 @@ export default defineComponent({
       if (scrollPos > 160) {
         scrollPos = 160;
       }
-      this.landschaft.goToAndStop(scrollPos * 25);
+      //this.landschaft.goToAndStop(scrollPos * 25);
     },
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
@@ -399,6 +460,7 @@ export default defineComponent({
     Modal,
     Player,
     IonSpinner,
+    IonNote,
   },
 });
 </script>
