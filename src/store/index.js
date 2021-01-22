@@ -5,6 +5,7 @@ const wtf = require("wtf_wikipedia");
 
 const state = reactive({
   position: "",
+  defaultImage: "https://i.ibb.co/6WHH7rQ/trek-gray.png",
   pages: {},
 });
 
@@ -41,8 +42,8 @@ export default function Store() {
             const summary = response.section(0).text();
             var mainImage = {
               file: "trek",
-              thumb: "https://i.ibb.co/6WHH7rQ/trek-gray.png",
-              url: "https://i.ibb.co/6WHH7rQ/trek-gray.png",
+              thumb: state.defaultImage,
+              url: state.defaultImage,
             };
             if (typeof response.images(0) !== "undefined") {
               mainImage = response.images(0).json();
@@ -173,6 +174,7 @@ export default function Store() {
   return {
     sortedPages,
     pages: computed(() => state.pages),
+    defaultImage: computed(() => state.defaultImage),
     nearestPage: computed(() => sortedPages.value[0]),
     setPages,
     setPageLink,
