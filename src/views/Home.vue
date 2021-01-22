@@ -16,44 +16,11 @@
           <ion-icon color="light" :icon="autoplayIcon"></ion-icon>
         </ion-fab-button>
       </ion-fab>
-
-      <Header
-        v-if="initLoad"
-        @animateLists="animateLists"
-        @setAndOpenModal="setAndOpenModal"
-        @setAndPlayTrack="setAndPlayTrack"
-      ></Header>
-      <Lists @animateLists="animateLists"></Lists>
+      <Header></Header>
+      <Lists v-if="initLoad" @animateLists="animateLists"></Lists>
     </ion-content>
 
-    <ion-footer v-if="track">
-      <ion-progress-bar
-        v-if="TrackStore.trackLoading.value"
-        color="dark"
-        type="indeterminate"
-      ></ion-progress-bar>
-
-      <ion-toolbar class="footer">
-        <ion-buttons class="icon-small" slot="end">
-          <Player :big="false"></Player>
-        </ion-buttons>
-        <ion-buttons slot="start">
-          <ion-img
-            @click.self="modal = true"
-            class="ion-margin-start"
-            style="width:36px; height:36px"
-            :src="track.mainImage.thumb"
-          ></ion-img
-        ></ion-buttons>
-        <h4
-          @click.self="modal = true"
-          class="ion-margin-start"
-          style="margin: 0 0 0 16px;"
-        >
-          {{ TextStore.truncate(track.title, 14, false) }}
-        </h4>
-      </ion-toolbar>
-    </ion-footer>
+    <PlayerFooter v-if="track" @modal="modal = true"></PlayerFooter>
   </ion-page>
   <transition name="fade">
     <Modal v-if="modal" @dismissed-model="modal = false"> </Modal>
@@ -95,7 +62,7 @@ import {
 } from "@ionic/vue";
 
 import Modal from "../components/Modal.vue";
-import Player from "../components/Player.vue";
+import PlayerFooter from "../components/PlayerFooter.vue";
 import Header from "../components/Header.vue";
 import Lists from "../components/Lists.vue";
 
@@ -267,9 +234,9 @@ export default defineComponent({
     IonList,
     IonModal,
     Modal,
-    Player,
     Header,
     Lists,
+    PlayerFooter,
     IonSpinner,
     IonNote,
   },
