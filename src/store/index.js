@@ -14,7 +14,6 @@ export default function Store() {
     const coordinates = await Geolocation.getCurrentPosition();
     const data = await coordinates;
     setPosition(data.coords);
-    console.log("Speed", data.coords.speed);
   }
   const setPosition = (position) => {
     state.position = position;

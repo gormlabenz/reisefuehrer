@@ -17,7 +17,12 @@
         </ion-fab-button>
       </ion-fab>
       <Header></Header>
-      <Lists v-if="initLoad" @animateLists="animateLists"></Lists>
+      <Lists
+        id="lists"
+        :on-release="print"
+        v-if="initLoad"
+        @animateLists="animateLists"
+      ></Lists>
     </ion-content>
 
     <PlayerFooter v-if="track" @modal="modal = true"></PlayerFooter>
@@ -60,7 +65,7 @@ export default defineComponent({
       modal: false,
       lists: { small: 54, big: null, current: 54 },
       initLoad: false,
-      pos: 0,
+      gesture: null,
       playDistance: 2000,
       icons: {
         playCircleOutline,
@@ -132,6 +137,9 @@ export default defineComponent({
     setPlayDistance() {
       console.log(this.playDistance);
       this.TrackStore.setPlayDistance(this.playDistance);
+    },
+    print() {
+      console.log("print");
     },
   },
   components: {

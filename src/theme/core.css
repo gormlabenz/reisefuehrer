@@ -5,7 +5,7 @@ ion-card {
 
 ion-img,
 img {
-  border-radius: 20px !important;
+  border-radius: 20px;
   overflow: hidden;
   object-fit: cover;
   -webkit-filter: grayscale(100%);

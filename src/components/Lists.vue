@@ -1,6 +1,5 @@
 <template>
   <div
-    id="lists"
     style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px 16px 0 0; width: 100%;  overflow: hidden; margin-top: 300px"
   >
     <ion-button
