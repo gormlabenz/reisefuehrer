@@ -3,7 +3,6 @@
     <ion-content
       style="--ion-background-color: none"
       :fullscreen="true"
-      v-if="pages"
       :scroll-events="true"
       @ionScroll="setScrollPos($event.detail.scrollTop)"
     >
@@ -11,7 +10,7 @@
         vertical="top"
         horizontal="end"
         slot="fixed"
-        class="ion-margin-top"
+        style="margin-top: 20px"
       >
         <ion-fab-button @click="TrackStore.toggleAutoplay()">
           <ion-icon color="light" :icon="autoplayIcon"></ion-icon>
@@ -26,7 +25,7 @@
         <ion-toolbar color="secondary" style="z-index: 0; margin-top: 32px">
           <ion-title
             color="tertiary"
-            style="color: var(--ion-color-tertiary);  position: static;"
+            style="color: var(--ion-color-tertiary);  position: static; line-height: 1.2"
             size="large"
             >Welcome <br />
             on Board!</ion-title
@@ -34,10 +33,11 @@
           <ion-text color="teritary">
             <p
               class="ion-margin-start"
-              style="width: 66%; color: var(--ion-color-tertiary)"
+              style=" color: var(--ion-color-tertiary)"
             >
-              Turn on Autoplay, and whenever you come across a point of
-              interest, an audio track is played.
+              Turn on Autoplay, and whenever you <br />
+              come across a point of interest, <br />
+              an audio track is played.
             </p>
           </ion-text>
         </ion-toolbar>
@@ -69,61 +69,64 @@
         </transition>
 
         <div
-          style="width: 80%; max-width: 380px; margin-left: auto;  overflow: visible; margin-top: -64px;"
+          style="width: 80%; max-width: 380px; padding: -25px; margin-left: auto;  overflow: visible; margin-top: -64px"
           id="landschaft"
         ></div>
-      </div>
-      <div style="scroll-snap-type: y mandatory">
-        <div style="height: 324.9px; scroll-snap-align: start;"></div>
         <div
-          id="lists"
-          style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 35px 35px 0 0; width: 100%; position: absolute; scroll-snap-align: start; overflow: hidden"
+          style="color: var(--ion-color-danger); height: 100em; border-top: 1px solid #ccc; margin-top: -5px"
+        ></div>
+      </div>
+
+      <div
+        id="lists"
+        v-if="initLoad"
+        style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px 16px 0 0; width: 100%; position: fixed; overflow: hidden; margin-top: 300px"
+      >
+        <ion-button
+          style="width: 100%; margin: 0"
+          shape="round"
+          fill="clear"
+          v-on:click="animateLists"
         >
-          <!--  <ion-button
+          <ion-icon
             style="width: 100%"
-            shape="round"
-            fill="clear"
-            v-on:click="animateLists"
+            slot="icon-only"
+            :icon="listsIcon"
+          ></ion-icon>
+        </ion-button>
+
+        <ion-toolbar style="border-radius: 32px; margin-top: 0px">
+          <ion-text>
+            <h1 class="ion-margin-start" style="margin-top: 0px">
+              Places Nearby
+            </h1>
+          </ion-text>
+        </ion-toolbar>
+
+        <ion-grid>
+          <ion-row
+            class="ion-nowrap ion-align-items-start ion-padding-end"
+            style="overflow-x: scroll; scroll-snap-type: x mandatory; scroll-padding-left: 16px;"
           >
-            <ion-icon
-              style="width: 100%"
-              slot="icon-only"
-              :icon="listsIcon"
-            ></ion-icon>
-          </ion-button> -->
+            <ion-col v-for="(page, index) in pages" :key="index">
+              <card-big
+                :img="page.mainImage.thumb"
+                @click-text="setAndOpenModal(index)"
+                @click-image="setAndPlayTrack(index)"
+              >
+                <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+                <template v-slot:title>{{
+                  truncateAndClamps(page.title, 15, false)
+                }}</template>
+                <template v-slot:content>{{
+                  truncate(page.summary, 54, true)
+                }}</template>
+              </card-big>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
 
-          <ion-toolbar style="border-radius: 35px margin-top: 32px">
-            <ion-text>
-              <h1 class="ion-margin-start">
-                Places Nearby
-              </h1>
-            </ion-text>
-          </ion-toolbar>
-
-          <ion-grid>
-            <ion-row
-              class="ion-nowrap ion-align-items-start ion-padding-end"
-              style="overflow-x: scroll; scroll-snap-type: x mandatory; scroll-padding-left: 16px;"
-            >
-              <ion-col v-for="(page, index) in pages" :key="index">
-                <card-big
-                  :img="page.mainImage.thumb"
-                  @click-text="setAndOpenModal(index)"
-                  @click-image="setAndPlayTrack(index)"
-                >
-                  <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-                  <template v-slot:title>{{
-                    truncateAndClamps(page.title, 15, false)
-                  }}</template>
-                  <template v-slot:content>{{
-                    truncate(page.summary, 54, true)
-                  }}</template>
-                </card-big>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-
-          <!-- <ion-toolbar class="bottom-divider">
+        <!-- <ion-toolbar class="bottom-divider">
               <ion-text>
                 <h1 class="ion-margin-start">Recently played</h1>
               </ion-text>
@@ -176,7 +179,6 @@
                 </ion-col>
               </ion-row>
             </ion-grid> -->
-        </div>
       </div>
     </ion-content>
 
@@ -284,7 +286,9 @@ export default defineComponent({
       readingSpeed: "",
       landschaft: null,
       modal: false,
-      lists: 32,
+      lists: { small: 54, big: null, current: 54 },
+      landschaftBottom: null,
+      initLoad: false,
       pos: 0,
       playDistance: 2000,
       icons: {
@@ -299,6 +303,7 @@ export default defineComponent({
   },
   mounted() {
     this.store.setPages();
+    this.initLoad = true;
     setInterval(() => {
       this.store.setPages();
       console.log("fetching pages");
@@ -340,7 +345,7 @@ export default defineComponent({
       }
     },
     listsIcon() {
-      if (this.lists < 50) {
+      if (this.lists.current <= this.lists.small) {
         return chevronUpOutline;
       } else {
         return chevronDownOutline;
@@ -364,21 +369,16 @@ export default defineComponent({
       this.pos = pos;
     },
     animateLists() {
-      var distance = 324;
-      var scrollTo;
-      if (distance - this.pos * 2 > distance / 2) {
-        scrollTo = 54;
-      } else {
-        scrollTo = 324;
-      }
+      var el = document.getElementById("landschaft"); //record the elem so you don't crawl the DOM everytime
+      var landschaftBottom = el.getBoundingClientRect().bottom - 16;
+
       gsap.to("#lists", {
-        "margin-top": scrollTo,
+        "margin-top": this.lists.current,
         duration: 0.6,
         ease: "Power3.easeInOut",
       });
-      this.lists =
-        this.lists == 54 ? this.headerHeight - this.headerHeight * 0.1 : 54;
-      console.log("lists", this.lists);
+      this.lists.current = this.lists.current > 54 ? 54 : landschaftBottom;
+      console.log("lists landschaftBottom", landschaftBottom);
     },
     test(str) {
       return str;
