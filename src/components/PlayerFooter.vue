@@ -65,4 +65,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.footer {
+  --min-height: 64px;
+}
+</style>

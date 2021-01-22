@@ -87,9 +87,6 @@ export default defineComponent({
       locationOutline,
     };
   },
-  mounted() {
-    //this.TrackStore.preloadMedia();
-  },
   computed: {
     playIcon() {
       if (this.big) {

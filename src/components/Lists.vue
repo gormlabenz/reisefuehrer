@@ -156,9 +156,9 @@ export default {
     },
     listsIcon() {
       if (this.up) {
-        return chevronUpOutline;
-      } else {
         return chevronDownOutline;
+      } else {
+        return chevronUpOutline;
       }
     },
   },

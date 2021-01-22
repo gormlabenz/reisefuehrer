@@ -22,44 +22,12 @@
 
     <PlayerFooter v-if="track" @modal="modal = true"></PlayerFooter>
   </ion-page>
-  <transition name="fade">
-    <Modal v-if="modal" @dismissed-model="modal = false"> </Modal>
-  </transition>
+
+  <Modal id="modal" v-if="modal" @dismissed-model="modal = false"> </Modal>
 </template>
 
 <script>
-import {
-  IonCard,
-  IonCardTitle,
-  IonCardHeader,
-  IonCardContent,
-  IonCardSubtitle,
-  IonContent,
-  IonFooter,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonButtons,
-  IonFab,
-  IonFabButton,
-  IonImg,
-  IonIcon,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonText,
-  IonItem,
-  IonRange,
-  IonLabel,
-  IonProgressBar,
-  IonListHeader,
-  IonList,
-  IonModal,
-  IonSpinner,
-  IonNote,
-} from "@ionic/vue";
+import { IonPage, IonContent, IonFab, IonFabButton, IonIcon } from "@ionic/vue";
 
 import Modal from "../components/Modal.vue";
 import PlayerFooter from "../components/PlayerFooter.vue";
@@ -85,14 +53,10 @@ import {
   arrowBackOutline,
 } from "ionicons/icons";
 
-import { TextToSpeech } from "@ionic-native/text-to-speech";
-
 export default defineComponent({
   name: "Home",
   data() {
     return {
-      readingSpeed: "",
-
       modal: false,
       lists: { small: 54, big: null, current: 54 },
       initLoad: false,
@@ -148,9 +112,6 @@ export default defineComponent({
         return this.icons.playOutline;
       }
     },
-    audioPlaying() {
-      return false;
-    },
   },
   methods: {
     setScrollPos(pos) {
@@ -168,97 +129,30 @@ export default defineComponent({
       this.lists.current = this.lists.current > 54 ? 54 : landschaftBottom;
       console.log("lists landschaftBottom", landschaftBottom);
     },
-    test(str) {
-      return str;
-    },
-    speak(text) {
-      TextToSpeech.speak({
-        text: text,
-        locale: "en-GB",
-        rate: this.readingSpeed / 100,
-      })
-        .then(() => console.log("Success Speach"))
-        .catch((reason) => console.log(reason));
-    },
-
-    stopAndPlay(scrollPos) {
-      if (scrollPos < 0) {
-        scrollPos = 0;
-      }
-      if (scrollPos > 160) {
-        scrollPos = 160;
-      }
-      //this.landschaft.goToAndStop(scrollPos * 25);
-    },
-    play() {
-      this.TrackStore.play();
-    },
-    pause() {
-      this.TrackStore.pause();
-    },
     setPlayDistance() {
       console.log(this.playDistance);
       this.TrackStore.setPlayDistance(this.playDistance);
     },
-    print(coneten) {
-      console.log(coneten);
-    },
   },
   components: {
+    IonPage,
     IonContent,
-    IonButton,
-    IonButtons,
     IonFab,
     IonFabButton,
-    IonHeader,
-    IonFooter,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-    IonCard,
-    IonCardTitle,
-    IonCardHeader,
-    IonCardContent,
-    IonCardSubtitle,
     IonIcon,
-    IonImg,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonText,
-    IonItem,
-    IonRange,
-    IonLabel,
-    IonProgressBar,
-    IonListHeader,
-    IonList,
-    IonModal,
     Modal,
     Header,
     Lists,
     PlayerFooter,
-    IonSpinner,
-    IonNote,
   },
 });
 </script>
 
-<style scoped>
+<style>
 ion-icon {
   color: var(--ion-color-primary);
   --ionicon-stroke-width: 48px;
 }
-
-.bottom-divider {
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
-  border-color: var(--ion-color-light-shade);
-}
-
-.footer {
-  --min-height: 64px;
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.25s ease-out;
