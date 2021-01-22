@@ -10,7 +10,12 @@ export default function TextStore() {
         : subString) + "…"
     );
   }
+  function truncateAndClamps(str, n, useWordBoundary) {
+    let string = str.replace(/\(.*?\)/, "");
+    return truncate(string, n, useWordBoundary);
+  }
   return {
     truncate,
+    truncateAndClamps,
   };
 }
