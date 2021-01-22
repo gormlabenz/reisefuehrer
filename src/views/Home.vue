@@ -87,6 +87,7 @@
           shape="round"
           fill="clear"
           v-on:click="animateLists"
+          @drag="animteLists"
         >
           <ion-icon
             style="width: 100%"
@@ -125,7 +126,9 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-
+        <div
+          style="height: 100em; background-color: var(--ion-toolbar-background)"
+        ></div>
         <!-- <ion-toolbar class="bottom-divider">
               <ion-text>
                 <h1 class="ion-margin-start">Recently played</h1>
@@ -302,8 +305,10 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.store.setPages();
-    this.initLoad = true;
+    this.store.setPages().then(() => {
+      this.initLoad = true;
+    });
+
     setInterval(() => {
       this.store.setPages();
       console.log("fetching pages");

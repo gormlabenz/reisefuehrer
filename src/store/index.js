@@ -113,29 +113,34 @@ export default function Store() {
   }
 
   async function setPages() {
-    await fetchPosition();
-    const pages = await fetchPages(state.position);
-    for (let page of pages) {
-      fetchPage(page.title)
-        .then((response) => {
-          response["title"] = page.title;
-          response["dist"] = page.dist;
+    new Promise(function(resolve) {
+      const _ = async function() {
+        await fetchPosition();
+        const pages = await fetchPages(state.position);
+        for (let page of pages) {
+          fetchPage(page.title)
+            .then((response) => {
+              response["title"] = page.title;
+              response["dist"] = page.dist;
 
-          fetchPageviews(page.title)
-            .then((pageviews) => {
-              response["pageviews"] = pageviews;
+              fetchPageviews(page.title)
+                .then((pageviews) => {
+                  response["pageviews"] = pageviews;
+                })
+                .catch((error) => {
+                  console.log("pageview error", error);
+                  response["pageviews"] = undefined;
+                });
+
+              pushPage(response["pageID"], response);
             })
             .catch((error) => {
-              console.log("pageview error", error);
-              response["pageviews"] = undefined;
+              console.warn(error);
             });
-
-          pushPage(response["pageID"], response);
-        })
-        .catch((error) => {
-          console.warn(error);
-        });
-    }
+        }
+      };
+      _().then(() => resolve());
+    });
   }
 
   /* Sorted Pages */
