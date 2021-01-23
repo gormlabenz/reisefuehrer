@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 100vh">
+  <div id="modal" style="margin-top: 100vh">
     <ion-header>
       <ion-toolbar>
         <ion-title>{{ track.title.replace(/\(.*?\)/, "") }}</ion-title>
@@ -40,6 +40,8 @@ import { arrowBackOutline } from "ionicons/icons";
 import Player from "./Player.vue";
 import { defineComponent } from "vue";
 
+import gsap from "gsap";
+
 import {
   IonContent,
   IonHeader,
@@ -57,11 +59,28 @@ import {
 
 export default defineComponent({
   name: "Modal",
-  props: {},
+  props: { active: Boolean },
   data() {
     return {
       arrowBackOutline,
     };
+  },
+  watch: {
+    active(val) {
+      console.log("modal watcher", val);
+      let top;
+      if (val) {
+        top = 0;
+      } else {
+        top = 100;
+      }
+      gsap.to("#footer", {
+        "margin-top": top,
+        duration: 0.2,
+        ease: "Power3.easeInOut",
+        onComplete: this.$emit("modal"),
+      });
+    },
   },
   computed: {
     TrackStore() {

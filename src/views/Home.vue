@@ -16,10 +16,16 @@
       <Lists v-if="initLoad"></Lists>
     </ion-content>
 
-    <PlayerFooter v-if="track" @modal="modal = true"></PlayerFooter>
+    <PlayerFooter
+      id="footer"
+      @modal="
+        modal = true;
+        print();
+      "
+    ></PlayerFooter>
   </ion-page>
 
-  <Modal id="modal" @dismissed-model="modal = false"> </Modal>
+  <Modal id="modal" :active="modal" @dismissed-model="modal = false"> </Modal>
 </template>
 
 <script>
@@ -37,6 +43,8 @@ const { SplashScreen } = Plugins;
 import Store from "../store";
 import TrackStore from "../store/track.js";
 
+import gsap from "gsap";
+
 import {
   playCircleOutline,
   playOutline,
@@ -51,9 +59,9 @@ export default defineComponent({
   data() {
     return {
       modal: false,
-
       gesture: null,
       playDistance: 2000,
+      footerPos: -64,
       icons: {
         playCircleOutline,
         playSkipBackOutline,
@@ -74,6 +82,8 @@ export default defineComponent({
     }, 10000);
 
     SplashScreen.hide();
+
+    this.animateFooter(0, 0.6);
   },
   computed: {
     headerHeight() {
@@ -103,6 +113,11 @@ export default defineComponent({
       }
     },
   },
+  watch: {
+    modal() {
+      this.toogleFooter();
+    },
+  },
   methods: {
     setPlayDistance() {
       console.log(this.playDistance);
@@ -110,6 +125,17 @@ export default defineComponent({
     },
     print() {
       console.log("print");
+    },
+    animateFooter(value, duration) {
+      gsap.to("#footer", {
+        "margin-bottom": value + "px",
+        duration,
+        ease: "Power3.easeInOut",
+      });
+    },
+    toogleFooter() {
+      this.animateFooter(this.footerPos, 0.2);
+      this.pos = this.pos == -64 ? 0 : -64;
     },
   },
   components: {
