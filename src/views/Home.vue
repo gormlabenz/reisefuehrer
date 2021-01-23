@@ -17,10 +17,10 @@
         </ion-fab-button>
       </ion-fab>
       <Header></Header>
+
       <Lists
         id="lists"
         :on-release="print"
-        v-if="initLoad"
         @animateLists="animateLists"
       ></Lists>
     </ion-content>
@@ -64,7 +64,6 @@ export default defineComponent({
     return {
       modal: false,
       lists: { small: 54, big: null, current: 54 },
-      initLoad: false,
       gesture: null,
       playDistance: 2000,
       icons: {
@@ -77,6 +76,18 @@ export default defineComponent({
       },
     };
   },
+  watch: {
+    initLoad() {
+      var el = document.getElementById("landschaft"); //record the elem so you don't crawl the DOM everytime
+      var landschaftBottom = el.getBoundingClientRect().bottom - 16;
+      console.log("animateListsInit", landschaftBottom);
+      gsap.to("#lists", {
+        "margin-top": landschaftBottom + "px",
+        duration: 0.6,
+        ease: "Power3.easeInOut",
+      });
+    },
+  },
   mounted() {
     this.store.setPages().then(() => {
       this.initLoad = true;
@@ -85,7 +96,6 @@ export default defineComponent({
     setInterval(() => {
       this.store.setPages();
       console.log("fetching pages");
-      console.log("playDistance", this.playDistance);
     }, 10000);
 
     SplashScreen.hide();
@@ -109,6 +119,9 @@ export default defineComponent({
     },
     autoplay() {
       return TrackStore().autoplay.value;
+    },
+    initLoad() {
+      return Store().initLoad.value;
     },
     autoplayIcon() {
       if (this.autoplay) {

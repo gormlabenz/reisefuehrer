@@ -4,7 +4,7 @@
     slot="fixed"
     style="background-color: var(--ion-color-secondary); width:100%; z-index:-10"
   >
-    <ion-toolbar color="secondary" style="z-index: 0; margin-top: 32px">
+    <ion-toolbar color="secondary" style="z-index: 0; margin-top: 64px">
       <ion-title
         color="tertiary"
         style="color: var(--ion-color-tertiary);  position: static; line-height: 1.2"

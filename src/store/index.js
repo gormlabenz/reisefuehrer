@@ -5,6 +5,7 @@ const wtf = require("wtf_wikipedia");
 
 const state = reactive({
   position: "",
+  initLoad: false,
   defaultImage: "https://i.ibb.co/6WHH7rQ/trek-gray.png",
   pages: {},
 });
@@ -138,6 +139,8 @@ export default function Store() {
               console.warn(error);
             });
         }
+        state.initLoad = true;
+        console.log("init load", state.initLoad);
       };
       _().then(() => resolve());
     });
@@ -175,6 +178,7 @@ export default function Store() {
     sortedPages,
     pages: computed(() => state.pages),
     defaultImage: computed(() => state.defaultImage),
+    initLoad: computed(() => state.initLoad),
     nearestPage: computed(() => sortedPages.value[0]),
     setPages,
     setPageLink,

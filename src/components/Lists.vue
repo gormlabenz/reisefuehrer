@@ -1,6 +1,6 @@
 <template>
   <div
-    style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px 16px 0 0; width: 100%;  overflow: hidden; margin-top: 300px"
+    style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px 16px 0 0; width: 100%;  overflow: hidden; margin-top: 100vh"
   >
     <ion-button
       style="width: 100%; margin: 0"
