@@ -1,11 +1,6 @@
 <template>
-  <ion-page v-if="!modal">
-    <ion-content
-      style="--ion-background-color: none"
-      :fullscreen="true"
-      :scroll-events="true"
-      @ionScroll="setScrollPos($event.detail.scrollTop)"
-    >
+  <ion-page>
+    <ion-content style="--ion-background-color: none" :fullscreen="true">
       <ion-fab
         vertical="top"
         horizontal="end"
@@ -24,7 +19,7 @@
     <PlayerFooter v-if="track" @modal="modal = true"></PlayerFooter>
   </ion-page>
 
-  <Modal id="modal" v-if="modal" @dismissed-model="modal = false"> </Modal>
+  <Modal id="modal" @dismissed-model="modal = false"> </Modal>
 </template>
 
 <script>
@@ -41,7 +36,6 @@ const { SplashScreen } = Plugins;
 
 import Store from "../store";
 import TrackStore from "../store/track.js";
-import TextStore from "../store/text.js";
 
 import {
   playCircleOutline,
@@ -92,9 +86,6 @@ export default defineComponent({
     TrackStore() {
       return TrackStore();
     },
-    TextStore() {
-      return TextStore();
-    },
     track() {
       return TrackStore().track.value;
     },
@@ -113,10 +104,6 @@ export default defineComponent({
     },
   },
   methods: {
-    setScrollPos(pos) {
-      this.pos = pos;
-    },
-
     setPlayDistance() {
       console.log(this.playDistance);
       this.TrackStore.setPlayDistance(this.playDistance);
@@ -143,14 +130,5 @@ export default defineComponent({
 ion-icon {
   color: var(--ion-color-primary);
   --ionicon-stroke-width: 48px;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.25s ease-out;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

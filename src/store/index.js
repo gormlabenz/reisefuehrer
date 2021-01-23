@@ -6,7 +6,7 @@ const wtf = require("wtf_wikipedia");
 const state = reactive({
   position: "",
   initLoad: false,
-  defaultImage: "https://i.ibb.co/6WHH7rQ/trek-gray.png",
+  defaultImage: require("../assets/default_image.png"),
   pages: {},
 });
 

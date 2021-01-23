@@ -1,34 +1,36 @@
 <template>
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>{{ track.title.replace(/\(.*?\)/, "") }}</ion-title>
-      <ion-buttons slot="end">
-        <ion-button @click="$emit('dismissed-model')">Close</ion-button>
-      </ion-buttons>
-      <ion-progress-bar
-        v-if="trackLoading"
-        color="dark"
-        type="indeterminate"
-      ></ion-progress-bar>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content class="ion-padding">
-    <div class="ion-text-center ion-margin-top">
-      <ion-grid>
-        <img :src="track.mainImage.url" />
-        <ion-row class="ion-justify-content-center ion-align-items-center">
-          <Player :big="true"></Player>
-        </ion-row>
-      </ion-grid>
-    </div>
+  <div style="margin-top: 100vh">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ track.title.replace(/\(.*?\)/, "") }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button @click="$emit('dismissed-model')">Close</ion-button>
+        </ion-buttons>
+        <ion-progress-bar
+          v-if="trackLoading"
+          color="dark"
+          type="indeterminate"
+        ></ion-progress-bar>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div class="ion-text-center ion-margin-top">
+        <ion-grid>
+          <img :src="track.mainImage.url" />
+          <ion-row class="ion-justify-content-center ion-align-items-center">
+            <Player :big="true"></Player>
+          </ion-row>
+        </ion-grid>
+      </div>
 
-    <div>
-      <h1>{{ track.title }}</h1>
-      <p>
-        {{ track.summary }}
-      </p>
-    </div>
-  </ion-content>
+      <div>
+        <h1>{{ track.title }}</h1>
+        <p>
+          {{ track.summary }}
+        </p>
+      </div>
+    </ion-content>
+  </div>
 </template>
 
 <script>
