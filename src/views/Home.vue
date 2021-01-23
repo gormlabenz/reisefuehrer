@@ -5,7 +5,7 @@
         vertical="top"
         horizontal="end"
         slot="fixed"
-        style="margin-top: 20px; margin-right: 20px"
+        style="margin-top: 20px; margin-right: 10px"
       >
         <ion-fab-button @click="TrackStore.toggleAutoplay()">
           <ion-icon color="light" :icon="autoplayIcon"></ion-icon>

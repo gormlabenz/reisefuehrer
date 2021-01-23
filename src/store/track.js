@@ -41,7 +41,7 @@ export default function TrackStore() {
   });
 
   function addCurrentPageIndex() {
-    if (state.currentPageIndex > Store().sortedPages.value.length) {
+    if (state.currentPageIndex + 1 == Store().sortedPages.value.length - 1) {
       state.currentPageIndex = Store().sortedPages.value.length;
     } else {
       state.currentPageIndex = state.currentPageIndex + 1;
@@ -131,6 +131,8 @@ export default function TrackStore() {
     state.media.pause();
   }
   function skip() {
+    console.log("len", Store().sortedPages.value.length);
+    console.log("index", state.currentPageIndex);
     clearMedia();
     addCurrentPageIndex();
   }
@@ -159,5 +161,6 @@ export default function TrackStore() {
     autoplay: computed(() => state.autoplay),
     playDistance: computed(() => state.playDistance),
     isPlaying: computed(() => state.isPlaying),
+    currentPageIndex: computed(() => state.currentPageIndex),
   };
 }

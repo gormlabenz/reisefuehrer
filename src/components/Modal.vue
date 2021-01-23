@@ -77,15 +77,11 @@ export default defineComponent({
         gestureName: "swipe",
         direction: "y",
         onStart: () => {},
-        onMove: () => {
-          //this.icon.style.transform = "scaleX(" + ev.deltaY / 50 + ")";
-        },
+        onMove: () => {},
         onEnd: (ev) => {
           if (ev.deltaY > 100) {
             this.$emit("dismissed-model");
           }
-          console.log(ev);
-          //this.icon.style.transform = "scaleX(1)";
         },
       };
 

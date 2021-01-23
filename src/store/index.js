@@ -14,7 +14,7 @@ export default function Store() {
   /* Position */
   async function fetchPosition() {
     const coordinates = await Geolocation.getCurrentPosition();
-    const data = await coordinates;
+    const data = coordinates;
     setPosition(data.coords);
   }
   const setPosition = (position) => {

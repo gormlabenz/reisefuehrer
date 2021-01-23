@@ -5,6 +5,7 @@
       shape="round"
       :size="smallIconSize"
       fill="clear"
+      :disabled="disableSkipBack"
     >
       <ion-icon
         slot="icon-only"
@@ -47,6 +48,7 @@
       shape="round"
       :size="smallIconSize"
       fill="clear"
+      :disabled="disableSkip"
     >
       <ion-icon
         slot="icon-only"
@@ -60,6 +62,7 @@
 <script>
 import { defineComponent } from "vue";
 import TrackStore from "../store/track.js";
+import Store from "../store";
 import { IonButton, IonButtons, IonIcon } from "@ionic/vue";
 
 import {
@@ -88,6 +91,23 @@ export default defineComponent({
     };
   },
   computed: {
+    disableSkip() {
+      if (
+        Store().sortedPages.value.length - 1 ==
+        TrackStore().currentPageIndex.value
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    disableSkipBack() {
+      if (TrackStore().currentPageIndex.value == 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     playIcon() {
       if (this.big) {
         return this.playCircleOutline;
