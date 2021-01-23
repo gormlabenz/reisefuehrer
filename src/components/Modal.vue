@@ -1,5 +1,5 @@
 <template>
-  <div id="modal" style="margin-top: 100vh; ">
+  <div ref="modal" style="margin-top: 100vh; ">
     <ion-header>
       <ion-toolbar>
         <ion-title>{{ track.title.replace(/\(.*?\)/, "") }}</ion-title>
@@ -39,6 +39,7 @@ import Store from "../store";
 import { arrowBackOutline } from "ionicons/icons";
 import Player from "./Player.vue";
 import { defineComponent } from "vue";
+import { createGesture } from "@ionic/core";
 
 import {
   IonContent,
@@ -60,7 +61,38 @@ export default defineComponent({
   data() {
     return {
       arrowBackOutline,
+      el: null,
     };
+  },
+
+  mounted() {
+    this.el = this.$refs.modal;
+    console.log(this.el);
+    this.gestureFunc();
+  },
+  methods: {
+    async gestureFunc() {
+      const gestureOptions = {
+        el: this.el,
+        gestureName: "swipe",
+        direction: "y",
+        onStart: () => {},
+        onMove: () => {
+          //this.icon.style.transform = "scaleX(" + ev.deltaY / 50 + ")";
+        },
+        onEnd: (ev) => {
+          if (ev.deltaY > 100) {
+            this.$emit("dismissed-model");
+          }
+          console.log(ev);
+          //this.icon.style.transform = "scaleX(1)";
+        },
+      };
+
+      const gesture = await createGesture(gestureOptions);
+      gesture.enable();
+      console.log(gesture);
+    },
   },
   computed: {
     TrackStore() {

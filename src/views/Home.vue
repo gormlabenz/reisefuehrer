@@ -19,7 +19,7 @@
     <PlayerFooter id="footer" @modal="modal = true"></PlayerFooter>
   </ion-page>
 
-  <Modal id="modal" :active="modal" @dismissed-model="modal = false"> </Modal>
+  <Modal id="modal" @dismissed-model="modal = false"> </Modal>
 </template>
 
 <script>

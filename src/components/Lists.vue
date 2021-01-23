@@ -149,7 +149,7 @@ export default {
           this.icon.style.transform = "scaleX(" + ev.deltaY / 50 + ")";
         },
         onEnd: (ev) => {
-          if (Math.abs(ev.startY - ev.currentY) > 100) {
+          if (Math.abs(ev.startY - ev.currentY) > 50) {
             this.toggleLists();
           } else {
             this.animateLists(this.landschaftBottom);
