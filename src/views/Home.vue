@@ -10,7 +10,7 @@
         vertical="top"
         horizontal="end"
         slot="fixed"
-        style="margin-top: 20px"
+        style="margin-top: 20px; margin-right: 20px"
       >
         <ion-fab-button @click="TrackStore.toggleAutoplay()">
           <ion-icon color="light" :icon="autoplayIcon"></ion-icon>
@@ -18,11 +18,7 @@
       </ion-fab>
       <Header></Header>
 
-      <Lists
-        id="lists"
-        :on-release="print"
-        @animateLists="animateLists"
-      ></Lists>
+      <Lists v-if="initLoad"></Lists>
     </ion-content>
 
     <PlayerFooter v-if="track" @modal="modal = true"></PlayerFooter>
@@ -47,8 +43,6 @@ import Store from "../store";
 import TrackStore from "../store/track.js";
 import TextStore from "../store/text.js";
 
-import gsap from "gsap";
-
 import {
   playCircleOutline,
   playOutline,
@@ -63,7 +57,7 @@ export default defineComponent({
   data() {
     return {
       modal: false,
-      lists: { small: 54, big: null, current: 54 },
+
       gesture: null,
       playDistance: 2000,
       icons: {
@@ -76,22 +70,9 @@ export default defineComponent({
       },
     };
   },
-  watch: {
-    initLoad() {
-      var el = document.getElementById("landschaft"); //record the elem so you don't crawl the DOM everytime
-      var landschaftBottom = el.getBoundingClientRect().bottom - 16;
-      console.log("animateListsInit", landschaftBottom);
-      gsap.to("#lists", {
-        "margin-top": landschaftBottom + "px",
-        duration: 0.6,
-        ease: "Power3.easeInOut",
-      });
-    },
-  },
+
   mounted() {
-    this.store.setPages().then(() => {
-      this.initLoad = true;
-    });
+    this.store.setPages();
 
     setInterval(() => {
       this.store.setPages();
@@ -135,18 +116,7 @@ export default defineComponent({
     setScrollPos(pos) {
       this.pos = pos;
     },
-    animateLists() {
-      var el = document.getElementById("landschaft"); //record the elem so you don't crawl the DOM everytime
-      var landschaftBottom = el.getBoundingClientRect().bottom - 16;
 
-      gsap.to("#lists", {
-        "margin-top": this.lists.current,
-        duration: 0.6,
-        ease: "Power3.easeInOut",
-      });
-      this.lists.current = this.lists.current > 54 ? 54 : landschaftBottom;
-      console.log("lists landschaftBottom", landschaftBottom);
-    },
     setPlayDistance() {
       console.log(this.playDistance);
       this.TrackStore.setPlayDistance(this.playDistance);
