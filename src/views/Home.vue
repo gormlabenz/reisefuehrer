@@ -13,16 +13,10 @@
       </ion-fab>
       <Header></Header>
 
-      <Lists v-if="initLoad"></Lists>
+      <Lists v-if="initLoad" @modal="modal = true"></Lists>
     </ion-content>
 
-    <PlayerFooter
-      id="footer"
-      @modal="
-        modal = true;
-        print();
-      "
-    ></PlayerFooter>
+    <PlayerFooter id="footer" @modal="modal = true"></PlayerFooter>
   </ion-page>
 
   <Modal id="modal" :active="modal" @dismissed-model="modal = false"> </Modal>
@@ -83,7 +77,7 @@ export default defineComponent({
 
     SplashScreen.hide();
 
-    this.animateFooter(0, 0.6);
+    this.animateFooter(true);
   },
   computed: {
     headerHeight() {
@@ -114,8 +108,14 @@ export default defineComponent({
     },
   },
   watch: {
-    modal() {
-      this.toogleFooter();
+    modal(val) {
+      if (val) {
+        this.animateFooter(false);
+        this.animateModal(true);
+      } else {
+        this.animateModal(false);
+        this.animateFooter(true);
+      }
     },
   },
   methods: {
@@ -126,16 +126,21 @@ export default defineComponent({
     print() {
       console.log("print");
     },
-    animateFooter(value, duration) {
+    animateFooter(up) {
+      let value = up ? 0 : -64;
       gsap.to("#footer", {
         "margin-bottom": value + "px",
-        duration,
+        duration: 0.2,
         ease: "Power3.easeInOut",
       });
     },
-    toogleFooter() {
-      this.animateFooter(this.footerPos, 0.2);
-      this.pos = this.pos == -64 ? 0 : -64;
+    animateModal(up) {
+      let value = up ? 0 : 100;
+      gsap.to("#modal", {
+        "margin-top": value,
+        duration: 0.4,
+        ease: "Power3.easeInOut",
+      });
     },
   },
   components: {

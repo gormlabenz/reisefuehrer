@@ -175,7 +175,7 @@ export default {
     },
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
-      this.modal = true;
+      this.$emit("modal");
     },
     setAndPlayTrack(index) {
       this.TrackStore.setCurrentPageIndex(index);

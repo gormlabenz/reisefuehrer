@@ -1,10 +1,10 @@
 <template>
   <ion-footer style="margin-bottom: -64px">
-    <ion-progress-bar
-      v-if="TrackStore.trackLoading.value"
+    <!-- <ion-progress-bar
+      v-if="trackLoading"
       color="dark"
       type="indeterminate"
-    ></ion-progress-bar>
+    ></ion-progress-bar> -->
 
     <ion-toolbar class="footer">
       <ion-buttons class="icon-small" slot="end">
@@ -51,6 +51,9 @@ export default {
     },
     TrackStore() {
       return TrackStore();
+    },
+    trackLoading() {
+      return TrackStore().trackLoading.value;
     },
     track() {
       if (TrackStore().track.value) {
