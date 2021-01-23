@@ -2,11 +2,11 @@
   <ion-card style="margin-right: 0px; scroll-snap-align: start;">
     <ion-img
       v-show="didLoad"
-      :onIonImgDidLoad="imgDidLoad()"
+      :onIonImgDidLoad="(didLoad = true)"
       @click="$emit('click-image')"
       :src="img"
     ></ion-img>
-    <img v-show="!didLoad" src="../assets/default_image.png" alt="" />
+    <img v-if="!didLoad" src="../assets/default_image.png" alt="" />
 
     <div class="ion-padding" @click="$emit('click-text')">
       <div>
@@ -38,12 +38,6 @@ export default {
   props: { img: String },
   data() {
     return { didLoad: false };
-  },
-  methods: {
-    imgDidLoad() {
-      this.didLoad = true;
-      console.log("fimgDidLoad;");
-    },
   },
   components: {
     IonCard,

@@ -140,7 +140,6 @@ export default function Store() {
             });
         }
         state.initLoad = true;
-        console.log("init load", state.initLoad);
       };
       _().then(() => resolve());
     });
