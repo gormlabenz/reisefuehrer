@@ -41,7 +41,7 @@ export default function TrackStore() {
   });
 
   function addCurrentPageIndex() {
-    if (state.currentPageIndex + 1 == Store().sortedPages.value.length - 1) {
+    if (state.currentPageIndex == Store().sortedPages.value.length + 1) {
       state.currentPageIndex = Store().sortedPages.value.length;
     } else {
       state.currentPageIndex = state.currentPageIndex + 1;
