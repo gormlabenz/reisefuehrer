@@ -6,7 +6,15 @@ const wtf = require("wtf_wikipedia");
 const state = reactive({
   position: "",
   initLoad: false,
-  defaultImage: require("../assets/default_image.png"),
+  defaultPage: {
+    title: "Loading",
+    summary: "…",
+    mainImage: {
+      file: "trek",
+      url: require("../assets/default_image.png"),
+      thumb: require("../assets/default_image.png"),
+    },
+  },
   pages: {},
 });
 
@@ -41,11 +49,7 @@ export default function Store() {
             const data = response.json();
             const pageID = data.pageID;
             const summary = response.section(0).text();
-            var mainImage = {
-              file: "trek",
-              thumb: state.defaultImage,
-              url: state.defaultImage,
-            };
+            var mainImage = state.defaultPage.mainImage;
             if (typeof response.images(0) !== "undefined") {
               mainImage = response.images(0).json();
             }
@@ -148,35 +152,39 @@ export default function Store() {
   /* Sorted Pages */
 
   const sortedPages = computed(() => {
-    const dist = [];
+    if (state.pages) {
+      const dist = [];
 
-    const pages = state.pages;
+      const pages = state.pages;
 
-    for (let page in pages) {
-      dist.push(pages[page].dist);
-    }
-
-    dist.sort(function(a, b) {
-      return a - b;
-    });
-
-    const sortedPages = [];
-
-    for (let dis in dist) {
       for (let page in pages) {
-        if (dist[dis] == pages[page].dist) {
-          sortedPages.push(pages[page]);
+        dist.push(pages[page].dist);
+      }
+
+      dist.sort(function(a, b) {
+        return a - b;
+      });
+
+      const sortedPages = [];
+
+      for (let dis in dist) {
+        for (let page in pages) {
+          if (dist[dis] == pages[page].dist) {
+            sortedPages.push(pages[page]);
+          }
         }
       }
-    }
 
-    return sortedPages;
+      return sortedPages;
+    } else {
+      return [state.defaultPage];
+    }
   });
 
   return {
     sortedPages,
     pages: computed(() => state.pages),
-    defaultImage: computed(() => state.defaultImage),
+    defaultPage: computed(() => state.defaultPage),
     initLoad: computed(() => state.initLoad),
     nearestPage: computed(() => sortedPages.value[0]),
     setPages,

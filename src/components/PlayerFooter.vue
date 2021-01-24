@@ -59,10 +59,7 @@ export default {
       if (TrackStore().track.value) {
         return TrackStore().track.value;
       } else {
-        return {
-          title: "Loading…",
-          mainImage: { thumb: Store().defaultImage.value },
-        };
+        return Store().defaultPage.value;
       }
     },
   },

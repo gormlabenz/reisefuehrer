@@ -101,11 +101,7 @@ export default defineComponent({
       if (TrackStore().track.value) {
         return TrackStore().track.value;
       } else {
-        return {
-          title: "Loading",
-          summary: "…",
-          mainImage: { url: Store().defaultImage.value },
-        };
+        return Store().defaultPage.value;
       }
     },
   },
