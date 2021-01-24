@@ -23,7 +23,7 @@
         class="ion-margin-start"
         style="margin: 0 0 0 16px;"
       >
-        {{ TextStore.truncate(track.title, 14, false) }}
+        {{ TextStore.truncate(track.title, 14, false).replace(/\(.*?\)/, "") }}
       </h4>
     </ion-toolbar>
   </ion-footer>

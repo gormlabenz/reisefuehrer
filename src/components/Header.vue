@@ -47,17 +47,13 @@
 
     <div
       style="width: 80%; max-width: 380px; padding: -25px; margin-left: auto;  overflow: visible; margin-top: -64px"
-    >
-      <div id="landschaft"></div>
-      <img
-        style="border-radius: 0; filter: grayscale(0%); margin-top: -5px"
-        src="../assets/LandschaftBG.svg"
-        alt=""
-      />
-    </div>
+      id="landschaft"
+    ></div>
 
     <div
-      style="color: var(--ion-color-danger); height: 100em;  margin-top: -5px"
+      style="background-color: var(--ion-color-danger);
+    height: 100em;
+    margin-top: -4.5px;"
     ></div>
   </div>
 </template>
