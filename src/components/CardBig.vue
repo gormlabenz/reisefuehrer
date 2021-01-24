@@ -8,7 +8,11 @@
     ></ion-img>
     <img v-if="!didLoad" src="../assets/default_image.png" alt="" />
 
-    <div class="ion-padding" @click="$emit('click-text')">
+    <div
+      class="ion-padding"
+      style="margin-bottom: 0px"
+      @click="$emit('click-text')"
+    >
       <div>
         <div style="display:inline-block">
           <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>

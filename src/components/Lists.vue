@@ -2,11 +2,11 @@
   <div
     id="lists"
     ref="gesture"
-    style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px 16px 0 0; width: 100%;  overflow: hidden; margin-top: 100vh; position: fixed"
+    style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px; width: 100%;  overflow: hidden; margin-top: 100vh; position: fixed; height: 100vh"
   >
     <div
       ref="icon"
-      style="width:40px; height: 3px; background-color: var(--ion-color-primary); margin-left: auto; margin-right: auto; margin-top: 16px; border-radius: 1.5px"
+      style="width:40px; height: 3px; background-color: var(--ion-color-primary); margin-left: auto; margin-right: auto; margin-top: 32px; border-radius: 1.5px"
     ></div>
     <ion-toolbar style="border-radius: 32px; margin-top: 0px">
       <ion-text>
@@ -38,64 +38,64 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <div
-      style="height: 100em; background-color: var(--ion-toolbar-background)"
-    ></div>
-    <!-- 
-    
-   <ion-toolbar class="bottom-divider">
-              <ion-text>
-                <h1 class="ion-margin-start">Recently played</h1>
-              </ion-text>
-            </ion-toolbar>
-            <ion-grid>
-              <ion-row
-                class="ion-nowrap ion-align-items-start"
-                style="overflow-x: scroll;"
-              >
-                <ion-col v-for="(page, index) in pages" :key="index">
-                  <card-small
-                    :img="page.mainImage.thumb"
-                    @click-text="setAndOpenModal(page.pageID)"
-                    @click-image="setAndPlayTrack(page.pageID)"
-                  >
-                    <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-                    <template v-slot:title>{{
-                      page.title.replace(/\(.*?\)/, "")
-                    }}</template>
-                    <template v-slot:content>{{
-                      truncate(page.summary, 36, true)
-                    }}</template>
-                  </card-small>
-                  <card-small
-                    :img="page.mainImage.thumb"
-                    @click-text="setAndOpenModal(page.pageID)"
-                    @click-image="setAndPlayTrack(page.pageID)"
-                  >
-                    <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-                    <template v-slot:title>{{
-                      page.title.replace(/\(.*?\)/, "")
-                    }}</template>
-                    <template v-slot:content>{{
-                      truncate(page.summary, 36, true)
-                    }}</template>
-                  </card-small>
-                  <card-small
-                    :img="page.mainImage.thumb"
-                    @click-text="setAndOpenModal(page.pageID)"
-                    @click-image="setAndPlayTrack(page.pageID)"
-                  >
-                    <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-                    <template v-slot:title>{{
-                      page.title.replace(/\(.*?\)/, "")
-                    }}</template>
-                    <template v-slot:content>{{
-                      truncate(page.summary, 36, true)
-                    }}</template>
-                  </card-small>
-                </ion-col>
-              </ion-row>
-            </ion-grid> -->
+
+    <ion-toolbar class="bottom-divider" style="margin-top: -32px">
+      <ion-text>
+        <h1 class="ion-margin-start">Recently played</h1>
+      </ion-text>
+    </ion-toolbar>
+    <ion-grid>
+      <ion-row
+        class="ion-nowrap ion-align-items-start"
+        style="overflow-x: scroll;scroll-snap-type: x mandatory;"
+      >
+        <ion-col
+          v-for="(page, index) in pages"
+          :key="index"
+          style="scroll-snap-align: start;"
+        >
+          <card-small
+            :img="page.mainImage.thumb"
+            @click-text="setAndOpenModal(index)"
+            @click-image="setAndPlayTrack(index)"
+          >
+            <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+            <template v-slot:title>{{
+              page.title.replace(/\(.*?\)/, "")
+            }}</template>
+            <template v-slot:content>{{
+              TextStore.truncate(page.summary, 36, true)
+            }}</template>
+          </card-small>
+          <card-small
+            :img="page.mainImage.thumb"
+            @click-text="setAndOpenModal(index)"
+            @click-image="setAndPlayTrack(index)"
+          >
+            <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+            <template v-slot:title>{{
+              page.title.replace(/\(.*?\)/, "")
+            }}</template>
+            <template v-slot:content>{{
+              TextStore.truncate(page.summary, 36, true)
+            }}</template>
+          </card-small>
+          <card-small
+            :img="page.mainImage.thumb"
+            @click-text="setAndOpenModal(index)"
+            @click-image="setAndPlayTrack(index)"
+          >
+            <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+            <template v-slot:title>{{
+              page.title.replace(/\(.*?\)/, "")
+            }}</template>
+            <template v-slot:content>{{
+              TextStore.truncate(page.summary, 36, true)
+            }}</template>
+          </card-small>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </template>
 
@@ -124,7 +124,11 @@ import gsap from "gsap";
 export default {
   data() {
     return {
-      listsPos: { small: 54, big: null, current: 54 },
+      listsPos: {
+        up: { marginTop: 0, borderRadius: 0, marginIcon: 32 },
+        down: { marginTop: null, borderRadius: 16, marginIcon: 16 },
+        current: { marginTop: 0, borderRadius: 0, marginIcon: 32 },
+      },
       removeOutline,
       icon: null,
       lists: null,
@@ -133,9 +137,9 @@ export default {
   mounted() {
     this.lists = this.$refs.gesture;
     this.icon = this.$refs.icon;
-    this.landschaftBottom =
+    this.listsPos.down.marginTop =
       document.getElementById("landschaft").getBoundingClientRect().bottom - 16;
-    this.animateLists(this.landschaftBottom);
+    this.animateLists(this.listsPos.down);
     this.gestureFunc();
   },
   methods: {
@@ -152,7 +156,7 @@ export default {
           if (Math.abs(ev.startY - ev.currentY) > 50) {
             this.toggleLists();
           } else {
-            this.animateLists(this.landschaftBottom);
+            this.animateLists(this.listsPos.down);
           }
           this.icon.style.transform = "scaleX(1)";
         },
@@ -163,7 +167,13 @@ export default {
     },
     animateLists(value) {
       gsap.to(this.lists, {
-        "margin-top": value + "px",
+        "margin-top": value.marginTop + "px",
+        "border-radius": value.borderRadius + "px",
+        duration: 0.6,
+        ease: "Power3.easeInOut",
+      });
+      gsap.to(this.icon, {
+        "margin-top": value.marginIcon + "px",
         duration: 0.6,
         ease: "Power3.easeInOut",
       });
@@ -171,7 +181,9 @@ export default {
     toggleLists() {
       this.animateLists(this.listsPos.current);
       this.listsPos.current =
-        this.listsPos.current > 54 ? 54 : this.landschaftBottom;
+        this.listsPos.current === this.listsPos.down
+          ? this.listsPos.up
+          : this.listsPos.down;
     },
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
