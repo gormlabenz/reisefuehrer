@@ -9,6 +9,7 @@ const state = reactive({
   isPlaying: false,
   serverUrl: "http://192.168.1.14:5000",
   media: null,
+  mediaPageID: null,
   currentPageIndex: 0,
   playDistance: 2000,
 });
@@ -123,7 +124,10 @@ export default function TrackStore() {
   }
   /* Audio Controlls */
   function play() {
-    preloadMedia();
+    if (state.mediaPageID != track.value.pageID) {
+      preloadMedia();
+    }
+    state.mediaPageID = track.value.pageID;
     state.media.play();
   }
 
