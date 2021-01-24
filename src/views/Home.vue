@@ -13,7 +13,18 @@
       </ion-fab>
       <Header></Header>
 
-      <Lists v-if="initLoad" @modal="modal = true"></Lists>
+      <div
+        style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory;"
+      >
+        <div
+          style="scroll-snap-align: start; height: 50vh; position: relative;"
+        ></div>
+        <Lists
+          style="scroll-snap-align: end; position: relative;"
+          v-if="initLoad"
+          @modal="modal = true"
+        ></Lists>
+      </div>
     </ion-content>
 
     <PlayerFooter id="footer" @modal="modal = true"></PlayerFooter>
@@ -56,6 +67,11 @@ export default defineComponent({
       gesture: null,
       playDistance: 2000,
       footerPos: -64,
+      listsPos: {
+        up: { marginTop: 0, borderRadius: 0, marginIcon: 32 },
+        down: { marginTop: null, borderRadius: 16, marginIcon: 16 },
+        current: { marginTop: 0, borderRadius: 0, marginIcon: 32 },
+      },
       icons: {
         playCircleOutline,
         playSkipBackOutline,
@@ -76,6 +92,8 @@ export default defineComponent({
     }, 10000);
 
     SplashScreen.hide();
+    this.listsPos.down.marginTop =
+      document.getElementById("landschaft").getBoundingClientRect().bottom - 16;
 
     this.animateFooter(true);
   },

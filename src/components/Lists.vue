@@ -2,7 +2,7 @@
   <div
     id="lists"
     ref="gesture"
-    style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px; width: 100%;  overflow: hidden; margin-top: 50vh; position: fixed; height: 100vh"
+    style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px; width: 100%; overflow: hidden; height: 100vh;"
   >
     <div
       ref="icon"
@@ -125,72 +125,18 @@ import TextStore from "../store/text.js";
 import TrackStore from "../store/track.js";
 
 import { removeOutline } from "ionicons/icons";
-import { createGesture } from "@ionic/core";
-
-import gsap from "gsap";
 
 export default {
   data() {
     return {
-      listsPos: {
-        up: { marginTop: 0, borderRadius: 0, marginIcon: 32 },
-        down: { marginTop: null, borderRadius: 16, marginIcon: 16 },
-        current: { marginTop: 0, borderRadius: 0, marginIcon: 32 },
-      },
       removeOutline,
       icon: null,
-      lists: null,
     };
   },
   mounted() {
-    this.lists = this.$refs.gesture;
     this.icon = this.$refs.icon;
-    this.listsPos.down.marginTop =
-      document.getElementById("landschaft").getBoundingClientRect().bottom - 16;
-    this.animateLists(this.listsPos.down);
-    this.gestureFunc();
   },
   methods: {
-    async gestureFunc() {
-      const gestureOptions = {
-        el: this.lists,
-        gestureName: "swipe",
-        direction: "y",
-        onStart: () => {},
-        onMove: (ev) => {
-          this.icon.style.transform = "scaleX(" + ev.deltaY / 50 + ")";
-        },
-        onEnd: (ev) => {
-          if (Math.abs(ev.deltaY) > 150) {
-            this.toggleLists();
-          }
-          this.icon.style.transform = "scaleX(1)";
-        },
-      };
-
-      const gesture = await createGesture(gestureOptions);
-      gesture.enable();
-    },
-    animateLists(value) {
-      gsap.to(this.lists, {
-        "margin-top": value.marginTop + "px",
-        "border-radius": value.borderRadius + "px",
-        duration: 0.6,
-        ease: "Power3.easeInOut",
-      });
-      gsap.to(this.icon, {
-        "margin-top": value.marginIcon + "px",
-        duration: 0.6,
-        ease: "Power3.easeInOut",
-      });
-    },
-    toggleLists() {
-      this.animateLists(this.listsPos.current);
-      this.listsPos.current =
-        this.listsPos.current === this.listsPos.down
-          ? this.listsPos.up
-          : this.listsPos.down;
-    },
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
       this.$emit("modal");
