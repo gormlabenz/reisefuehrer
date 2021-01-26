@@ -22,14 +22,7 @@
         style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory; "
       >
         <spacing></spacing>
-        <div
-          style="position: sticky; top: 0; z-index: 100; height: 32px; background-color: var(--ion-toolbar-background); border-radius: 32px 32px 0 0; width: 100%; display: flex; justify-content: center; align-items: flex-end; "
-        >
-          <div
-            ref="icon"
-            style="width:40px; height: 3px; background-color: var(--ion-color-primary);  border-radius: 1.5px; margin-bottom: 8px"
-          ></div>
-        </div>
+        <StickyHeader></StickyHeader>
         <places-nearby @modal="modal = true"></places-nearby>
         <recently-played @modal="modal = true"></recently-played>
       </div>
@@ -47,6 +40,7 @@ import { IonPage, IonContent, IonFab, IonFabButton, IonIcon } from "@ionic/vue";
 import Modal from "../components/Modal.vue";
 import PlayerFooter from "../components/PlayerFooter.vue";
 import Header from "../components/Header.vue";
+import StickyHeader from "../components/StickyHeader.vue";
 import Spacing from "../components/Spacing.vue";
 import RecentlyPlayed from "../components/RecentlyPlayed.vue";
 import PlacesNearby from "../components/PlacesNearby.vue";
@@ -177,6 +171,7 @@ export default defineComponent({
     RecentlyPlayed,
     PlayerFooter,
     Spacing,
+    StickyHeader,
   },
 });
 </script>
