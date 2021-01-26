@@ -72,10 +72,10 @@ export default function TrackStore() {
 
   /* Fetch Track */
 
-  function fetchTrack() {
+  async function fetchTrack() {
     const data = JSON.stringify(track.value);
     state.trackLoading = true;
-    axios({
+    await axios({
       method: "post",
       url: state.serverUrl,
       data,
@@ -93,8 +93,8 @@ export default function TrackStore() {
 
   /* Load */
 
-  function preloadMedia() {
-    fetchTrack();
+  async function preloadMedia() {
+    await fetchTrack();
     state.media = Media.create(
       state.serverUrl + "/storys/" + track.value.pageID + ".mp3"
     );
@@ -116,16 +116,17 @@ export default function TrackStore() {
     });
   }
 
-  function clearMedia() {
+  async function clearMedia() {
     if (state.media) {
-      state.media.stop();
-      state.media.release();
+      await state.media.stop();
+      await state.media.release();
     }
   }
   /* Audio Controlls */
-  function play() {
+  async function play() {
     if (state.mediaPageID != track.value.pageID) {
-      preloadMedia();
+      await clearMedia();
+      await preloadMedia();
     }
     state.mediaPageID = track.value.pageID;
     state.media.play();

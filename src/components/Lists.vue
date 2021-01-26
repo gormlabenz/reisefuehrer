@@ -2,11 +2,11 @@
   <div
     id="lists"
     ref="gesture"
-    style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px; width: 100%; overflow: hidden; height: 100vh;"
+    style="z-index:10; background-color: var(--ion-toolbar-background); border-radius: 16px 16px 0 0; width: 100%; overflow: hidden; height: calc(100vh -80px)"
   >
     <div
       ref="icon"
-      style="width:40px; height: 3px; background-color: var(--ion-color-primary); margin-left: auto; margin-right: auto; margin-top: 32px; border-radius: 1.5px"
+      style="width:40px; height: 3px; background-color: var(--ion-color-primary); margin-left: auto; margin-right: auto; margin-top: 8px; border-radius: 1.5px"
     ></div>
     <div
       style="overflow-y: scroll; height: 90vh; scroll-snap-type: y mandatory"
@@ -44,7 +44,7 @@
         </ion-grid>
       </div>
 
-      <div style="scroll-snap-align: end;">
+      <div style="scroll-snap-align: start;">
         <ion-toolbar style="margin-top: -32px">
           <ion-text>
             <h1 class="ion-margin-start">Recently played</h1>

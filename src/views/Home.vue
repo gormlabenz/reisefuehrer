@@ -20,7 +20,7 @@
           style="scroll-snap-align: start; height: 50vh; position: relative;"
         ></div>
         <Lists
-          style="scroll-snap-align: end; position: relative;"
+          style="scroll-snap-align: start; position: relative; scroll-margin-top: -16px;"
           v-if="initLoad"
           @modal="modal = true"
         ></Lists>
