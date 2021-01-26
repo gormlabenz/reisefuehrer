@@ -1,5 +1,8 @@
 <template>
-  <ion-footer style="margin-bottom: -64px">
+  <ion-footer
+    id="footer"
+    style="margin-bottom: -64px; position: fixed; left: 0; bottom: 0;"
+  >
     <!-- <ion-progress-bar
       v-if="trackLoading"
       color="dark"
@@ -20,10 +23,10 @@
       ></ion-buttons>
       <h4
         @click.self="$emit('modal')"
-        class="ion-margin-start"
-        style="margin: 0 0 0 16px;"
+        class="ion-margin-start ion-text-nowrap"
+        style="margin: 0 0 0 16px; width: 80%; text-overflow: ellipsis; overflow: hidden;"
       >
-        {{ TextStore.truncate(track.title, 14, false).replace(/\(.*?\)/, "") }}
+        {{ track.title }}
       </h4>
     </ion-toolbar>
   </ion-footer>
@@ -62,6 +65,10 @@ export default {
         return Store().defaultPage.value;
       }
     },
+  },
+  mounted() {
+    this.width = document.getElementById("footer").offsetWidth;
+    console.log(this.width);
   },
   components: {
     IonFooter,

@@ -1,10 +1,10 @@
 <template>
   <div
-    style="scroll-snap-align: end; background-color: var(--ion-toolbar-background);"
+    style="scroll-snap-align: start; background-color: var(--ion-toolbar-background); padding-bottom: 64px"
   >
     <ion-toolbar>
       <ion-text>
-        <h1 class="ion-margin-start">Recently played</h1>
+        <h1 class="ion-margin-start">Recently Played</h1>
       </ion-text>
     </ion-toolbar>
     <ion-grid>
