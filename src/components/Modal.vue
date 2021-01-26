@@ -67,7 +67,6 @@ export default defineComponent({
 
   mounted() {
     this.el = this.$refs.modal;
-    console.log(this.el);
     this.gestureFunc();
   },
   methods: {
@@ -87,7 +86,6 @@ export default defineComponent({
 
       const gesture = await createGesture(gestureOptions);
       gesture.enable();
-      console.log(gesture);
     },
   },
   computed: {

@@ -14,16 +14,26 @@
       <Header></Header>
 
       <div
-        style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory;"
+        v-if="initLoad"
+        style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory; "
       >
+        <spacing></spacing>
         <div
-          style="scroll-snap-align: start; height: 50vh; position: relative;"
-        ></div>
-        <Lists
+          style="position: sticky; top: 0; z-index: 100; scroll-snap-align: start; height: 32px; background-color: var(--ion-toolbar-background); border-radius: 32px 32px 0 0; width: 100%; display: flex; justify-content: center; align-items: flex-end; "
+        >
+          <div
+            ref="icon"
+            style="width:40px; height: 3px; background-color: var(--ion-color-primary);  border-radius: 1.5px"
+          ></div>
+        </div>
+
+        <!-- <Lists
           style="scroll-snap-align: start; position: relative; scroll-margin-top: -16px;"
-          v-if="initLoad"
+          
           @modal="modal = true"
-        ></Lists>
+        ></Lists> -->
+        <places-nearby @modal="modal = true"></places-nearby>
+        <recently-played @modal="modal = true"></recently-played>
       </div>
     </ion-content>
 
@@ -39,7 +49,9 @@ import { IonPage, IonContent, IonFab, IonFabButton, IonIcon } from "@ionic/vue";
 import Modal from "../components/Modal.vue";
 import PlayerFooter from "../components/PlayerFooter.vue";
 import Header from "../components/Header.vue";
-import Lists from "../components/Lists.vue";
+import Spacing from "../components/Spacing.vue";
+import RecentlyPlayed from "../components/RecentlyPlayed.vue";
+import PlacesNearby from "../components/PlacesNearby.vue";
 
 import { defineComponent } from "vue";
 import { Plugins } from "@capacitor/core";
@@ -67,6 +79,7 @@ export default defineComponent({
       gesture: null,
       playDistance: 2000,
       footerPos: -64,
+      landschaftBottom: null,
       listsPos: {
         up: { marginTop: 0, borderRadius: 0, marginIcon: 32 },
         down: { marginTop: null, borderRadius: 16, marginIcon: 16 },
@@ -169,8 +182,10 @@ export default defineComponent({
     IonIcon,
     Modal,
     Header,
-    Lists,
+    PlacesNearby,
+    RecentlyPlayed,
     PlayerFooter,
+    Spacing,
   },
 });
 </script>

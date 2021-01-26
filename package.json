@@ -13,7 +13,7 @@
     "icons": "cordova-res ios --skip-config --copy ",
     "open-ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios",
     "sync": "ionic build && npx cap sync",
-    "serve:external": "ionic cap run ios -l --external"
+    "serve:external": "ionic cap run ios -l --external --livereload-url"
   },
   "dependencies": {
     "@capacitor/android": "^2.4.6",
