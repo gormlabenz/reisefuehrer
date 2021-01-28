@@ -3,13 +3,12 @@
     id="footer"
     style="margin-bottom: -64px; position: fixed; left: 0; bottom: 0;"
   >
-    <!-- <ion-progress-bar
-      v-if="trackLoading"
-      color="dark"
-      type="indeterminate"
-    ></ion-progress-bar> -->
-
     <ion-toolbar class="footer">
+      <ion-progress-bar
+        v-if="trackLoading"
+        color="dark"
+        type="indeterminate"
+      ></ion-progress-bar>
       <ion-buttons class="icon-small" slot="end">
         <Player :big="false"></Player>
       </ion-buttons>
@@ -29,6 +28,7 @@
         {{ track.title }}
       </h4>
     </ion-toolbar>
+    <!--  -->
   </ion-footer>
 </template>
 

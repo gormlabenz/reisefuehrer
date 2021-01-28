@@ -9,7 +9,7 @@
         vertical="top"
         horizontal="end"
         slot="fixed"
-        style="margin-top: 20px; margin-right: 10px"
+        style="margin-top: 20px; margin-right: 10px; z-index: 0"
       >
         <ion-fab-button @click="TrackStore.toggleAutoplay()">
           <ion-icon color="light" :icon="autoplayIcon"></ion-icon>
@@ -19,7 +19,7 @@
 
       <div
         v-if="initLoad"
-        style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory; "
+        style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory; z-index: 100;"
       >
         <spacing></spacing>
         <StickyHeader></StickyHeader>

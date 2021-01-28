@@ -2,6 +2,7 @@
   <div id="sticky-header" class="header">
     <div
       ref="icon"
+      v-bind:class="{ 'ion-hide': !icon }"
       style="width:40px; height: 3px; background-color: var(--ion-color-primary);  border-radius: 1.5px; "
     ></div>
   </div>
@@ -9,14 +10,28 @@
 
 <script>
 export default {
+  data() {
+    return {
+      icon: true,
+    };
+  },
   mounted() {
     const el = document.querySelector(".header");
     const observer = new IntersectionObserver(
-      ([e]) => e.target.classList.toggle("isSticky", e.intersectionRatio < 1),
+      ([e]) => {
+        e.target.classList.toggle("isSticky", e.intersectionRatio < 1);
+        console.log("sticky");
+        this.toggleIcon();
+      },
       { threshold: [1] }
     );
 
     observer.observe(el);
+  },
+  methods: {
+    toggleIcon() {
+      this.icon = !this.icon;
+    },
   },
 };
 </script>
@@ -42,6 +57,6 @@ export default {
 
 .header.isSticky {
   border-radius: 0;
-  z-index: 100;
+  height: 8px;
 }
 </style>

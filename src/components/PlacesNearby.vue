@@ -1,10 +1,10 @@
 <template>
   <div
-    style="scroll-snap-align: start; background-color: var(--ion-toolbar-background);"
+    style="scroll-snap-align: start; background-color: var(--ion-toolbar-background); min-height: 300px"
   >
     <ion-toolbar>
       <ion-text>
-        <h1 class="ion-margin-start">
+        <h1 class="ion-margin-start" style="margin-top: 48px">
           Places Nearby
         </h1>
       </ion-text>
