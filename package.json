@@ -11,7 +11,8 @@
     "lint": "vue-cli-service lint",
     "ios": "rm -rf ios && ionic build %% ionic capacitor add ios &&  ionic capacitor open ios",
     "icons": "cordova-res ios --skip-config --copy ",
-    "open-ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios",
+    "open:ios": "rm -f ./ios/App/._App.xcworkspace && ionic capacitor open ios",
+    "open:android": "ionic capacitor open android",
     "sync": "ionic build && npx cap sync",
     "serve:external": "ionic cap run ios -l --external --livereload-url"
   },

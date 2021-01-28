@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.triptalk",
-  "appName": "trek",
+  "appName": "Triptalk",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",

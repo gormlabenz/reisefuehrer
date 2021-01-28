@@ -21,36 +21,44 @@
           <ion-row class="ion-justify-content-center ion-align-items-center">
             <Player :big="true"></Player>
           </ion-row>
+          <ion-row class="ion-justify-content-between">
+            <h4>Autoplay Settings</h4>
+            <ion-button shape="round" fill="clear" @click="toggleSettigs">
+              <ion-icon :icon="settingsButton"></ion-icon>
+            </ion-button>
+          </ion-row>
+          <div id="settings" v-if="settings">
+            <ion-row>
+              <ion-range
+                style="padding-inline: 0;"
+                @ionChange="setPlayDistance($event)"
+                value="975"
+                min="50"
+                max="2000"
+                step="40"
+                snaps="true"
+                ticks="false"
+                color="dark"
+                :pin="false"
+                ><ion-label style="font-weight: bold;" slot="start"
+                  >50 M</ion-label
+                ><ion-label style="font-weight: bold;" slot="end"
+                  >2 KM</ion-label
+                ></ion-range
+              ></ion-row
+            >
+            <ion-row class="ion-text-start">
+              <ion-note>
+                The distance from which a track should be played automatically.
+              </ion-note>
+              <ion-text color="danger">
+                <p style="font-weight: bold;" color="danger">
+                  Keep the app open and the screen unlocked to use Autplay.
+                </p>
+              </ion-text>
+            </ion-row>
+          </div>
         </ion-grid>
-      </div>
-
-      <div style="padding-bottom: 12px" v-if="autoplay">
-        <h4>Autoplay Settings</h4>
-        <ion-range
-          style="padding-inline: 0;"
-          @ionChange="setPlayDistance($event)"
-          value="975"
-          min="50"
-          max="2000"
-          step="40"
-          snaps="true"
-          ticks="false"
-          color="dark"
-          :pin="false"
-          ><ion-label style="font-weight: bold;" slot="start">50 M</ion-label
-          ><ion-label style="font-weight: bold;" slot="end"
-            >2 KM</ion-label
-          ></ion-range
-        >
-
-        <ion-note>
-          The distance from which a track should be played automatically.
-        </ion-note>
-        <ion-text color="danger">
-          <p style="font-weight: bold;" color="danger">
-            Keep the app open and the screen unlocked to use Autplay.
-          </p>
-        </ion-text>
       </div>
 
       <div>
@@ -66,10 +74,16 @@
 <script>
 import TrackStore from "../store/track.js";
 import Store from "../store";
-import { volumeHighOutline, volumeMuteOutline } from "ionicons/icons";
+import {
+  volumeHighOutline,
+  volumeMuteOutline,
+  chevronDownOutline,
+  chevronUpOutline,
+} from "ionicons/icons";
 import Player from "./Player.vue";
 import { defineComponent } from "vue";
 import { createGesture } from "@ionic/core";
+/* import gsap from "gsap"; */
 
 import {
   IonContent,
@@ -97,12 +111,22 @@ export default defineComponent({
       volumeHighOutline,
       volumeMuteOutline,
       el: null,
+      settings: false,
     };
   },
-
   mounted() {
     this.el = this.$refs.modal;
     this.gestureFunc();
+  },
+  watch: {
+    /*  settings() {
+      let value = this.settings ? 100 : 0;
+      gsap.to("#settings", {
+        height: value + "%",
+        duration: 0.2,
+        ease: "Power3.easeInOut",
+      });
+    }, */
   },
   methods: {
     async gestureFunc() {
@@ -126,6 +150,9 @@ export default defineComponent({
       console.log(event.detail.value);
       this.TrackStore.setPlayDistance(event.detail.value);
     },
+    toggleSettigs() {
+      this.settings = !this.settings;
+    },
   },
   computed: {
     TrackStore() {
@@ -142,6 +169,13 @@ export default defineComponent({
         return TrackStore().track.value;
       } else {
         return Store().defaultPage.value;
+      }
+    },
+    settingsButton() {
+      if (this.settings) {
+        return chevronDownOutline;
+      } else {
+        return chevronUpOutline;
       }
     },
   },
@@ -187,5 +221,15 @@ ion-range {
 
 p {
   font-size: 14px;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: 0.5s;
 }
 </style>

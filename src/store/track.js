@@ -152,12 +152,15 @@ export default function TrackStore() {
   /* Autoplay */
 
   async function setAutoplayTrack() {
+    let pages = Store().sortedPages.value;
+    console.log("isPlaying", state.isPlaying);
+    console.log("state.autoplay ", state.autoplay);
+
     if (state.autoplay == true && state.isPlaying == false) {
-      let pages = Store().sortedPages.value;
-      for (const index in pages.length) {
-        console.log("page", pages[index]);
-        console.log("index", index);
+      for (let index = 0; index < pages.length; index++) {
         if (pages[index].dist < state.playDistance) {
+          console.log("index", index);
+          console.log("dist", pages[index].dist);
           state.currentPageIndex = index;
           play();
 
