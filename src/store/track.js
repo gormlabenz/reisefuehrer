@@ -102,6 +102,8 @@ export default function TrackStore() {
     });
   }
 
+  /* Storage */
+
   async function setTrackToRecentlyPlayed() {
     const recently_played = await Storage.get({
       key: "RECENTLY_PLAYED",
@@ -145,8 +147,27 @@ export default function TrackStore() {
   async function setRecentlyPlayed() {
     let recentlyPlayed = await Storage.get({ key: "RECENTLY_PLAYED" });
     state.recentlyPlayed = JSON.parse(recentlyPlayed.value);
-    console.log("setRecentlyPlayed", state.recentlyPlayed);
   }
+
+  /* Autoplay */
+
+  async function setAutoplayTrack() {
+    if (state.autoplay == true && state.isPlaying == false) {
+      let pages = Store().sortedPages.value;
+      for (const index in pages.length) {
+        console.log("page", pages[index]);
+        console.log("index", index);
+        if (pages[index].dist < state.playDistance) {
+          state.currentPageIndex = index;
+          play();
+
+          return;
+        }
+      }
+    }
+  }
+
+  /* Audio Controlls */
 
   async function clearMedia() {
     if (state.media) {
@@ -154,7 +175,7 @@ export default function TrackStore() {
       await state.media.release();
     }
   }
-  /* Audio Controlls */
+
   async function play() {
     if (state.mediaPageID != track.value.pageID) {
       setTrackToRecentlyPlayed();
@@ -170,7 +191,6 @@ export default function TrackStore() {
     state.media.pause();
   }
   function skip() {
-    console.log("len", Store().sortedPages.value.length);
     console.log("index", state.currentPageIndex);
     clearMedia();
     addCurrentPageIndex();
@@ -191,6 +211,7 @@ export default function TrackStore() {
     skipBack,
     setPlayDistance,
     setRecentlyPlayed,
+    setAutoplayTrack,
     trackLoading: computed(() => state.trackLoading),
     autoplay: computed(() => state.autoplay),
     playDistance: computed(() => state.playDistance),

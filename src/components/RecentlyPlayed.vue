@@ -25,7 +25,7 @@
             @click-text="setAndOpenModal(index)"
             @click-image="setAndPlayTrack(index)"
           >
-            <template v-slot:subtitle>{{ page.dist + "M" }}</template>
+            <template v-slot:subtitle>{{ page.date }}</template>
             <template v-slot:title>{{
               page.title.replace(/\(.*?\)/, "")
             }}</template>

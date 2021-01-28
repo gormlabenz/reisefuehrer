@@ -11,7 +11,13 @@
         slot="fixed"
         style="margin-top: 20px; margin-right: 10px; z-index: 0"
       >
-        <ion-fab-button @click="TrackStore.toggleAutoplay()">
+        <ion-fab-button
+          @click="
+            TrackStore.toggleAutoplay();
+            TrackStore.setAutoplayTrack();
+            modal = autoplay ? true : false;
+          "
+        >
           <ion-icon color="light" :icon="autoplayIcon"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -84,13 +90,6 @@ export default defineComponent({
   },
 
   mounted() {
-    this.store.setPages();
-
-    setInterval(() => {
-      this.store.setPages();
-      console.log("fetching pages");
-    }, 10000);
-
     SplashScreen.hide();
 
     this.animateFooter(true);
@@ -100,9 +99,7 @@ export default defineComponent({
       let header = document.getElementById("header");
       return header.offsetHeight;
     },
-    store() {
-      return Store();
-    },
+
     TrackStore() {
       return TrackStore();
     },

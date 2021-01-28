@@ -4,6 +4,13 @@ import router from "./router";
 
 import { IonicVue } from "@ionic/vue";
 
+/* import TrackStore from "./store/track.js"; */
+import Store from "./store";
+let store = Store();
+
+import TrackStore from "./store/track.js";
+let trackStore = TrackStore();
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/vue/css/core.css";
 
@@ -43,4 +50,11 @@ app.directive("scroll", {
 
 router.isReady().then(() => {
   app.mount("#app");
+  store.setPages();
+  trackStore.setAutoplayTrack();
+  setInterval(() => {
+    trackStore.setAutoplayTrack();
+    store.setPages();
+    console.log("set Autplay");
+  }, 10000);
 });
