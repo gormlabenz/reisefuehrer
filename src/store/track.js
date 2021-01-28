@@ -1,5 +1,5 @@
 import Store from ".";
-import { computed, reactive, watch } from "vue";
+import { computed, reactive } from "vue";
 import axios from "axios";
 const { Media } = require("@ionic-native/media");
 import { Plugins } from "@capacitor/core";
@@ -145,9 +145,8 @@ export default function TrackStore() {
   async function setRecentlyPlayed() {
     let recentlyPlayed = await Storage.get({ key: "RECENTLY_PLAYED" });
     state.recentlyPlayed = JSON.parse(recentlyPlayed.value);
-    console.log("state recently played", state.recentlyPlayed);
+    console.log("setRecentlyPlayed", state.recentlyPlayed);
   }
-  watch(track.value, setRecentlyPlayed);
 
   async function clearMedia() {
     if (state.media) {
@@ -159,6 +158,7 @@ export default function TrackStore() {
   async function play() {
     if (state.mediaPageID != track.value.pageID) {
       setTrackToRecentlyPlayed();
+      setRecentlyPlayed();
       await clearMedia();
       await preloadMedia();
     }

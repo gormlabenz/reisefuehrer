@@ -24,7 +24,6 @@ export default {
       },
       { threshold: [1] }
     );
-    console.log("el", typeof el);
     observer.observe(el);
   },
   methods: {
