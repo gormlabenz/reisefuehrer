@@ -68,7 +68,6 @@ export default {
   },
   mounted() {
     this.width = document.getElementById("footer").offsetWidth;
-    console.log(this.width);
   },
   components: {
     IonFooter,

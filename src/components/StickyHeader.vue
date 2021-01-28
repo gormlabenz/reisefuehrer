@@ -20,7 +20,6 @@ export default {
     const observer = new IntersectionObserver(
       ([e]) => {
         e.target.classList.toggle("isSticky", e.intersectionRatio < 1);
-        console.log("sticky");
         this.toggleIcon();
       },
       { threshold: [1] }

@@ -2,6 +2,8 @@ import Store from ".";
 import { computed, reactive } from "vue";
 import axios from "axios";
 const { Media } = require("@ionic-native/media");
+import { Plugins } from "@capacitor/core";
+const { Storage } = Plugins;
 
 const state = reactive({
   trackLoading: false,
@@ -29,10 +31,6 @@ export default function TrackStore() {
     state.playDistance = int;
   }
 
-  async function setIsPlaying(bool) {
-    state.isPlaying = bool;
-  }
-
   const track = computed(() => {
     if (!Store().sortedPages.value[state.currentPageIndex]) {
       return null;
@@ -55,19 +53,6 @@ export default function TrackStore() {
     } else {
       state.currentPageIndex = state.currentPageIndex - 1;
     }
-  }
-
-  /* Player Data */
-
-  function toHHMMSS(secs) {
-    var sec_num = parseInt(secs, 10);
-    var minutes = Math.floor(sec_num / 60) % 60;
-    var seconds = sec_num % 60;
-
-    return [minutes, seconds]
-      .map((v) => (v < 10 ? "0" + v : v))
-      .filter((v, i) => v !== "00" || i >= 0)
-      .join(":");
   }
 
   /* Fetch Track */
@@ -116,6 +101,46 @@ export default function TrackStore() {
     });
   }
 
+  async function setTrackToStorage() {
+    const recently_played = await Storage.get({
+      key: "RECENTLY_PLAYED",
+    });
+    var currentTime = new Date();
+    console.log("time", currentTime);
+
+    let recently_played_list;
+    if (!recently_played.value) {
+      recently_played_list = [];
+    } else {
+      recently_played_list = JSON.parse(recently_played.value);
+    }
+
+    function isSameTrack(listTrack) {
+      if (listTrack.pageID != track.value.pageID) {
+        return listTrack;
+      }
+    }
+
+    function today() {
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, "0");
+      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      var yyyy = today.getFullYear();
+      return mm + "." + dd + "." + yyyy;
+    }
+
+    recently_played_list = recently_played_list.filter(isSameTrack);
+    let newTrack = track.value;
+    newTrack.date = today();
+    console.log("newTrack", newTrack);
+    recently_played_list.push(newTrack);
+
+    Storage.set({
+      key: "RECENTLY_PLAYED",
+      value: JSON.stringify(recently_played_list),
+    });
+  }
+
   async function clearMedia() {
     if (state.media) {
       await state.media.stop();
@@ -125,6 +150,7 @@ export default function TrackStore() {
   /* Audio Controlls */
   async function play() {
     if (state.mediaPageID != track.value.pageID) {
+      setTrackToStorage();
       await clearMedia();
       await preloadMedia();
     }
@@ -140,6 +166,7 @@ export default function TrackStore() {
     console.log("index", state.currentPageIndex);
     clearMedia();
     addCurrentPageIndex();
+    //Storage.remove({ key: "RECENTLY_PLAYED" });
   }
   function skipBack() {
     clearMedia();
@@ -148,21 +175,14 @@ export default function TrackStore() {
 
   return {
     track,
-    preloadMedia,
     setCurrentPageIndex,
-    clearMedia,
     toggleAutoplay,
-    fetchTrack,
-    toHHMMSS,
-    setIsPlaying,
     play,
     pause,
     skip,
     skipBack,
     setPlayDistance,
     trackLoading: computed(() => state.trackLoading),
-    duration: computed(() => state.duration),
-    serverUrl: computed(() => state.serverUrl),
     autoplay: computed(() => state.autoplay),
     playDistance: computed(() => state.playDistance),
     isPlaying: computed(() => state.isPlaying),
