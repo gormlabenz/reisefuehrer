@@ -1,5 +1,5 @@
 import Store from ".";
-import { computed, reactive } from "vue";
+import { computed, reactive, watch } from "vue";
 import axios from "axios";
 const { Media } = require("@ionic-native/media");
 import { Plugins } from "@capacitor/core";
@@ -14,6 +14,7 @@ const state = reactive({
   mediaPageID: null,
   currentPageIndex: 0,
   playDistance: 2000,
+  recentlyPlayed: null,
 });
 
 export default function TrackStore() {
@@ -101,7 +102,7 @@ export default function TrackStore() {
     });
   }
 
-  async function setTrackToStorage() {
+  async function setTrackToRecentlyPlayed() {
     const recently_played = await Storage.get({
       key: "RECENTLY_PLAYED",
     });
@@ -141,6 +142,13 @@ export default function TrackStore() {
     });
   }
 
+  async function setRecentlyPlayed() {
+    let recentlyPlayed = await Storage.get({ key: "RECENTLY_PLAYED" });
+    state.recentlyPlayed = JSON.parse(recentlyPlayed.value);
+    console.log("state recently played", state.recentlyPlayed);
+  }
+  watch(track.value, setRecentlyPlayed);
+
   async function clearMedia() {
     if (state.media) {
       await state.media.stop();
@@ -150,7 +158,7 @@ export default function TrackStore() {
   /* Audio Controlls */
   async function play() {
     if (state.mediaPageID != track.value.pageID) {
-      setTrackToStorage();
+      setTrackToRecentlyPlayed();
       await clearMedia();
       await preloadMedia();
     }
@@ -182,10 +190,12 @@ export default function TrackStore() {
     skip,
     skipBack,
     setPlayDistance,
+    setRecentlyPlayed,
     trackLoading: computed(() => state.trackLoading),
     autoplay: computed(() => state.autoplay),
     playDistance: computed(() => state.playDistance),
     isPlaying: computed(() => state.isPlaying),
     currentPageIndex: computed(() => state.currentPageIndex),
+    recentlyPlayed: computed(() => state.recentlyPlayed),
   };
 }

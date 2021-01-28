@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="recentlyPlayed"
     style="scroll-snap-align: start; background-color: var(--ion-toolbar-background); padding-bottom: 64px;  min-height: 300px"
   >
     <ion-toolbar>
@@ -13,37 +14,13 @@
         style="overflow-x: scroll;scroll-snap-type: x mandatory;"
       >
         <ion-col
-          v-for="(page, index) in pages"
+          v-for="(col, index) in recentlyPlayedPagesCols"
           :key="index"
           style="scroll-snap-align: start;"
         >
           <card-small
-            :img="page.mainImage.thumb"
-            @click-text="setAndOpenModal(index)"
-            @click-image="setAndPlayTrack(index)"
-          >
-            <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-            <template v-slot:title>{{
-              page.title.replace(/\(.*?\)/, "")
-            }}</template>
-            <template v-slot:content>{{
-              TextStore.truncate(page.summary, 36, true)
-            }}</template>
-          </card-small>
-          <card-small
-            :img="page.mainImage.thumb"
-            @click-text="setAndOpenModal(index)"
-            @click-image="setAndPlayTrack(index)"
-          >
-            <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-            <template v-slot:title>{{
-              page.title.replace(/\(.*?\)/, "")
-            }}</template>
-            <template v-slot:content>{{
-              TextStore.truncate(page.summary, 36, true)
-            }}</template>
-          </card-small>
-          <card-small
+            v-for="(page, colIndex) in col"
+            :key="colIndex"
             :img="page.mainImage.thumb"
             @click-text="setAndOpenModal(index)"
             @click-image="setAndPlayTrack(index)"
@@ -82,6 +59,9 @@ export default {
   data() {
     return {};
   },
+  mounted() {
+    this.TrackStore.setRecentlyPlayed();
+  },
   methods: {
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
@@ -98,6 +78,25 @@ export default {
     },
     pages() {
       return Store().sortedPages.value;
+    },
+    recentlyPlayed() {
+      return TrackStore().recentlyPlayed.value;
+    },
+    recentlyPlayedPagesCols() {
+      let n;
+      let pages = [];
+      for (n = 0; n < this.recentlyPlayed.length; n = n + 3) {
+        let col = [];
+        col.push(this.recentlyPlayed[n]);
+        if (this.recentlyPlayed[n + 1]) {
+          col.push(this.recentlyPlayed[n + 1]);
+        }
+        if (this.recentlyPlayed[n + 2]) {
+          col.push(this.recentlyPlayed[n + 2]);
+        }
+        pages.push(col);
+      }
+      return pages;
     },
     TrackStore() {
       return TrackStore();
