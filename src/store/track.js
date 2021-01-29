@@ -82,7 +82,7 @@ export default function TrackStore() {
   async function preloadMedia() {
     await fetchTrack();
     state.media = Media.create(
-      state.serverUrl + "/storys/" + track.value.pageID + ".mp3"
+      state.serverUrl + "/storys/" + track.value.pageID + ".wav"
     );
     state.media.onStatusUpdate.subscribe((status) => {
       switch (status) {
