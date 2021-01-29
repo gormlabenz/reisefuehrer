@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="spacing"
-    style="scroll-snap-align: start; height: 100vh; position: relative;"
-  ></div>
+  <div id="spacing" style=""></div>
 </template>
 
 <script>
@@ -21,4 +18,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+#spacing {
+  scroll-snap-align: start;
+  height: 100vh;
+  position: relative;
+  width: 10px;
+  pointer-events: none;
+}
+</style>

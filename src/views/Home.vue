@@ -6,26 +6,29 @@
       :fullscreen="false"
     >
       <ion-fab
-        vertical="top"
-        horizontal="end"
+        vertical="start"
+        horizontal="start"
         slot="fixed"
-        style="margin-top: 20px; margin-right: 10px; z-index: 0"
+        v-if="textBottom"
+        v-bind:style="'z-index: 0; margin-top:' + textBottom + 'px; '"
       >
-        <ion-fab-button
-          @click="
-            TrackStore.toggleAutoplay();
-            TrackStore.setAutoplayTrack();
-            modal = autoplay ? true : false;
-          "
-        >
-          <ion-icon color="light" :icon="autoplayIcon"></ion-icon>
-        </ion-fab-button>
+        <div style="display: flex; align-items: center; margin-top: 16px">
+          <ion-toggle
+            @click="
+              TrackStore.toggleAutoplay();
+              TrackStore.setAutoplayTrack();
+              modal = autoplay ? true : false;
+            "
+            color="primary"
+          ></ion-toggle>
+          <h4 style="margin: 0; padding-left: 16px">Autoplay</h4>
+        </div>
       </ion-fab>
       <Header></Header>
 
       <div
         v-if="initLoad"
-        style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory; z-index: 100;"
+        style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory;"
       >
         <spacing></spacing>
         <StickyHeader></StickyHeader>
@@ -77,7 +80,7 @@ export default defineComponent({
       gesture: null,
       playDistance: 2000,
       footerPos: -64,
-      landschaftBottom: null,
+      textBottom: null,
       icons: {
         playCircleOutline,
         playSkipBackOutline,
@@ -130,11 +133,16 @@ export default defineComponent({
         this.animateFooter(true);
       }
     },
+    initLoad() {
+      const el = document.getElementById("text");
+      this.textBottom = el.getBoundingClientRect().bottom;
+      console.log(this.textBottom);
+    },
   },
   methods: {
-    setPlayDistance() {
-      console.log(this.playDistance);
-      this.TrackStore.setPlayDistance(this.playDistance);
+    setTextBottom(val) {
+      console.log("textBottom", val);
+      this.textBottom = val;
     },
     print() {
       console.log("print");
