@@ -1,6 +1,6 @@
 <template>
   <div
-    style="scroll-snap-align: start; background-color: var(--ion-toolbar-background); min-height: 300px"
+    style="scroll-snap-align: start; background-color: var(--ion-toolbar-background); min-height: 300px; z-index: 100; position: relative"
   >
     <ion-toolbar>
       <ion-text>

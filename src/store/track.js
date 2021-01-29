@@ -136,7 +136,7 @@ export default function TrackStore() {
     recently_played_list = recently_played_list.filter(isSameTrack);
     let newTrack = track.value;
     newTrack.date = today();
-    console.log("newTrack", newTrack);
+
     recently_played_list.push(newTrack);
 
     Storage.set({
@@ -154,15 +154,17 @@ export default function TrackStore() {
 
   async function setAutoplayTrack() {
     let pages = Store().sortedPages.value;
-    console.log("isPlaying", state.isPlaying);
-    console.log("state.autoplay ", state.autoplay);
 
     if (state.autoplay == true && state.isPlaying == false) {
       for (let index = 0; index < pages.length; index++) {
-        if (pages[index].dist < state.playDistance) {
+        if (
+          pages[index].dist < state.playDistance &&
+          !state.recentlyPlayed.includes(pages[index])
+        ) {
           console.log("index", index);
           console.log("dist", pages[index].dist);
           state.currentPageIndex = index;
+          console.log("playing", pages[index]);
           play();
 
           return;

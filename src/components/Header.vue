@@ -18,9 +18,9 @@
           class="ion-margin-start"
           style=" color: var(--ion-color-tertiary)"
         >
-          Turn on Autoplay, and whenever you <br />
-          come across a point of interest, <br />
-          an audio track is played.
+          Explore interesting places around you, <br />
+          or let the autoplay mode accompany <br />
+          you on your journey.
         </p>
       </ion-text>
     </ion-toolbar>

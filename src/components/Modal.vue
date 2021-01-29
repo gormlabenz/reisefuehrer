@@ -22,10 +22,19 @@
             <Player :big="true"></Player>
           </ion-row>
           <ion-row class="ion-justify-content-between">
-            <h4>Autoplay Settings</h4>
-            <ion-button shape="round" fill="clear" @click="toggleSettigs">
-              <ion-icon :icon="settingsButton"></ion-icon>
-            </ion-button>
+            <ion-text color="secondary">
+              <h4>Autoplay</h4>
+            </ion-text>
+
+            <!-- <ion-icon :icon="settingsButton"></ion-icon> -->
+            <ion-toggle
+              @click="
+                TrackStore.toggleAutoplay();
+                TrackStore.setAutoplayTrack();
+                toggleSettigs();
+              "
+              color="primary"
+            ></ion-toggle>
           </ion-row>
           <div id="settings" v-if="settings">
             <ion-row>

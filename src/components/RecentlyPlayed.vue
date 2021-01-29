@@ -80,7 +80,11 @@ export default {
       return Store().sortedPages.value;
     },
     recentlyPlayed() {
-      return TrackStore().recentlyPlayed.value;
+      if (TrackStore().recentlyPlayed.value) {
+        return TrackStore().recentlyPlayed.value.reverse();
+      } else {
+        return null;
+      }
     },
     recentlyPlayedPagesCols() {
       let n;

@@ -5,27 +5,7 @@
       :force-overscroll="true"
       :fullscreen="false"
     >
-      <ion-fab
-        vertical="start"
-        horizontal="start"
-        slot="fixed"
-        v-if="textBottom"
-        v-bind:style="'z-index: 0; margin-top:' + textBottom + 'px; '"
-      >
-        <div style="display: flex; align-items: center; margin-top: 16px">
-          <ion-toggle
-            @click="
-              TrackStore.toggleAutoplay();
-              TrackStore.setAutoplayTrack();
-              modal = autoplay ? true : false;
-            "
-            color="primary"
-          ></ion-toggle>
-          <h4 style="margin: 0; padding-left: 16px">Autoplay</h4>
-        </div>
-      </ion-fab>
       <Header></Header>
-
       <div
         v-if="initLoad"
         style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory;"

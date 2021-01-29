@@ -1,5 +1,5 @@
 <template>
-  <div id="spacing" style=""></div>
+  <div id="spacing"></div>
 </template>
 
 <script>
@@ -23,7 +23,5 @@ export default {
   scroll-snap-align: start;
   height: 100vh;
   position: relative;
-  width: 10px;
-  pointer-events: none;
 }
 </style>

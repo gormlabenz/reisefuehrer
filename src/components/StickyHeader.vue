@@ -24,7 +24,9 @@ export default {
       },
       { threshold: [1] }
     );
-    observer.observe(el);
+    setTimeout(() => {
+      observer.observe(el);
+    }, 400);
   },
   methods: {
     toggleIcon() {
