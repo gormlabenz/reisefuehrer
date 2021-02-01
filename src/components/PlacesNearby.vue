@@ -63,9 +63,11 @@ export default {
   methods: {
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
+      this.TrackStore.setSkipThroughRP(false);
       this.$emit("modal");
     },
     setAndPlayTrack(index) {
+      this.TrackStore.setSkipThroughRP(false);
       this.TrackStore.setCurrentPageIndex(index);
       this.TrackStore.play();
     },

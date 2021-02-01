@@ -10,10 +10,10 @@
         v-if="initLoad"
         style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory;"
       >
-        <spacing></spacing>
+        <Spacing></Spacing>
         <StickyHeader></StickyHeader>
-        <places-nearby @modal="modal = true"></places-nearby>
-        <recently-played @modal="modal = true"></recently-played>
+        <PlacesNearby @modal="modal = true"></PlacesNearby>
+        <RecentlyPlayed @modal="modal = true"></RecentlyPlayed>
       </div>
     </ion-content>
 
@@ -116,7 +116,6 @@ export default defineComponent({
     initLoad() {
       const el = document.getElementById("text");
       this.textBottom = el.getBoundingClientRect().bottom;
-      console.log(this.textBottom);
     },
   },
   methods: {

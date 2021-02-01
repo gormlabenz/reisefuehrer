@@ -6,15 +6,16 @@ import { Plugins } from "@capacitor/core";
 const { Storage } = Plugins;
 
 const state = reactive({
-  trackLoading: false,
-  autoplay: false,
-  isPlaying: false,
+  trackLoading: false, //is currently a audio being fetched
+  autoplay: false, //is the autoplay modus on
+  isPlaying: false, //is currently a audio being played
   serverUrl: "http://192.168.1.14:5000",
-  media: null,
-  mediaPageID: null,
-  currentPageIndex: 0,
-  playDistance: 2000,
-  recentlyPlayed: null,
+  media: null, //the active audio media data
+  mediaPageID: null, //the ID of the active audio
+  currentPageIndex: 0, //at wich audio is currently actice in the player, the index indcates the pos in pages
+  playDistance: 2000, //At wich desitance should the track be played
+  recentlyPlayed: null, //the recently Played audio, gets injected from local storage
+  skipThroughRP: false, //if you play audio from the recently Played list, you skip through ecently Played list and not through Playes nearby
 });
 
 export default function TrackStore() {
@@ -28,28 +29,57 @@ export default function TrackStore() {
     state.autoplay = !state.autoplay;
   }
 
+  async function setSkipThroughRP(boolean) {
+    state.skipThroughRP = boolean;
+    console.log("skipThroughRP", state.skipThroughRP);
+  }
+
   async function setPlayDistance(int) {
     state.playDistance = int;
   }
 
   const track = computed(() => {
-    if (!Store().sortedPages.value[state.currentPageIndex]) {
+    if (!trackPages.value[state.currentPageIndex]) {
       return null;
     } else {
-      return Store().sortedPages.value[state.currentPageIndex];
+      return trackPages.value[state.currentPageIndex];
+    }
+  });
+
+  const trackPages = computed(() => {
+    if (state.skipThroughRP) {
+      return state.recentlyPlayed;
+    } else {
+      return Store().sortedPages.value;
+    }
+  });
+
+  const lastTrack = computed(() => {
+    if (state.currentPageIndex == trackPages.value.length - 1) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  const firstTrack = computed(() => {
+    if (state.currentPageIndex < 1) {
+      return true;
+    } else {
+      return false;
     }
   });
 
   function addCurrentPageIndex() {
-    if (state.currentPageIndex == Store().sortedPages.value.length + 1) {
-      state.currentPageIndex = Store().sortedPages.value.length;
+    if (lastTrack.value) {
+      state.currentPageIndex = trackPages.value.length;
     } else {
       state.currentPageIndex = state.currentPageIndex + 1;
     }
   }
 
   function subtractCurrentPageIndex() {
-    if (state.currentPageIndex < 1) {
+    if (firstTrack.value) {
       state.currentPageIndex = 0;
     } else {
       state.currentPageIndex = state.currentPageIndex - 1;
@@ -162,6 +192,7 @@ export default function TrackStore() {
           !state.recentlyPlayed.includes(pages[index])
         ) {
           console.log("index", index);
+          setSkipThroughRP(false);
           console.log("dist", pages[index].dist);
           state.currentPageIndex = index;
           console.log("playing", pages[index]);
@@ -185,7 +216,9 @@ export default function TrackStore() {
   async function play() {
     if (state.mediaPageID != track.value.pageID) {
       setTrackToRecentlyPlayed();
-      setRecentlyPlayed();
+      if (!state.skipThroughRP) {
+        setRecentlyPlayed(); //only save track if it was selected from "places nearby"
+      }
       await clearMedia();
       await preloadMedia();
     }
@@ -209,6 +242,8 @@ export default function TrackStore() {
 
   return {
     track,
+    firstTrack,
+    lastTrack,
     setCurrentPageIndex,
     toggleAutoplay,
     play,
@@ -218,6 +253,7 @@ export default function TrackStore() {
     setPlayDistance,
     setRecentlyPlayed,
     setAutoplayTrack,
+    setSkipThroughRP,
     trackLoading: computed(() => state.trackLoading),
     autoplay: computed(() => state.autoplay),
     playDistance: computed(() => state.playDistance),

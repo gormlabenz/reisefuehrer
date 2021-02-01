@@ -22,9 +22,9 @@
             v-for="(page, colIndex) in col"
             :key="colIndex"
             :img="page.mainImage.thumb"
-            @click-text="setAndOpenModal(index)"
-            @click-image="setAndPlayTrack(index)"
-          >
+            @click-text="setAndOpenModal(index * 3 + colIndex)"
+            @click-image="setAndPlayTrack(index * 3 + colIndex)"
+            ><p>{{ (index + 1) * colIndex }}</p>
             <template v-slot:subtitle>{{ page.date }}</template>
             <template v-slot:title>{{
               page.title.replace(/\(.*?\)/, "")
@@ -65,9 +65,11 @@ export default {
   methods: {
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
+      this.TrackStore.setSkipThroughRP(true);
       this.$emit("modal");
     },
     setAndPlayTrack(index) {
+      this.TrackStore.setSkipThroughRP(true);
       this.TrackStore.setCurrentPageIndex(index);
       this.TrackStore.play();
     },

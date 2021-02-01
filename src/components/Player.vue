@@ -62,7 +62,6 @@
 <script>
 import { defineComponent } from "vue";
 import TrackStore from "../store/track.js";
-import Store from "../store";
 import { IonButton, IonButtons, IonIcon } from "@ionic/vue";
 
 import {
@@ -92,17 +91,14 @@ export default defineComponent({
   },
   computed: {
     disableSkip() {
-      if (
-        Store().sortedPages.value.length - 1 ==
-        TrackStore().currentPageIndex.value
-      ) {
+      if (TrackStore().lastTrack.value) {
         return true;
       } else {
         return false;
       }
     },
     disableSkipBack() {
-      if (TrackStore().currentPageIndex.value == 0) {
+      if (TrackStore().firstTrack.value) {
         return true;
       } else {
         return false;
@@ -138,12 +134,6 @@ export default defineComponent({
     },
     track() {
       return TrackStore().track.value;
-    },
-    serverUrl() {
-      return TrackStore().serverUrl.value;
-    },
-    url() {
-      return this.serverUrl + "/storys/" + this.track.pageID + ".mp3";
     },
     TrackStore() {
       return TrackStore();
