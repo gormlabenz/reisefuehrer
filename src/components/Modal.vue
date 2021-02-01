@@ -22,19 +22,23 @@
             <Player :big="true"></Player>
           </ion-row>
           <ion-row class="ion-justify-content-between">
-            <ion-text color="secondary">
-              <h4>Autoplay</h4>
-            </ion-text>
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; width: 100%;"
+            >
+              <h4 style="color: var(--ion-color-primary); margin: 0">
+                Autoplay
+              </h4>
 
-            <!-- <ion-icon :icon="settingsButton"></ion-icon> -->
-            <ion-toggle
-              @click="
-                TrackStore.toggleAutoplay();
-                TrackStore.setAutoplayTrack();
-                toggleSettigs();
-              "
-              color="primary"
-            ></ion-toggle>
+              <!-- <ion-icon :icon="settingsButton"></ion-icon> -->
+              <ion-toggle
+                @click="
+                  TrackStore.toggleAutoplay();
+                  TrackStore.setAutoplayTrack();
+                  toggleSettigs();
+                "
+                color="primary"
+              ></ion-toggle>
+            </div>
           </ion-row>
           <div id="settings" v-if="settings">
             <ion-row>
@@ -111,6 +115,7 @@ import {
   IonNote,
   IonRange,
   IonLabel,
+  IonToggle,
 } from "@ionic/vue";
 
 export default defineComponent({
@@ -206,6 +211,7 @@ export default defineComponent({
     IonRange,
     IonLabel,
     Player,
+    IonToggle,
   },
 });
 </script>
