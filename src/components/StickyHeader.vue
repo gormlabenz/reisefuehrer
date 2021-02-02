@@ -21,6 +21,7 @@ export default {
       ([e]) => {
         e.target.classList.toggle("isSticky", e.intersectionRatio < 1);
         this.toggleIcon();
+        console.log("sticky");
       },
       { threshold: [1] }
     );
@@ -39,7 +40,7 @@ export default {
 <style scoped>
 .header {
   position: sticky;
-  z-index: 100;
+  z-index: 900;
   height: 32px;
   background-color: var(--ion-toolbar-background);
   border-radius: 32px 32px 0 0;
@@ -48,7 +49,7 @@ export default {
   justify-content: center;
   align-items: flex-end;
   top: -1px; /* ➜ the trick */
-
+  margin-top: 100px;
   padding: 1em;
   padding-top: calc(1em + 1px); /* ➜ compensate for the trick */
 
