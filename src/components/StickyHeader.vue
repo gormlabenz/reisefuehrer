@@ -2,8 +2,8 @@
   <div id="sticky-header" class="header">
     <div
       ref="icon"
-      v-bind:class="{ 'ion-hide': !icon }"
-      style="width:40px; height: 3px; background-color: var(--ion-color-primary);  border-radius: 1.5px; "
+      v-bind:class="{ 'ion-hide': icon }"
+      style="width:40px; height: 3px; background-color: var(--ion-color-primary); border-radius: 1.5px; "
     ></div>
   </div>
 </template>

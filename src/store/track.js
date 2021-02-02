@@ -9,12 +9,12 @@ const state = reactive({
   trackLoading: false, //is currently a audio being fetched
   autoplay: false, //is the autoplay modus on
   isPlaying: false, //is currently a audio being played
-  serverUrl: "http://192.168.1.14:5000",
+  serverUrl: "https://triptalk.ddns.net",
   media: null, //the active audio media data
   mediaPageID: null, //the ID of the active audio
   currentPageIndex: 0, //at wich audio is currently actice in the player, the index indcates the pos in pages
   playDistance: 2000, //At wich desitance should the track be played
-  recentlyPlayed: null, //the recently Played audio, gets injected from local storage
+  recentlyPlayed: [], //the recently Played audio, gets injected from local storage
   skipThroughRP: false, //if you play audio from the recently Played list, you skip through ecently Played list and not through Playes nearby
 });
 
@@ -177,25 +177,27 @@ export default function TrackStore() {
 
   async function setRecentlyPlayed() {
     let recentlyPlayed = await Storage.get({ key: "RECENTLY_PLAYED" });
-    state.recentlyPlayed = JSON.parse(recentlyPlayed.value);
+    if (recentlyPlayed.value) {
+      state.recentlyPlayed = JSON.parse(recentlyPlayed.value);
+      console.log("recentlyPlayed", state.recentlyPlayed);
+    }
   }
 
   /* Autoplay */
 
   async function setAutoplayTrack() {
     let pages = Store().sortedPages.value;
+    let recentlyPlayedPageIDS = state.recentlyPlayed.map((page) => page.pageID);
 
     if (state.autoplay == true && state.isPlaying == false) {
       for (let index = 0; index < pages.length; index++) {
         if (
           pages[index].dist < state.playDistance &&
-          !state.recentlyPlayed.includes(pages[index])
+          !recentlyPlayedPageIDS.includes(pages[index].pageID)
         ) {
-          console.log("index", index);
-          setSkipThroughRP(false);
-          console.log("dist", pages[index].dist);
-          state.currentPageIndex = index;
           console.log("playing", pages[index]);
+          setSkipThroughRP(false);
+          state.currentPageIndex = index;
           play();
 
           return;
@@ -215,9 +217,10 @@ export default function TrackStore() {
 
   async function play() {
     if (state.mediaPageID != track.value.pageID) {
-      setTrackToRecentlyPlayed();
+      setRecentlyPlayed();
       if (!state.skipThroughRP) {
-        setRecentlyPlayed(); //only save track if it was selected from "places nearby"
+        //only save track if it was selected from "places nearby"
+        setTrackToRecentlyPlayed();
       }
       await clearMedia();
       await preloadMedia();

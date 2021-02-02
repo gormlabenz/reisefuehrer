@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.triptalk",
+  "appId": "de.gormlabenz.triptalk",
   "appName": "Triptalk",
   "bundledWebRuntime": false,
   "npmClient": "npm",
