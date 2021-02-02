@@ -63,6 +63,7 @@ export default {
   methods: {
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
+      this.TrackStore.clearMedia();
       this.TrackStore.setSkipThroughRP(false);
       this.$emit("modal");
     },

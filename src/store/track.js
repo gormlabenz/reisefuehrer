@@ -247,6 +247,7 @@ export default function TrackStore() {
     track,
     firstTrack,
     lastTrack,
+    clearMedia,
     setCurrentPageIndex,
     toggleAutoplay,
     play,
