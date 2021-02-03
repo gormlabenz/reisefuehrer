@@ -49,7 +49,6 @@ export default {
   justify-content: center;
   align-items: flex-end;
   top: -1px; /* ➜ the trick */
-  margin-top: 100px;
   padding: 1em;
   padding-top: calc(1em + 1px); /* ➜ compensate for the trick */
 

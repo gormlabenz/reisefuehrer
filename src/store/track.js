@@ -179,7 +179,6 @@ export default function TrackStore() {
     let recentlyPlayed = await Storage.get({ key: "RECENTLY_PLAYED" });
     if (recentlyPlayed.value) {
       state.recentlyPlayed = JSON.parse(recentlyPlayed.value);
-      console.log("recentlyPlayed", state.recentlyPlayed);
     }
   }
 

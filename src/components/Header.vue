@@ -40,24 +40,64 @@
 
 <script>
 import { IonToolbar, IonTitle, IonText, IonRange, IonNote } from "@ionic/vue";
-import landschaft from "../assets/landschaft.json";
 import lottie from "lottie-web";
+import landschaft_light from "../assets/landschaft_light.json";
+import landschaft_dark from "../assets/landschaft_dark.json";
 
 export default {
   data() {
     return {
       landschaft: null,
+      colorScheme: "light",
+      animationData: null,
     };
   },
   mounted() {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      this.colorScheme = "dark";
+    } else {
+      this.colorScheme = "light";
+    }
+
+    if (this.colorScheme == "dark") {
+      this.animationData = landschaft_dark;
+    } else {
+      this.animationData = landschaft_light;
+    }
+
     this.landschaft = lottie.loadAnimation({
       container: document.getElementById("landschaft"), // the dom element that will contain the animation
       renderer: "svg",
       loop: true,
       autoplay: true,
-      animationData: landschaft, // the path to the animation json
+      animationData: this.animationData, // the animation json
     });
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        this.colorScheme = e.matches ? "dark" : "light";
+      });
   },
+  /* watch: {
+    colorScheme() {
+      this.animationData =
+        this.colorScheme == "light" ? landschaft_light : landschaft_dark;
+
+      console.log("color sheme", this.colorScheme);
+      console.log("animationData", this.animationData);
+      this.landschaft = lottie.loadAnimation({
+        container: document.getElementById("landschaft"), // the dom element that will contain the animation
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        animationData: this.animationData, // the animation json
+      });
+    },
+  }, */
   components: { IonToolbar, IonTitle, IonText, IonRange, IonNote },
 };
 </script>
