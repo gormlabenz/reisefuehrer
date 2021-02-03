@@ -4,12 +4,13 @@ import router from "./router";
 
 import { IonicVue } from "@ionic/vue";
 
-/* import TrackStore from "./store/track.js"; */
 import Store from "./store";
 let store = Store();
 
 import TrackStore from "./store/track.js";
 let trackStore = TrackStore();
+
+const { ScreenOrientation } = require("@ionic-native/screen-orientation");
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/vue/css/core.css";
@@ -52,6 +53,7 @@ router.isReady().then(() => {
   app.mount("#app");
   store.setPages();
   trackStore.setAutoplayTrack();
+  ScreenOrientation.lock(ScreenOrientation.ORIENTATIONS.PORTRAIT);
   setInterval(() => {
     trackStore.setAutoplayTrack();
     store.setPages();
