@@ -24,7 +24,14 @@
 </template>
 
 <script>
-import { IonPage, IonContent, IonFab, IonFabButton, IonIcon } from "@ionic/vue";
+import {
+  IonPage,
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonIcon,
+  toastController,
+} from "@ionic/vue";
 
 import Modal from "../components/Modal.vue";
 import PlayerFooter from "../components/PlayerFooter.vue";
@@ -71,7 +78,6 @@ export default defineComponent({
       },
     };
   },
-
   mounted() {
     SplashScreen.hide();
 
@@ -82,7 +88,9 @@ export default defineComponent({
       let header = document.getElementById("header");
       return header.offsetHeight;
     },
-
+    positionError() {
+      return Store().positionError.value;
+    },
     TrackStore() {
       return TrackStore();
     },
@@ -116,6 +124,20 @@ export default defineComponent({
     initLoad() {
       const el = document.getElementById("text");
       this.textBottom = el.getBoundingClientRect().bottom;
+    },
+    async positionError() {
+      console.log("position Error", this.positionError);
+      if (this.positionError) {
+        const toast = await toastController.create({
+          message:
+            "Triptalk cannot retrieve your coordinates. Please make sure in the settings that your coordinates can be used and that you have network.",
+          duration: 10000,
+          position: "middle",
+          color: "danger",
+          header: "Geolocation Error",
+        });
+        return toast.present();
+      }
     },
   },
   methods: {

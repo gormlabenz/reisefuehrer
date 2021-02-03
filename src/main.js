@@ -57,6 +57,6 @@ router.isReady().then(() => {
   setInterval(() => {
     trackStore.setAutoplayTrack();
     store.setPages();
-    console.log("set Autplay");
+    console.log("updated Pages");
   }, 10000);
 });

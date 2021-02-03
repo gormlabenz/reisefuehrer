@@ -5,6 +5,7 @@ const wtf = require("wtf_wikipedia");
 
 const state = reactive({
   position: "",
+  positionError: false,
   initLoad: false,
   defaultPage: {
     title: "Loading",
@@ -21,7 +22,12 @@ const state = reactive({
 export default function Store() {
   /* Position */
   async function fetchPosition() {
-    const coordinates = await Geolocation.getCurrentPosition();
+    const coordinates = await Geolocation.getCurrentPosition()
+      .then((state.positionError = false))
+      .catch((err) => {
+        console.log("positionError", err);
+        state.positionError = true;
+      });
     const data = coordinates;
     setPosition(data.coords);
   }
@@ -184,6 +190,7 @@ export default function Store() {
   return {
     sortedPages,
     pages: computed(() => state.pages),
+    positionError: computed(() => state.positionError),
     defaultPage: computed(() => state.defaultPage),
     initLoad: computed(() => state.initLoad),
     nearestPage: computed(() => sortedPages.value[0]),
