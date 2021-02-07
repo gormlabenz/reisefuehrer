@@ -288,6 +288,7 @@ export default function TrackStore() {
     setAutoplayTrack,
     setSkipThroughRP,
     trackLoading: computed(() => state.trackLoading),
+    fetchLong: computed(() => state.fetchLong),
     autoplay: computed(() => state.autoplay),
     playDistance: computed(() => state.playDistance),
     isPlaying: computed(() => state.isPlaying),

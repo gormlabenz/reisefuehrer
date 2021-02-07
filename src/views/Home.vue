@@ -21,17 +21,11 @@
   </ion-page>
 
   <Modal id="modal" @dismissed-model="modal = false"> </Modal>
+  <ErrorToast></ErrorToast>
 </template>
 
 <script>
-import {
-  IonPage,
-  IonContent,
-  IonFab,
-  IonFabButton,
-  IonIcon,
-  toastController,
-} from "@ionic/vue";
+import { IonPage, IonContent, IonFab, IonFabButton, IonIcon } from "@ionic/vue";
 
 import Modal from "../components/Modal.vue";
 import PlayerFooter from "../components/PlayerFooter.vue";
@@ -40,6 +34,7 @@ import StickyHeader from "../components/StickyHeader.vue";
 import Spacing from "../components/Spacing.vue";
 import RecentlyPlayed from "../components/RecentlyPlayed.vue";
 import PlacesNearby from "../components/PlacesNearby.vue";
+import ErrorToast from "../components/ErrorToast.vue";
 
 import { defineComponent } from "vue";
 import { Plugins } from "@capacitor/core";
@@ -88,9 +83,6 @@ export default defineComponent({
       let header = document.getElementById("header");
       return header.offsetHeight;
     },
-    positionError() {
-      return Store().positionError.value;
-    },
     TrackStore() {
       return TrackStore();
     },
@@ -124,20 +116,6 @@ export default defineComponent({
     initLoad() {
       const el = document.getElementById("text");
       this.textBottom = el.getBoundingClientRect().bottom;
-    },
-    async positionError() {
-      console.log("position Error", this.positionError);
-      if (this.positionError) {
-        const toast = await toastController.create({
-          message:
-            "Triptalk cannot retrieve your coordinates. Please make sure in the settings that your coordinates can be used and that you have network.",
-          duration: 10000,
-          position: "middle",
-          color: "danger",
-          header: "Geolocation Error",
-        });
-        return toast.present();
-      }
     },
   },
   methods: {
@@ -178,6 +156,7 @@ export default defineComponent({
     PlayerFooter,
     Spacing,
     StickyHeader,
+    ErrorToast,
   },
 });
 </script>
