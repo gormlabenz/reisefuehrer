@@ -8,6 +8,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "test:fetch": "node ./tests/fetchTest.js",
+    "test:production": "node ./tests/fetchTestProduction.js",
     "lint": "vue-cli-service lint",
     "ios": "rm -rf ios && ionic build %% ionic capacitor add ios &&  ionic capacitor open ios",
     "icons:ios": "cordova-res ios --icon-source './resources/icon_ios.png' --skip-config --copy ",

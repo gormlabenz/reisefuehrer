@@ -44,7 +44,7 @@ async function getData(page) {
   console.log("Data", data);
   axios({
     method: "post",
-    url: "http://127.0.0.1:6000",
+    url: "https://triptalk.ddns.net",
     data,
   }).then(
     (response) => {
@@ -58,7 +58,7 @@ async function getData(page) {
 }
 
 async function main() {
-  page = await fetchPage("Switzerland");
+  page = await fetchPage("Poland");
   getData(page);
 }
 
