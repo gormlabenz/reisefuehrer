@@ -9,6 +9,7 @@ const state = reactive({
   trackLoading: false, //is currently a audio being fetched
   fetchError: false, //if fetch error is true, the server is not reachable
   fetchLong: false,
+  fetchLongDuration: 6000, //the duration between fetch and the fetchLong get true
   fetchDuration: 30000,
   cancelTokenSource: null,
   autoplay: false, //is the autoplay modus on
@@ -242,17 +243,21 @@ export default function TrackStore() {
   }
 
   async function play() {
-    if (state.mediaPageID != track.value.pageID) {
-      setRecentlyPlayed();
-      if (!state.skipThroughRP) {
-        //only save track if it was selected from "places nearby"
-        setTrackToRecentlyPlayed();
+    if (state.trackLoading) {
+      cancelFetch();
+    } else {
+      if (state.mediaPageID != track.value.pageID) {
+        setRecentlyPlayed();
+        if (!state.skipThroughRP) {
+          //only save track if it was selected from "places nearby"
+          setTrackToRecentlyPlayed();
+        }
+        await clearMedia();
+        await preloadMedia();
       }
-      await clearMedia();
-      await preloadMedia();
+      state.mediaPageID = track.value.pageID;
+      state.media.play();
     }
-    state.mediaPageID = track.value.pageID;
-    state.media.play();
   }
 
   function pause() {

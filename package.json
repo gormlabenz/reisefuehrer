@@ -38,7 +38,7 @@
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-file": "^4.3.3",
     "cordova-plugin-geolocation": "^4.1.0",
-    "cordova-plugin-media": "^2.1.0",
+    "cordova-plugin-media": "^5.0.3",
     "cordova-plugin-screen-orientation": "^3.0.2",
     "cordova-plugin-tts": "^0.2.3",
     "cordova-res": "^0.14.0",
