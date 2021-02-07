@@ -7,6 +7,10 @@ const { Storage } = Plugins;
 
 const state = reactive({
   trackLoading: false, //is currently a audio being fetched
+  fetchError: false, //if fetch error is true, the server is not reachable
+  fetchLong: false,
+  fetchDuration: 30000,
+  cancelTokenSource: null,
   autoplay: false, //is the autoplay modus on
   isPlaying: false, //is currently a audio being played
   serverUrl: "https://triptalk.ddns.net",
@@ -91,22 +95,36 @@ export default function TrackStore() {
   async function fetchTrack() {
     const data = JSON.stringify(track.value);
     state.trackLoading = true;
-    await axios({
-      method: "post",
-      url: state.serverUrl,
-      data,
-    })
+    state.cancelTokenSource = axios.CancelToken.source();
+    await axios(
+      {
+        method: "post",
+        url: state.serverUrl,
+        data,
+      },
+      { timeout: state.fetchDuration, cancelToken: state.cancelTokenSource }
+    )
       .then((response) => {
+        state.fetchError = false;
         return response;
       })
       .catch((error) => {
         console.log(error);
+        state.fetchError = true;
       })
       .finally(() => {
         state.trackLoading = false;
       });
   }
 
+  /*   setFetchLong(){
+    setTimeout({
+      
+    })
+  }
+ 
+  watch(state.trackLoading, {});
+*/
   /* Load */
 
   async function preloadMedia() {
@@ -131,6 +149,11 @@ export default function TrackStore() {
           break;
       }
     });
+  }
+
+  async function cancelFetch() {
+    state.cancelTokenSource.cancel();
+    state.trackLoading = false;
   }
 
   /* Storage */
@@ -230,16 +253,19 @@ export default function TrackStore() {
 
   function pause() {
     state.media.pause();
+    cancelFetch();
   }
   function skip() {
     console.log("index", state.currentPageIndex);
     clearMedia();
     addCurrentPageIndex();
+    cancelFetch();
     //Storage.remove({ key: "RECENTLY_PLAYED" });
   }
   function skipBack() {
     clearMedia();
     subtractCurrentPageIndex();
+    cancelFetch();
   }
 
   return {
