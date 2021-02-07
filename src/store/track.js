@@ -96,6 +96,7 @@ export default function TrackStore() {
     const data = JSON.stringify(track.value);
     state.trackLoading = true;
     state.cancelTokenSource = axios.CancelToken.source();
+    setFetchLong();
     await axios(
       {
         method: "post",
@@ -117,14 +118,17 @@ export default function TrackStore() {
       });
   }
 
-  /*   setFetchLong(){
-    setTimeout({
-      
-    })
+  function setFetchLong() {
+    setTimeout(() => {
+      if (state.trackLoading) {
+        state.fetchLong = true;
+        console.log("fetchLong", state.fetchLong);
+      }
+    }, 4000);
+    state.fetchLong = false;
+    console.log("fetchLong", state.fetchLong);
   }
- 
-  watch(state.trackLoading, {});
-*/
+
   /* Load */
 
   async function preloadMedia() {
