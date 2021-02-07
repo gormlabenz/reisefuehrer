@@ -243,9 +243,7 @@ export default function TrackStore() {
   }
 
   async function play() {
-    if (state.trackLoading) {
-      cancelFetch();
-    } else {
+    if (!state.trackLoading) {
       if (state.mediaPageID != track.value.pageID) {
         setRecentlyPlayed();
         if (!state.skipThroughRP) {
