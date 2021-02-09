@@ -21,7 +21,6 @@ export default {
       ([e]) => {
         e.target.classList.toggle("isSticky", e.intersectionRatio < 1);
         this.toggleIcon();
-        console.log("sticky");
       },
       { threshold: [1] }
     );

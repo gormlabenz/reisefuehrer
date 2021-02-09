@@ -167,8 +167,6 @@ export default function TrackStore() {
     const recently_played = await Storage.get({
       key: "RECENTLY_PLAYED",
     });
-    var currentTime = new Date();
-    console.log("time", currentTime);
 
     let recently_played_list;
     if (!recently_played.value) {
@@ -196,18 +194,24 @@ export default function TrackStore() {
     newTrack.date = today();
 
     recently_played_list.push(newTrack);
-
-    Storage.set({
-      key: "RECENTLY_PLAYED",
-      value: JSON.stringify(recently_played_list),
-    });
+    console.log("setTrackToRecentlyPlayed", recently_played_list);
+    state.recentlyPlayed = recently_played_list;
+    updateStorage();
   }
 
-  async function setRecentlyPlayed() {
+  async function getStorage() {
     let recentlyPlayed = await Storage.get({ key: "RECENTLY_PLAYED" });
     if (recentlyPlayed.value) {
       state.recentlyPlayed = JSON.parse(recentlyPlayed.value);
+      console.log("getStorage", state.recentlyPlayed);
     }
+  }
+  async function updateStorage() {
+    Storage.set({
+      key: "RECENTLY_PLAYED",
+      value: JSON.stringify(state.recentlyPlayed),
+    });
+    console.log("updateStorage", state.recentlyPlayed);
   }
 
   /* Autoplay */
@@ -242,10 +246,13 @@ export default function TrackStore() {
     }
   }
 
+  async function clearStorage() {
+    Storage.remove({ key: "RECENTLY_PLAYED" });
+  }
+
   async function play() {
     if (!state.trackLoading) {
       if (state.mediaPageID != track.value.pageID) {
-        setRecentlyPlayed();
         if (!state.skipThroughRP) {
           //only save track if it was selected from "places nearby"
           setTrackToRecentlyPlayed();
@@ -267,10 +274,11 @@ export default function TrackStore() {
     clearMedia();
     addCurrentPageIndex();
     cancelFetch();
-    //Storage.remove({ key: "RECENTLY_PLAYED" });
   }
+
   function skipBack() {
     clearMedia();
+    clearStorage();
     subtractCurrentPageIndex();
     cancelFetch();
   }
@@ -280,6 +288,7 @@ export default function TrackStore() {
     firstTrack,
     lastTrack,
     clearMedia,
+    getStorage,
     setCurrentPageIndex,
     toggleAutoplay,
     play,
@@ -287,7 +296,6 @@ export default function TrackStore() {
     skip,
     skipBack,
     setPlayDistance,
-    setRecentlyPlayed,
     setAutoplayTrack,
     setSkipThroughRP,
     trackLoading: computed(() => state.trackLoading),

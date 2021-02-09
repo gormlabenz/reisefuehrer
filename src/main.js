@@ -53,6 +53,7 @@ router.isReady().then(() => {
   app.mount("#app");
   store.setPages();
   trackStore.setAutoplayTrack();
+  trackStore.getStorage();
   ScreenOrientation.lock(ScreenOrientation.ORIENTATIONS.PORTRAIT);
   setInterval(() => {
     trackStore.setAutoplayTrack();

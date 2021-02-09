@@ -59,9 +59,6 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-    this.TrackStore.setRecentlyPlayed();
-  },
   methods: {
     setAndOpenModal(index) {
       this.TrackStore.setCurrentPageIndex(index);
