@@ -37,13 +37,11 @@ export default function Store() {
 
   /* Pages */
   const pushPage = (key, value) => {
-    // console.log("key", key, "value", value);
     state.pages[key] = value;
   };
 
   function setPageLink(pageID, link) {
     state.pages[pageID].link = link;
-    console.log("set link ", link);
   }
 
   async function fetchPage(title) {

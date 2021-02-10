@@ -19,7 +19,7 @@
     "sync:android": "npx cap sync android",
     "sync:ios": "npx cap sync ios",
     "serve:external": "ionic cap run ios -l --external --livereload-url",
-    "media:ios": "npm install cordova-plugin-media@2.1.0",
+    "media:ios": "npm install git+https://github.com/gormlabenz/cordova-plugin-media-ios.git",
     "media:android": "npm install cordova-plugin-media@latest"
   },
   "dependencies": {
@@ -38,7 +38,7 @@
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-file": "^4.3.3",
     "cordova-plugin-geolocation": "^4.1.0",
-    "cordova-plugin-media": "^2.1.0",
+    "cordova-plugin-media": "github:gormlabenz/cordova-plugin-media-ios",
     "cordova-plugin-screen-orientation": "^3.0.2",
     "cordova-plugin-tts": "^0.2.3",
     "cordova-res": "^0.14.0",

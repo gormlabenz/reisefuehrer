@@ -194,7 +194,7 @@ export default function TrackStore() {
     newTrack.date = today();
 
     recently_played_list.push(newTrack);
-    console.log("setTrackToRecentlyPlayed", recently_played_list);
+    console.log("setTrackToRecentlyPlayed", recently_played_list.length);
     state.recentlyPlayed = recently_played_list;
     updateStorage();
   }
@@ -203,15 +203,16 @@ export default function TrackStore() {
     let recentlyPlayed = await Storage.get({ key: "RECENTLY_PLAYED" });
     if (recentlyPlayed.value) {
       state.recentlyPlayed = JSON.parse(recentlyPlayed.value);
-      console.log("getStorage", state.recentlyPlayed);
+      console.log("getStorage", state.recentlyPlayed.length);
     }
   }
+
   async function updateStorage() {
     Storage.set({
       key: "RECENTLY_PLAYED",
       value: JSON.stringify(state.recentlyPlayed),
     });
-    console.log("updateStorage", state.recentlyPlayed);
+    console.log("updateStorage", state.recentlyPlayed.length);
   }
 
   /* Autoplay */
@@ -220,15 +221,19 @@ export default function TrackStore() {
     let pages = Store().sortedPages.value;
     let recentlyPlayedPageIDS = state.recentlyPlayed.map((page) => page.pageID);
 
-    if (state.autoplay == true && state.isPlaying == false) {
+    if (
+      state.autoplay == true &&
+      state.isPlaying == false &&
+      state.trackLoading == false
+    ) {
       for (let index = 0; index < pages.length; index++) {
         if (
           pages[index].dist < state.playDistance &&
           !recentlyPlayedPageIDS.includes(pages[index].pageID)
         ) {
-          console.log("playing", pages[index]);
           setSkipThroughRP(false);
           state.currentPageIndex = index;
+          console.log("playing", pages[index].title);
           play();
 
           return;
