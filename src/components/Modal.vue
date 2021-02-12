@@ -1,100 +1,103 @@
 <template>
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>{{ track.title.replace(/\(.*?\)/, "") }}</ion-title>
-      <ion-buttons slot="end">
-        <ion-button @click="$emit('dismissed-model')">Close</ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content class="ion-padding">
-    <div class="ion-text-center ion-margin-top">
-      <ion-grid>
-        <img :src="track.mainImage.url" />
+  <div ref="modal" style="margin-top: 100vh; ">
+    <ion-header style="position: fixed">
+      <ion-toolbar>
+        <ion-title>{{ track.title.replace(/\(.*?\)/, "") }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button @click="$emit('dismissed-model')">Close</ion-button>
+        </ion-buttons>
+        <ion-progress-bar
+          v-if="trackLoading"
+          color="dark"
+          type="indeterminate"
+        ></ion-progress-bar>
+      </ion-toolbar>
+    </ion-header>
 
-        <ion-row class="ion-margin-top">
-          <ion-progress-bar
-            v-if="trackLoading"
-            color="dark"
-            type="indeterminate"
-          ></ion-progress-bar>
-          <ion-progress-bar v-else color="dark" value=".4"></ion-progress-bar>
-        </ion-row>
+    <ion-content class="ion-padding" style="position: absolute;">
+      <div class="ion-text-center" style="padding-top: 64px;">
+        <ion-grid>
+          <img :src="track.mainImage.url" />
+          <ion-row class="ion-justify-content-center ion-align-items-center">
+            <Player :big="true"></Player>
+          </ion-row>
+          <ion-row class="ion-justify-content-between">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; width: 100%;"
+            >
+              <h4 style="color: var(--ion-color-primary); margin: 0">
+                Autoplay
+              </h4>
 
-        <ion-row class="ion-justify-content-between">
-          <ion-card-subtitle>0.40</ion-card-subtitle>
-          <ion-card-subtitle class="light-text">{{
-            duration
-          }}</ion-card-subtitle>
-        </ion-row>
+              <!-- <ion-icon :icon="settingsButton"></ion-icon> -->
+              <ion-toggle
+                @click="
+                  TrackStore.toggleAutoplay();
+                  TrackStore.setAutoplayTrack();
+                  toggleSettigs();
+                "
+                color="primary"
+              ></ion-toggle>
+            </div>
+          </ion-row>
+          <div id="settings" v-if="settings">
+            <ion-row>
+              <ion-range
+                style="padding-inline: 0;"
+                @ionChange="setPlayDistance($event)"
+                value="975"
+                min="50"
+                max="2000"
+                step="40"
+                snaps="true"
+                ticks="false"
+                color="dark"
+                :pin="false"
+                ><ion-label style="font-weight: bold;" slot="start"
+                  >50 M</ion-label
+                ><ion-label style="font-weight: bold;" slot="end"
+                  >2 KM</ion-label
+                ></ion-range
+              ></ion-row
+            >
+            <ion-row class="ion-text-start">
+              <ion-note>
+                The distance from which a track should be played automatically.
+              </ion-note>
+              <ion-text color="danger">
+                <p style="font-weight: bold;" color="danger">
+                  Keep the app open and the screen unlocked to use Autplay.
+                </p>
+              </ion-text>
+            </ion-row>
+          </div>
+        </ion-grid>
+      </div>
 
-        <ion-row class="ion-justify-content-center ion-align-items-center">
-          <ion-button shape="round" size="small" fill="clear">
-            <ion-icon
-              class="icon-small"
-              size="small"
-              slot="icon-only"
-              :icon="playSkipBackOutline"
-            ></ion-icon>
-          </ion-button>
-
-          <ion-button
-            v-if="!audioPlaying"
-            @click="play"
-            shape="round"
-            size="large"
-            fill="clear"
-          >
-            <ion-icon
-              class="icon-large"
-              size="large"
-              slot="icon-only"
-              :icon="playCircleOutline"
-            ></ion-icon>
-          </ion-button>
-          <ion-button
-            v-else
-            @click="pause"
-            shape="round"
-            size="large"
-            fill="clear"
-          >
-            <ion-icon
-              class="icon-large"
-              size="large"
-              slot="icon-only"
-              :icon="pauseCircleOutline"
-            ></ion-icon>
-          </ion-button>
-
-          <ion-button @click="skip" shape="round" size="small" fill="clear">
-            <ion-icon
-              class="icon-small"
-              size="small"
-              slot="icon-only"
-              :icon="playSkipForwardOutline"
-            ></ion-icon>
-          </ion-button>
-        </ion-row>
-      </ion-grid>
-    </div>
-
-    <div>
-      <h1>{{ track.title }}</h1>
-      <p>
-        {{ track.summary }}
-      </p>
-    </div>
-    <audio
-      id="audio"
-      class="ion-hide"
-      :src="serverUrl + track.pageID + '.mp3'"
-    ></audio>
-  </ion-content>
+      <div>
+        <h1>{{ track.title }}</h1>
+        <p>
+          {{ track.summary }}
+        </p>
+      </div>
+    </ion-content>
+  </div>
 </template>
 
 <script>
 import TrackStore from "../store/track.js";
+import Store from "../store";
+import {
+  volumeHighOutline,
+  volumeMuteOutline,
+  chevronDownOutline,
+  chevronUpOutline,
+} from "ionicons/icons";
+import Player from "./Player.vue";
+import { defineComponent } from "vue";
+import { createGesture } from "@ionic/core";
+/* import gsap from "gsap"; */
+
 import {
   IonContent,
   IonHeader,
@@ -108,71 +111,86 @@ import {
   IonCardSubtitle,
   IonGrid,
   IonRow,
+  IonText,
+  IonNote,
+  IonRange,
+  IonLabel,
+  IonToggle,
 } from "@ionic/vue";
-
-import {
-  playCircleOutline,
-  pauseCircleOutline,
-  playSkipBackOutline,
-  playSkipForwardOutline,
-  arrowBackOutline,
-} from "ionicons/icons";
-
-import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Modal",
-  props: {},
   data() {
     return {
-      content: "Content",
-      playCircleOutline,
-      playSkipBackOutline,
-      playSkipForwardOutline,
-      arrowBackOutline,
-      pauseCircleOutline,
+      volumeHighOutline,
+      volumeMuteOutline,
+      el: null,
+      settings: false,
     };
   },
+  mounted() {
+    this.el = this.$refs.modal;
+    this.gestureFunc();
+  },
+  watch: {
+    /*  settings() {
+      let value = this.settings ? 100 : 0;
+      gsap.to("#settings", {
+        height: value + "%",
+        duration: 0.2,
+        ease: "Power3.easeInOut",
+      });
+    }, */
+  },
+  methods: {
+    async gestureFunc() {
+      const gestureOptions = {
+        el: this.el,
+        gestureName: "swipe",
+        direction: "y",
+        onStart: () => {},
+        onMove: () => {},
+        onEnd: (ev) => {
+          if (ev.deltaY > 100) {
+            this.$emit("dismissed-model");
+          }
+        },
+      };
+
+      const gesture = await createGesture(gestureOptions);
+      gesture.enable();
+    },
+    setPlayDistance(event) {
+      console.log(event.detail.value);
+      this.TrackStore.setPlayDistance(event.detail.value);
+    },
+    toggleSettigs() {
+      this.settings = !this.settings;
+    },
+  },
   computed: {
-    duration() {
-      return TrackStore().duration.value;
-    },
-    audioPlaying() {
-      return TrackStore().audioPlaying.value;
-    },
-    audioDuration() {
-      return TrackStore().audioDuration.value;
-    },
     TrackStore() {
       return TrackStore();
     },
     trackLoading() {
       return TrackStore().trackLoading.value;
     },
+    autoplay() {
+      return TrackStore().autoplay.value;
+    },
     track() {
-      return TrackStore().track.value;
+      if (TrackStore().track.value) {
+        return TrackStore().track.value;
+      } else {
+        return Store().defaultPage.value;
+      }
     },
-    serverUrl() {
-      return TrackStore().serverUrl.value;
-    },
-    audio() {
-      return TrackStore().audio.value;
-    },
-    url() {
-      return this.serverUrl + "/storys/" + this.track.pageID + ".mp3";
-    },
-  },
-  methods: {
-    play() {
-      this.TrackStore.play();
-    },
-    pause() {
-      this.TrackStore.pause();
-    },
-    skip() {
-      console.log("duration", this.audio.duration());
-      console.log("paused", this.audio.paused);
-      console.log("audioPlaying", this.audioPlaying);
+    settingsButton() {
+      if (this.settings) {
+        return chevronDownOutline;
+      } else {
+        return chevronUpOutline;
+      }
     },
   },
   components: {
@@ -188,6 +206,12 @@ export default defineComponent({
     IonCardSubtitle,
     IonGrid,
     IonRow,
+    IonText,
+    IonNote,
+    IonRange,
+    IonLabel,
+    Player,
+    IonToggle,
   },
 });
 </script>
@@ -195,19 +219,32 @@ export default defineComponent({
 <style>
 ion-icon {
   color: var(--ion-color-primary);
-}
-
-.icon-small {
   --ionicon-stroke-width: 48px;
 }
-
+ion-range {
+  margin-left: -16px;
+  margin-right: -16px;
+}
 .icon-large {
   zoom: 1.5;
-  --ionicon-stroke-width: 36px;
 }
 
 .text-light {
   color: red;
   background-color: turquoise;
+}
+
+p {
+  font-size: 14px;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: 0.5s;
 }
 </style>

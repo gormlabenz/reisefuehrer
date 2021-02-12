@@ -1,221 +1,49 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-title>Listen Now</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
     <ion-content
-      :scroll-events="true"
-      @ionScroll="stopAndPlay($event.detail.scrollTop)"
-      :fullscreen="true"
-      v-if="pages"
+      style="--ion-background-color: none"
+      :force-overscroll="true"
+      :fullscreen="false"
     >
-      <ion-header class="ion-no-border" collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Listen Now</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-      <ion-fab vertical="top" horizontal="end" slot="fixed">
-        <ion-fab-button>
-          <ion-icon color="light" :icon="icons.playOutline"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
-
-      <ion-toolbar>
-        <ion-text>
-          <h1 class="ion-margin-start">Autoplay</h1>
-          <p class="ion-margin-start" style="width: 66%">
-            Whenever you come across a point of interest, an interisting audio
-            clip is playing.
-          </p>
-        </ion-text>
-        <div id="landschaft"></div>
-      </ion-toolbar>
-
-      <ion-toolbar class="bottom-divider">
-        <ion-text>
-          <h1 class="ion-margin-start">Places Nearby</h1>
-        </ion-text>
-      </ion-toolbar>
-
-      <ion-grid>
-        <ion-row
-          class="ion-nowrap ion-align-items-start ion-padding-end"
-          style="overflow-x: scroll;"
-        >
-          <ion-col v-for="(page, index) in pages" :key="index">
-            <card-big
-              :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(page.pageID)"
-              @click-image="setAndPlayTrack(page.pageID)"
-            >
-              <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-              <template v-slot:title>{{
-                page.title.replace(/\(.*?\)/, "")
-              }}</template>
-              <template v-slot:content>{{
-                truncate(page.summary, 54, true)
-              }}</template>
-            </card-big>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-
-      <ion-toolbar class="bottom-divider">
-        <ion-text>
-          <h1 class="ion-margin-start">Recently played</h1>
-        </ion-text>
-      </ion-toolbar>
-      <ion-grid>
-        <ion-row
-          class="ion-nowrap ion-align-items-start"
-          style="overflow-x: scroll;"
-        >
-          <ion-col v-for="(page, index) in pages" :key="index">
-            <card-small
-              :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(page.pageID)"
-              @click-image="setAndPlayTrack(page.pageID)"
-            >
-              <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-              <template v-slot:title>{{
-                page.title.replace(/\(.*?\)/, "")
-              }}</template>
-              <template v-slot:content>{{
-                truncate(page.summary, 36, true)
-              }}</template>
-            </card-small>
-            <card-small
-              :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(page.pageID)"
-              @click-image="setAndPlayTrack(page.pageID)"
-            >
-              <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-              <template v-slot:title>{{
-                page.title.replace(/\(.*?\)/, "")
-              }}</template>
-              <template v-slot:content>{{
-                truncate(page.summary, 36, true)
-              }}</template>
-            </card-small>
-            <card-small
-              :img="page.mainImage.thumb"
-              @click-text="setAndOpenModal(page.pageID)"
-              @click-image="setAndPlayTrack(page.pageID)"
-            >
-              <template v-slot:subtitle>{{ page.dist + "M" }}</template>
-              <template v-slot:title>{{
-                page.title.replace(/\(.*?\)/, "")
-              }}</template>
-              <template v-slot:content>{{
-                truncate(page.summary, 36, true)
-              }}</template>
-            </card-small>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <Header></Header>
+      <div
+        v-if="initLoad"
+        style="overflow: scroll; height: 100vh; scroll-snap-type: y mandatory;"
+      >
+        <Spacing></Spacing>
+        <StickyHeader></StickyHeader>
+        <PlacesNearby @modal="modal = true"></PlacesNearby>
+        <RecentlyPlayed @modal="modal = true"></RecentlyPlayed>
+      </div>
     </ion-content>
 
-    <ion-modal :is-open="modal" css-class="my-custom-class">
-      <Modal :swipe-to-close="true" @dismissed-model="modal = false"> </Modal>
-    </ion-modal>
-
-    <ion-footer v-if="track" @click="modal = true">
-      <ion-progress-bar
-        v-if="trackLoading"
-        color="dark"
-        type="indeterminate"
-      ></ion-progress-bar>
-      <ion-progress-bar v-else color="dark" value=".4"></ion-progress-bar>
-
-      <ion-toolbar class="footer">
-        <ion-buttons class="icon-small" slot="end">
-          <ion-button shape="round" fill="clear">
-            <ion-icon
-              slot="icon-only"
-              :icon="icons.playSkipBackOutline"
-            ></ion-icon>
-          </ion-button>
-
-          <ion-button
-            v-if="!audioPlaying"
-            shape="round"
-            fill="clear"
-            @click="play"
-          >
-            <ion-icon slot="icon-only" :icon="icons.playOutline"></ion-icon>
-          </ion-button>
-          <ion-button v-else shape="round" fill="clear" @click="play">
-            <ion-icon slot="icon-only" :icon="icons.pauseOutline"></ion-icon>
-          </ion-button>
-
-          <ion-button shape="round" fill="clear">
-            <ion-icon
-              slot="icon-only"
-              :icon="icons.playSkipForwardOutline"
-            ></ion-icon>
-          </ion-button>
-        </ion-buttons>
-        <ion-buttons slot="start">
-          <ion-img
-            class="ion-margin-start"
-            style="width:36px; height:36px"
-            :src="track.mainImage.thumb"
-          ></ion-img
-        ></ion-buttons>
-        <ion-title slot="start">{{
-          track.title.replace(/\(.*?\)/, "")
-        }}</ion-title>
-      </ion-toolbar>
-    </ion-footer>
+    <PlayerFooter id="footer" @modal="modal = true"></PlayerFooter>
   </ion-page>
+
+  <Modal id="modal" @dismissed-model="modal = false"> </Modal>
+  <ErrorToast></ErrorToast>
 </template>
 
 <script>
-import {
-  IonCard,
-  IonCardTitle,
-  IonCardHeader,
-  IonCardContent,
-  IonCardSubtitle,
-  IonContent,
-  IonFooter,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonButtons,
-  IonFab,
-  IonFabButton,
-  IonImg,
-  IonIcon,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonText,
-  IonItem,
-  IonRange,
-  IonLabel,
-  IonProgressBar,
-  IonListHeader,
-  IonList,
-  IonModal,
-} from "@ionic/vue";
+import { IonPage, IonContent, IonFab, IonFabButton, IonIcon } from "@ionic/vue";
 
-import CardBig from "../components/CardBig.vue";
-import CardSmall from "../components/CardSmall.vue";
 import Modal from "../components/Modal.vue";
+import PlayerFooter from "../components/PlayerFooter.vue";
+import Header from "../components/Header.vue";
+import StickyHeader from "../components/StickyHeader.vue";
+import Spacing from "../components/Spacing.vue";
+import RecentlyPlayed from "../components/RecentlyPlayed.vue";
+import PlacesNearby from "../components/PlacesNearby.vue";
+import ErrorToast from "../components/ErrorToast.vue";
 
 import { defineComponent } from "vue";
+import { Plugins } from "@capacitor/core";
+const { SplashScreen } = Plugins;
+
 import Store from "../store";
 import TrackStore from "../store/track.js";
 
-import lottie from "lottie-web";
-import landschaft from "../assets/landschaft.json";
+import gsap from "gsap";
 
 import {
   playCircleOutline,
@@ -226,15 +54,15 @@ import {
   arrowBackOutline,
 } from "ionicons/icons";
 
-import { TextToSpeech } from "@ionic-native/text-to-speech";
-
 export default defineComponent({
   name: "Home",
   data() {
     return {
-      readingSpeed: "",
-      landschaft: null,
       modal: false,
+      gesture: null,
+      playDistance: 2000,
+      footerPos: -64,
+      textBottom: null,
       icons: {
         playCircleOutline,
         playSkipBackOutline,
@@ -246,144 +74,96 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.store.setPages();
-    this.landschaft = lottie.loadAnimation({
-      container: document.getElementById("landschaft"), // the dom element that will contain the animation
-      renderer: "svg",
-      loop: true,
-      autoplay: false,
-      animationData: landschaft, // the path to the animation json
-    });
+    SplashScreen.hide();
+
+    this.animateFooter(true);
   },
   computed: {
-    store() {
-      return Store();
+    headerHeight() {
+      let header = document.getElementById("header");
+      return header.offsetHeight;
     },
-    trackStore() {
+    TrackStore() {
       return TrackStore();
-    },
-    trackLoading() {
-      return TrackStore().trackLoading.value;
     },
     track() {
       return TrackStore().track.value;
     },
-    audioPlaying() {
-      return TrackStore().audioPlaying.value;
+    autoplay() {
+      return TrackStore().autoplay.value;
     },
-    serverUrl() {
-      return TrackStore().serverUrl.value;
+    initLoad() {
+      return Store().initLoad.value;
     },
-    pages() {
-      return Store().sortedPages.value;
+    autoplayIcon() {
+      if (this.autoplay) {
+        return this.icons.pauseOutline;
+      } else {
+        return this.icons.playOutline;
+      }
     },
-    position() {
-      return Store().position.value;
+  },
+  watch: {
+    modal(val) {
+      if (val) {
+        this.animateFooter(false);
+        this.animateModal(true);
+      } else {
+        this.animateModal(false);
+        this.animateFooter(true);
+      }
+    },
+    initLoad() {
+      const el = document.getElementById("text");
+      this.textBottom = el.getBoundingClientRect().bottom;
     },
   },
   methods: {
-    test(str) {
-      return str;
-    },
-    speak(text) {
-      TextToSpeech.speak({
-        text: text,
-        locale: "en-GB",
-        rate: this.readingSpeed / 100,
-      })
-        .then(() => console.log("Success Speach"))
-        .catch((reason) => console.log(reason));
-    },
-    truncate(str, n, useWordBoundary) {
-      if (str.length <= n) {
-        return str;
-      }
-      const subString = str.substr(0, n - 1); // the original check
-      return (
-        (useWordBoundary
-          ? subString.substr(0, subString.lastIndexOf(" "))
-          : subString) + "…"
-      );
+    setTextBottom(val) {
+      console.log("textBottom", val);
+      this.textBottom = val;
     },
     print() {
-      console.log(this.scrollY);
+      console.log("print");
     },
-    stopAndPlay(scrollPos) {
-      if (scrollPos < 0) {
-        scrollPos = 0;
-      }
-      if (scrollPos > 160) {
-        scrollPos = 160;
-      }
-      this.landschaft.goToAndStop(scrollPos * 25);
+    animateFooter(up) {
+      let value = up ? 0 : -64;
+      gsap.to("#footer", {
+        "margin-bottom": value + "px",
+        duration: 0.2,
+        ease: "Power3.easeInOut",
+      });
     },
-    setAndOpenModal(pageID) {
-      this.trackStore.setTrack(pageID);
-      this.modal = true;
-    },
-    setAndPlayTrack(pageID) {
-      this.trackStore.setTrack(pageID);
-    },
-    play() {
-      this.trackStore.play(document);
-    },
-    pause() {
-      this.trackStore.pause();
+    animateModal(up) {
+      let value = up ? 0 : 100;
+      gsap.to("#modal", {
+        "margin-top": value,
+        duration: 0.4,
+        ease: "Power3.easeInOut",
+      });
     },
   },
   components: {
+    IonPage,
     IonContent,
-    IonButton,
-    IonButtons,
     IonFab,
     IonFabButton,
-    IonHeader,
-    IonFooter,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-    IonCard,
-    IonCardTitle,
-    IonCardHeader,
-    IonCardContent,
-    IonCardSubtitle,
     IonIcon,
-    IonImg,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonText,
-    IonItem,
-    IonRange,
-    IonLabel,
-    IonProgressBar,
-    IonListHeader,
-    IonList,
-    IonModal,
-    CardBig,
-    CardSmall,
     Modal,
+    Header,
+    PlacesNearby,
+    RecentlyPlayed,
+    PlayerFooter,
+    Spacing,
+    StickyHeader,
+    ErrorToast,
   },
 });
 </script>
 
-<style scoped>
+<style>
 ion-icon {
   color: var(--ion-color-primary);
-}
-
-.bottom-divider {
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
-  border-color: var(--ion-color-light-shade);
-}
-
-ion-icon {
   --ionicon-stroke-width: 48px;
-}
-
-.footer {
-  --min-height: 64px;
-  --border-style: none;
 }
 </style>

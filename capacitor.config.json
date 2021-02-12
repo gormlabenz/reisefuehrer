@@ -1,12 +1,12 @@
 {
-  "appId": "io.ionic.reisefuehrer",
-  "appName": "reiseführer",
+  "appId": "de.gormlabenz.triptalk",
+  "appName": "Triptalk",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 0
+      "launchShowDuration": 3000
     }
   },
   "cordova": {}

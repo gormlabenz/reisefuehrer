@@ -1,8 +1,18 @@
 <template>
-  <ion-card style="margin-right: 0px">
-    <ion-img @click="$emit('click-image')" :src="img"></ion-img>
+  <ion-card style="margin-right: 0px; scroll-snap-align: start;">
+    <ion-img
+      v-show="didLoad"
+      :onIonImgDidLoad="(didLoad = true)"
+      @click="$emit('click-image')"
+      :src="img"
+    ></ion-img>
+    <img v-if="!didLoad" src="../assets/default_image.png" alt="" />
 
-    <div class="ion-padding" @click="$emit('click-text')">
+    <div
+      class="ion-padding"
+      style="margin-bottom: 0px"
+      @click="$emit('click-text')"
+    >
       <div>
         <div style="display:inline-block">
           <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>
@@ -30,6 +40,9 @@ import {
 
 export default {
   props: { img: String },
+  data() {
+    return { didLoad: false };
+  },
   components: {
     IonCard,
     IonImg,

@@ -1,6 +1,6 @@
 platform :ios, '11.0'
+project 'App.xcodeproj'
 use_frameworks!
-project: 'App.xcodeproj'
 
 # workaround to avoid Xcode caching of Pods that requires
 # Product -> Clean Build Folder after new Cordova plugins installed

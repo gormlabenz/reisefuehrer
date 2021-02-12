@@ -4,6 +4,14 @@ import router from "./router";
 
 import { IonicVue } from "@ionic/vue";
 
+import Store from "./store";
+let store = Store();
+
+import TrackStore from "./store/track.js";
+let trackStore = TrackStore();
+
+const { ScreenOrientation } = require("@ionic-native/screen-orientation");
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/vue/css/core.css";
 
@@ -30,6 +38,26 @@ const app = createApp(App)
   .use(IonicVue)
   .use(router);
 
+app.directive("scroll", {
+  inserted: function(el, binding) {
+    let f = function(evt) {
+      if (binding.value(evt, el)) {
+        window.removeEventListener("scroll", f);
+      }
+    };
+    window.addEventListener("scroll", f);
+  },
+});
+
 router.isReady().then(() => {
   app.mount("#app");
+  store.setPages();
+  trackStore.setAutoplayTrack();
+  trackStore.getStorage();
+  ScreenOrientation.lock(ScreenOrientation.ORIENTATIONS.PORTRAIT);
+  setInterval(() => {
+    trackStore.setAutoplayTrack();
+    store.setPages();
+    console.log("updated Pages");
+  }, 10000);
 });

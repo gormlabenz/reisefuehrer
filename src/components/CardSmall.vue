@@ -4,12 +4,18 @@
       <ion-img :src="img"></ion-img>
     </div>
 
-    <div @click="$emit('click-text')" class="ion-margin-horizontal">
+    <div
+      @click="$emit('click-text')"
+      class="ion-margin-horizontal"
+      style="overflow: hidden;"
+    >
       <div style="display:inline-block">
         <ion-card-subtitle><slot name="subtitle"></slot></ion-card-subtitle>
         <div class="block"></div>
       </div>
-      <ion-card-title class="ion-text-nowrap" style="text-overflow: ellipsis;"
+      <ion-card-title
+        class="ion-text-nowrap"
+        style="text-overflow: ellipsis; overflow: hidden"
         ><slot name="title"></slot
       ></ion-card-title>
       <slot name="content"></slot>
@@ -29,6 +35,7 @@ import {
   IonRow,
   IonCol,
 } from "@ionic/vue";
+
 import TextStore from "../store/text.js";
 
 export default {
@@ -60,7 +67,7 @@ ion-img {
 }
 
 .container {
-  width: 350px;
+  max-width: 400px;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
